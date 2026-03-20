@@ -1,0 +1,22 @@
+---
+interface Props {
+  sub?: string;
+}
+const { sub = 'プロジェクトのご相談、お気軽にお問い合わせください。' } = Astro.props;
+---
+
+<section class="contact" id="contact">
+  <div class="contact__glow"></div>
+  <p class="section__number reveal" style="position:relative;">Contact</p>
+  <h2 class="contact__title reveal">Get in <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Touch.</span></h2>
+  <p class="contact__sub reveal">{sub}</p>
+  <a href="mailto:info@izayoi.co.jp" class="contact__btn reveal">
+    お問い合わせ
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+  </a>
+  <div class="contact__info reveal">
+    <a href="mailto:info@izayoi.co.jp">info@izayoi.co.jp</a>
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+  </div>
+</section>

@@ -1,0 +1,218 @@
+---
+import SEO from '../components/SEO.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Cursor from '../components/Cursor.astro';
+import ThemeSwitcher from '../components/ThemeSwitcher.astro';
+import '../styles/shared.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  ogType?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, ogImage, ogType, jsonLd } = Astro.props;
+
+// Organization structured data (all pages)
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'IZAYOI合同会社',
+  alternateName: 'IZAYOI LLC',
+  url: 'https://izayoi-hiroshima.com',
+  logo: 'https://izayoi-hiroshima.com/logo.svg',
+  description: '広島発のデジタルマーケティング会社。SNS運用代行・HP制作・動画制作・AI導入支援。',
+  foundingDate: '2023',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: '広島市',
+    addressRegion: '広島県',
+    addressCountry: 'JP',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@izayoi.co.jp',
+    contactType: 'customer service',
+    availableLanguage: 'Japanese',
+  },
+  sameAs: [],
+};
+
+const mergedJsonLd = jsonLd ?? orgJsonLd;
+---
+
+<!DOCTYPE html>
+<html lang="ja" data-theme="tsuki">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#141210" />
+
+  <SEO
+    title={title}
+    description={description}
+    ogImage={ogImage}
+    ogType={ogType}
+    jsonLd={mergedJsonLd}
+  />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Fonts: preconnect + font-display:swap -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  </noscript>
+</head>
+<body>
+  <Cursor />
+  <ThemeSwitcher />
+  <Nav />
+
+  <main>
+    <slot />
+  </main>
+
+  <Footer />
+
+  <script>
+    // === Custom Cursor ===
+    const cursor = document.getElementById('cursor')!;
+    const cursorDot = document.getElementById('cursorDot')!;
+    let cx = 0, cy = 0, dx = 0, dy = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      dx = e.clientX;
+      dy = e.clientY;
+      cursorDot.style.left = dx + 'px';
+      cursorDot.style.top = dy + 'px';
+    });
+
+    (function cursorLoop() {
+      cx += (dx - cx) * 0.15;
+      cy += (dy - cy) * 0.15;
+      cursor.style.left = cx + 'px';
+      cursor.style.top = cy + 'px';
+      requestAnimationFrame(cursorLoop);
+    })();
+
+    document.querySelectorAll('a, button, .work-card, .service-card').forEach((el) => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // === Theme ===
+    const themes = ['tsuki', 'sora', 'tsukisora'] as const;
+    function setTheme(theme: string) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelectorAll('.theme-btn').forEach((btn) =>
+        btn.classList.toggle('active', (btn as HTMLElement).dataset.set === theme)
+      );
+    }
+    // Random theme on load
+    setTheme(themes[Math.floor(Math.random() * themes.length)]);
+
+    // Theme button clicks
+    document.querySelectorAll('.theme-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const theme = (btn as HTMLElement).dataset.set;
+        if (theme) setTheme(theme);
+      });
+    });
+
+    // === Mobile Nav ===
+    const hamburger = document.getElementById('hamburger')!;
+    const mobileMenu = document.getElementById('mobileMenu')!;
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      mobileMenu.classList.toggle('open');
+      document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+
+    mobileMenu.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // === Nav scroll ===
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav')!.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // === Scroll Reveal ===
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const counter = entry.target.querySelector('[data-count]') as HTMLElement | null;
+          if (counter) animateCount(counter);
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach((el, _i) => {
+      const parent = el.parentElement;
+      if (parent?.classList.contains('reveal-stagger')) {
+        const siblings = [...parent.querySelectorAll('.reveal')];
+        const idx = siblings.indexOf(el);
+        (el as HTMLElement).style.transitionDelay = (idx * 0.1) + 's';
+      }
+      revealObserver.observe(el);
+    });
+
+    // === Count-up ===
+    function animateCount(el: HTMLElement) {
+      if (el.dataset.counted) return;
+      el.dataset.counted = 'true';
+      const target = parseInt(el.dataset.count ?? '0');
+      const duration = 2000;
+      const start = performance.now();
+      (function update(now: number) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target) + '+';
+        if (progress < 1) requestAnimationFrame(update);
+      })(start);
+    }
+
+    // === Smooth scroll for hash links ===
+    document.querySelectorAll('a[href^="#"]').forEach((a) => {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        const href = (a as HTMLAnchorElement).getAttribute('href');
+        if (href) {
+          const t = document.querySelector(href);
+          if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // === Page hero entrance ===
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.hero-anim').forEach((el, i) => {
+        setTimeout(() => {
+          (el as HTMLElement).style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+          el.classList.add('show');
+        }, 300 + i * 180);
+      });
+    });
+  </script>
+</body>
+</html>

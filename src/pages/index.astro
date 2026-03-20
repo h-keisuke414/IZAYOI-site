@@ -1,0 +1,548 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'IZAYOI LLC',
+  alternateName: 'IZAYOI合同会社',
+  url: 'https://izayoi-hiroshima.com',
+  description: '広島発のデジタルマーケティング会社。SNS運用代行・HP制作・動画制作・AI導入支援。',
+  publisher: {
+    '@type': 'Organization',
+    name: 'IZAYOI合同会社',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://izayoi-hiroshima.com/logo.svg',
+    },
+  },
+};
+---
+
+<Base
+  title="IZAYOI LLC — Digital, Crafted."
+  description="広島発のデジタルマーケティング会社。SNS運用代行・HP制作・動画制作・AI導入支援で、ブランドの可能性を最大化。"
+  jsonLd={jsonLd}
+>
+  <style>
+    /* ============================================
+       HERO (index only)
+       ============================================ */
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: var(--space-xl) var(--gutter) var(--space-l);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__bg-glow {
+      position: absolute;
+      width: clamp(400px, 60vw, 800px);
+      height: clamp(400px, 60vw, 800px);
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      filter: blur(80px);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: glowFloat 8s ease-in-out infinite;
+    }
+
+    .hero__bg-glow-2 {
+      position: absolute;
+      width: clamp(200px, 30vw, 400px);
+      height: clamp(200px, 30vw, 400px);
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      filter: blur(60px);
+      top: 30%;
+      left: 70%;
+      pointer-events: none;
+      animation: glowFloat2 10s ease-in-out infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes glowFloat {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-48%, -52%) scale(1.08); }
+    }
+
+    @keyframes glowFloat2 {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+      50% { transform: translate(-20px, 15px) scale(1.1); opacity: 0.7; }
+    }
+
+    .hero__line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--gradient);
+      transform: scaleX(0);
+      transform-origin: left;
+      opacity: 0.3;
+    }
+
+    .hero__line.animate {
+      animation: lineWipe 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+
+    @keyframes lineWipe {
+      0% { transform: scaleX(0); opacity: 0; }
+      50% { transform: scaleX(1); opacity: 0.4; }
+      100% { transform: scaleX(1); opacity: 0.08; }
+    }
+
+    .hero__eyebrow {
+      font-size: clamp(10px, 1.2vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-s);
+    }
+
+    .hero__title {
+      font-size: clamp(44px, 8vw, 110px);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-s);
+    }
+
+    .hero__title .accent {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+
+    .hero__title-line { display: block; overflow: hidden; }
+    .hero__title-inner { display: block; transform: translateY(110%); transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hero__title-line.show .hero__title-inner { transform: translateY(0); }
+
+    .hero__sub {
+      font-size: clamp(14px, 1.5vw, 18px);
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: var(--space-m);
+    }
+
+    .hero__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: clamp(12px, 1.5vw, 16px) clamp(28px, 3vw, 40px);
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      transition: color 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero__cta::after {
+      content: '';
+      position: absolute;
+      left: -20%; bottom: 0;
+      width: 140%; height: 0%;
+      background: var(--accent);
+      border-radius: 40% 45% 0 0;
+      transition: height 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: -1;
+      animation: waterWave 2.5s ease-in-out infinite;
+    }
+
+    .hero__cta:hover { color: var(--bg-primary); }
+    .hero__cta:hover::after { height: 120%; }
+    .hero__cta svg { width: 16px; height: 16px; transition: transform 0.3s ease; }
+    .hero__cta:hover svg { transform: translateX(4px); }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: clamp(20px, 4vw, 40px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .hero__scroll-line {
+      width: 1px;
+      height: clamp(32px, 4vw, 48px);
+      background: var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      animation: scrollLine 2s ease infinite;
+    }
+
+    @keyframes scrollLine {
+      0% { top: -100%; }
+      50% { top: 100%; }
+      100% { top: 100%; }
+    }
+
+    /* ============================================
+       SERVICES (index only)
+       ============================================ */
+    .services__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: clamp(12px, 2vw, 20px);
+    }
+
+    @media (min-width: 900px) {
+      .services__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: clamp(12px, 2vw, 20px);
+      padding: clamp(24px, 3vw, 40px) clamp(20px, 2.5vw, 32px);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .service-card:hover { background: var(--bg-card-hover); border-color: var(--accent); transform: translateY(-4px); }
+    .service-card:hover::before { opacity: 1; }
+
+    .service-card__icon {
+      width: clamp(40px, 4vw, 48px);
+      height: clamp(40px, 4vw, 48px);
+      border-radius: 12px;
+      background: var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-s);
+      font-size: clamp(18px, 2vw, 22px);
+    }
+
+    .service-card__title { font-size: clamp(16px, 1.5vw, 18px); font-weight: 700; margin-bottom: 10px; }
+    .service-card__desc { font-size: clamp(13px, 1.2vw, 14px); color: var(--text-secondary); line-height: 1.7; margin-bottom: var(--space-s); }
+
+    .service-card__link {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); display: inline-flex; align-items: center; gap: 6px;
+      transition: gap 0.3s ease, color 0.4s ease;
+      position: relative; overflow: hidden; z-index: 1;
+      padding: 6px 14px; border-radius: 100px; border: 1px solid transparent;
+    }
+    .service-card__link::after {
+      content: '';
+      position: absolute;
+      left: -20%; bottom: 0;
+      width: 140%; height: 0%;
+      background: var(--accent);
+      border-radius: 40% 45% 0 0;
+      transition: height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: -1;
+      animation: waterWave 2s ease-in-out infinite;
+    }
+    .service-card__link:hover { gap: 10px; color: var(--bg-primary); border-color: var(--accent); }
+    .service-card__link:hover::after { height: 120%; }
+
+    /* ============================================
+       WORKS
+       ============================================ */
+    .works__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+      gap: clamp(12px, 2vw, 24px);
+    }
+
+    .work-card {
+      border-radius: clamp(12px, 2vw, 20px);
+      overflow: hidden; position: relative;
+      aspect-ratio: 16 / 10;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      cursor: none;
+    }
+
+    .work-card__image {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease, filter 0.6s ease;
+      filter: brightness(0.7) saturate(0.8);
+    }
+
+    .work-card:hover .work-card__image { transform: scale(1.05); filter: brightness(0.5) saturate(0.6); }
+
+    .work-card__overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: clamp(16px, 3vw, 32px);
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    }
+
+    .work-card__tag {
+      display: inline-block; font-size: clamp(9px, 0.8vw, 10px); font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid var(--accent);
+      border-radius: 100px; padding: 4px 12px; margin-bottom: 10px;
+    }
+
+    .work-card__name { font-size: clamp(18px, 2vw, 24px); font-weight: 700; color: #F0ECE3; }
+    .work-card__detail { font-size: clamp(12px, 1vw, 13px); color: #B0AAA0; margin-top: 4px; }
+
+    /* ============================================
+       NUMBERS
+       ============================================ */
+    .numbers {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .numbers__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+      max-width: 1280px; margin: 0 auto;
+      padding: var(--space-l) var(--gutter);
+      width: 100%;
+    }
+
+    .number-item { text-align: center; padding: var(--space-s); position: relative; }
+
+    .number-item:not(:last-child)::after {
+      content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: var(--border);
+    }
+
+    @media (max-width: 500px) {
+      .number-item:not(:last-child)::after { display: none; }
+      .number-item { padding: var(--space-s) 0; }
+      .number-item:not(:last-child) { border-bottom: 1px solid var(--border); }
+    }
+
+    .number-item__value {
+      font-size: clamp(36px, 5vw, 64px); font-weight: 900; letter-spacing: -0.03em;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1; margin-bottom: 8px;
+    }
+
+    .number-item__label { font-size: clamp(11px, 1vw, 13px); font-weight: 400; color: var(--text-secondary); letter-spacing: 0.05em; }
+
+    /* ============================================
+       PHILOSOPHY
+       ============================================ */
+    .philosophy { text-align: center; padding: var(--space-2xl) var(--gutter); max-width: min(900px, 100%); margin: 0 auto; }
+
+    .philosophy__quote {
+      font-size: clamp(20px, 3.5vw, 42px); font-weight: 300; line-height: 1.7;
+      letter-spacing: -0.01em; color: var(--text-primary); margin-bottom: var(--space-m);
+    }
+
+    .philosophy__quote em {
+      font-style: normal; background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;
+    }
+
+    .philosophy__author { font-size: clamp(11px, 1.2vw, 14px); font-weight: 500; color: var(--text-secondary); letter-spacing: 0.1em; text-transform: uppercase; }
+  </style>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero__bg-glow"></div>
+    <div class="hero__bg-glow-2"></div>
+    <div class="hero__line" id="heroLine"></div>
+    <p class="hero__eyebrow hero-anim">IZAYOI合同会社 — デジタルマーケティング</p>
+    <h1 class="hero__title">
+      <span class="hero__title-line" data-delay="0"><span class="hero__title-inner">Digital<span class="accent">,</span></span></span>
+      <span class="hero__title-line" data-delay="1"><span class="hero__title-inner">Crafted<span class="accent">.</span></span></span>
+    </h1>
+    <p class="hero__sub hero-anim">
+      SNS運用・Web制作・動画制作・AI導入支援。<br>
+      ブランドのデジタル体験を、戦略から実行まで。
+    </p>
+    <a href="#contact" class="hero__cta hero-anim">
+      お問い合わせ
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </a>
+    <div class="hero__scroll hero-anim">
+      <div class="hero__scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="section" id="services">
+    <div class="section__header reveal">
+      <div>
+        <p class="section__number">01 — Services</p>
+        <h2 class="section__title">Services</h2>
+      </div>
+      <a href="/services" class="section__link">View All <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+    <div class="services__grid reveal-stagger">
+      <div class="service-card reveal">
+        <div class="service-card__icon">📱</div>
+        <h3 class="service-card__title">SNS運用代行</h3>
+        <p class="service-card__desc">Instagram・TikTokを中心に、戦略設計からコンテンツ制作・分析改善まで一貫サポート。</p>
+        <a href="/services#sns" class="service-card__link">Learn More <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-card__icon">🌐</div>
+        <h3 class="service-card__title">HP・Web制作</h3>
+        <p class="service-card__desc">ブランドの世界観を反映した、成果に繋がるWebサイトをデザイン・開発。</p>
+        <a href="/services#web" class="service-card__link">Learn More <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-card__icon">🎬</div>
+        <h3 class="service-card__title">動画制作</h3>
+        <p class="service-card__desc">企画・撮影・編集をワンストップで。ブランドの魅力を映像で伝える。</p>
+        <a href="/services#video" class="service-card__link">Learn More <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-card__icon">🤖</div>
+        <h3 class="service-card__title">AI導入支援</h3>
+        <p class="service-card__desc">ChatGPT・Claude等のAIツール導入で業務効率化。戦略設計から運用定着まで伴走。</p>
+        <a href="/services#ai" class="service-card__link">Learn More <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-card__icon">⚡</div>
+        <h3 class="service-card__title">SaaS開発</h3>
+        <p class="service-card__desc">業務効率化・自動化ツールの企画・開発。AIを活用したプロダクトで事業を加速。</p>
+        <a href="/services#saas" class="service-card__link">Learn More <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WORKS ===== -->
+  <section class="section" id="works">
+    <div class="section__header reveal">
+      <div>
+        <p class="section__number">02 — Works</p>
+        <h2 class="section__title">Works</h2>
+      </div>
+      <a href="#" class="section__link">View All <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+    <div class="works__grid reveal-stagger">
+      <div class="work-card reveal">
+        <img class="work-card__image" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&h=500&fit=crop" alt="SNS運用プロジェクト" loading="lazy" width="800" height="500">
+        <div class="work-card__overlay">
+          <span class="work-card__tag">SNS運用</span>
+          <h3 class="work-card__name">Beauty Brand A</h3>
+          <p class="work-card__detail">Instagram運用 — フォロワー300%増加</p>
+        </div>
+      </div>
+      <div class="work-card reveal">
+        <img class="work-card__image" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop" alt="Web制作プロジェクト" loading="lazy" width="800" height="500">
+        <div class="work-card__overlay">
+          <span class="work-card__tag">Web制作</span>
+          <h3 class="work-card__name">Real Estate B</h3>
+          <p class="work-card__detail">コーポレートサイトリニューアル</p>
+        </div>
+      </div>
+      <div class="work-card reveal">
+        <img class="work-card__image" src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=500&fit=crop" alt="動画制作プロジェクト" loading="lazy" width="800" height="500">
+        <div class="work-card__overlay">
+          <span class="work-card__tag">動画制作</span>
+          <h3 class="work-card__name">Restaurant C</h3>
+          <p class="work-card__detail">店舗紹介リール — 50万再生達成</p>
+        </div>
+      </div>
+      <div class="work-card reveal">
+        <img class="work-card__image" src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&h=500&fit=crop" alt="AI導入支援プロジェクト" loading="lazy" width="800" height="500">
+        <div class="work-card__overlay">
+          <span class="work-card__tag">AI導入支援</span>
+          <h3 class="work-card__name">Startup D</h3>
+          <p class="work-card__detail">AI業務自動化 — 工数60%削減</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NUMBERS ===== -->
+  <section class="numbers">
+    <div class="numbers__grid reveal-stagger">
+      <div class="number-item reveal">
+        <div class="number-item__value" data-count="50">0</div>
+        <div class="number-item__label">クライアント数</div>
+      </div>
+      <div class="number-item reveal">
+        <div class="number-item__value" data-count="200">0</div>
+        <div class="number-item__label">プロジェクト実績</div>
+      </div>
+      <div class="number-item reveal">
+        <div class="number-item__value" data-count="3">0</div>
+        <div class="number-item__label">年以上の運用実績</div>
+      </div>
+      <div class="number-item reveal">
+        <div class="number-item__value" data-count="100">0</div>
+        <div class="number-item__label">万+ SNSリーチ</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PHILOSOPHY ===== -->
+  <section id="about">
+    <div class="philosophy">
+      <p class="section__number reveal">03 — Philosophy</p>
+      <p class="philosophy__quote reveal">
+        デジタルの力で、<em>ブランドの可能性</em>を最大化する。<br>
+        戦略と実行の両輪で、<em>本質的な成長</em>を共に創る。
+      </p>
+      <p class="philosophy__author reveal">— Hamada Keisuke, CEO of IZAYOI LLC</p>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT CTA ===== -->
+  <ContactCTA sub="プロジェクトのご相談、お気軽にお問い合わせください。" />
+
+  <script>
+    // Hero entrance — cinematic sequence (index only)
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        document.getElementById('heroLine')?.classList.add('animate');
+      }, 200);
+
+      document.querySelectorAll('.hero__title-line').forEach((line, i) => {
+        setTimeout(() => line.classList.add('show'), 600 + i * 200);
+      });
+    });
+  </script>
+</Base>

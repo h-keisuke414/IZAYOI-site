@@ -1,0 +1,419 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'サービス — IZAYOI LLC',
+  description: 'SNS運用代行・HP制作・動画制作・AI導入支援・SaaS開発。広島発のデジタルマーケティング会社IZAYOIのサービス一覧。',
+  url: 'https://izayoi-hiroshima.com/services',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'IZAYOI LLC',
+    url: 'https://izayoi-hiroshima.com',
+  },
+  provider: {
+    '@type': 'Organization',
+    name: 'IZAYOI合同会社',
+  },
+};
+---
+
+<Base
+  title="Services — IZAYOI LLC"
+  description="SNS運用代行・HP制作・動画制作・AI導入支援・SaaS開発。広島発のデジタルマーケティング会社IZAYOIのサービス一覧。"
+  jsonLd={jsonLd}
+>
+  <style>
+    /* ============================================
+       SERVICE DETAIL — Alternating Layout
+       ============================================ */
+    .svc {
+      padding: var(--space-xl) var(--gutter);
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .svc:last-of-type { border-bottom: none; }
+
+    .svc__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 80px);
+      align-items: center;
+    }
+
+    .svc:nth-child(even) .svc__inner { direction: rtl; }
+    .svc:nth-child(even) .svc__inner > * { direction: ltr; }
+
+    @media (max-width: 768px) {
+      .svc__inner { grid-template-columns: 1fr; }
+      .svc:nth-child(even) .svc__inner { direction: ltr; }
+    }
+
+    .svc__number {
+      font-size: clamp(10px, 1vw, 12px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: clamp(8px, 1vw, 16px);
+    }
+
+    .svc__title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-s);
+    }
+
+    .svc__desc {
+      font-size: clamp(14px, 1.3vw, 16px);
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: var(--space-m);
+    }
+
+    .svc__features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .svc__features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: clamp(13px, 1.2vw, 15px);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .svc__features li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .svc__visual {
+      aspect-ratio: 4/3;
+      border-radius: clamp(12px, 2vw, 20px);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(48px, 6vw, 80px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .svc__visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7) saturate(0.8);
+    }
+
+    /* ============================================
+       AI TOOLS LOGOS
+       ============================================ */
+    .ai-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: clamp(12px, 2vw, 20px);
+      margin-top: var(--space-s);
+    }
+
+    .ai-tool {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .ai-tool:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      background: var(--bg-card-hover);
+    }
+
+    .ai-tool__icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .ai-tool__name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .ai-tool__icon--chatgpt { background: #10A37F; }
+    .ai-tool__icon--claude { background: #D97757; }
+    .ai-tool__icon--gemini { background: linear-gradient(135deg, #4285F4, #EA4335); }
+    .ai-tool__icon--notion { background: #000; border: 1px solid var(--border); }
+    .ai-tool__icon--midjourney { background: #000; border: 1px solid var(--border); }
+    .ai-tool__icon--cursor { background: #1A1A2E; border: 1px solid var(--border); }
+
+    /* ============================================
+       HOW WE WORK
+       ============================================ */
+    .process {
+      padding: var(--space-xl) var(--gutter);
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .process__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: clamp(16px, 2vw, 24px);
+      margin-top: var(--space-m);
+    }
+
+    .process__step {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: clamp(12px, 2vw, 20px);
+      padding: clamp(24px, 3vw, 40px);
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .process__step:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .process__step-num {
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 900;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .process__step-title {
+      font-size: clamp(16px, 1.5vw, 20px);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .process__step-desc {
+      font-size: clamp(12px, 1.1vw, 14px);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+  </style>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <div class="page-hero__bg-glow"></div>
+    <p class="page-hero__eyebrow hero-anim">What We Do</p>
+    <h1 class="page-hero__title hero-anim">Our <span class="accent">Services.</span></h1>
+    <p class="page-hero__sub hero-anim">ブランドのデジタル体験を、戦略から実行まで一貫サポート。</p>
+  </section>
+
+  <!-- ===== SNS運用代行 ===== -->
+  <div class="svc" id="sns">
+    <div class="svc__inner">
+      <div class="reveal">
+        <p class="svc__number">01 — SNS Management</p>
+        <h2 class="svc__title">SNS運用代行</h2>
+        <p class="svc__desc">Instagram・TikTokを中心に、戦略設計からコンテンツ制作・分析改善まで一貫してサポート。フォロワー獲得だけでなく、エンゲージメントとCV向上を追求します。</p>
+        <ul class="svc__features">
+          <li>アカウント戦略設計・KPI策定</li>
+          <li>コンテンツ企画・撮影・編集</li>
+          <li>投稿スケジュール管理・運用代行</li>
+          <li>インサイト分析・月次レポート</li>
+          <li>広告運用・インフルエンサー施策</li>
+        </ul>
+      </div>
+      <div class="svc__visual reveal">
+        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&h=450&fit=crop" alt="SNS運用代行サービス" loading="lazy" width="600" height="450">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HP・Web制作 ===== -->
+  <div class="svc" id="web">
+    <div class="svc__inner">
+      <div class="reveal">
+        <p class="svc__number">02 — Web Development</p>
+        <h2 class="svc__title">HP・Web制作</h2>
+        <p class="svc__desc">ブランドの世界観を反映した、成果に繋がるWebサイトをデザイン・開発。レスポンシブ対応はもちろん、SEO・表示速度を考慮した設計で成果を最大化。</p>
+        <ul class="svc__features">
+          <li>UI/UXデザイン・ワイヤーフレーム</li>
+          <li>レスポンシブ対応・モバイルファースト</li>
+          <li>CMS導入（WordPress等）</li>
+          <li>SEO対策・パフォーマンス最適化</li>
+          <li>保守・運用サポート</li>
+        </ul>
+      </div>
+      <div class="svc__visual reveal">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=450&fit=crop" alt="HP・Web制作サービス" loading="lazy" width="600" height="450">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 動画制作 ===== -->
+  <div class="svc" id="video">
+    <div class="svc__inner">
+      <div class="reveal">
+        <p class="svc__number">03 — Video Production</p>
+        <h2 class="svc__title">動画制作</h2>
+        <p class="svc__desc">企画・撮影・編集をワンストップで。SNSリール、企業VP、イベント映像など、目的に合わせた映像でブランドの魅力を伝えます。</p>
+        <ul class="svc__features">
+          <li>企画・構成・絵コンテ作成</li>
+          <li>プロフェッショナル撮影</li>
+          <li>編集・カラーグレーディング</li>
+          <li>モーショングラフィックス・テロップ</li>
+          <li>SNS向けショート動画制作</li>
+        </ul>
+      </div>
+      <div class="svc__visual reveal">
+        <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&h=450&fit=crop" alt="動画制作サービス" loading="lazy" width="600" height="450">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== AI導入支援 ===== -->
+  <div class="svc" id="ai">
+    <div class="svc__inner">
+      <div class="reveal">
+        <p class="svc__number">04 — AI Integration</p>
+        <h2 class="svc__title">AI導入支援</h2>
+        <p class="svc__desc">最新のAIツールを活用した業務効率化を支援。現状分析から導入設計、社内定着まで伴走し、AIで事業の生産性を飛躍的に向上させます。</p>
+        <ul class="svc__features">
+          <li>業務フロー分析・AI活用ポイント特定</li>
+          <li>AIツール選定・導入設計</li>
+          <li>プロンプト設計・ワークフロー構築</li>
+          <li>社内研修・定着支援</li>
+          <li>カスタムAIソリューション開発</li>
+        </ul>
+        <div class="ai-tools">
+          <div class="ai-tool">
+            <div class="ai-tool__icon ai-tool__icon--chatgpt">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.28 14.49a5.24 5.24 0 0 0-.46-4.32 5.3 5.3 0 0 0-5.71-2.54 5.24 5.24 0 0 0-3.94-1.76 5.3 5.3 0 0 0-5.06 3.63 5.24 5.24 0 0 0-3.51 2.54 5.3 5.3 0 0 0 .65 6.2 5.24 5.24 0 0 0 .46 4.32 5.3 5.3 0 0 0 5.71 2.54 5.24 5.24 0 0 0 3.94 1.76 5.3 5.3 0 0 0 5.06-3.63 5.24 5.24 0 0 0 3.51-2.54 5.3 5.3 0 0 0-.65-6.2z"/></svg>
+            </div>
+            <span class="ai-tool__name">ChatGPT</span>
+          </div>
+          <div class="ai-tool">
+            <div class="ai-tool__icon ai-tool__icon--claude">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+            </div>
+            <span class="ai-tool__name">Claude</span>
+          </div>
+          <div class="ai-tool">
+            <div class="ai-tool__icon ai-tool__icon--gemini">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg>
+            </div>
+            <span class="ai-tool__name">Gemini</span>
+          </div>
+          <div class="ai-tool">
+            <div class="ai-tool__icon ai-tool__icon--notion">N</div>
+            <span class="ai-tool__name">Notion AI</span>
+          </div>
+          <div class="ai-tool">
+            <div class="ai-tool__icon ai-tool__icon--midjourney">M</div>
+            <span class="ai-tool__name">Midjourney</span>
+          </div>
+          <div class="ai-tool">
+            <div class="ai-tool__icon ai-tool__icon--cursor">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            </div>
+            <span class="ai-tool__name">Cursor</span>
+          </div>
+        </div>
+      </div>
+      <div class="svc__visual reveal">
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=450&fit=crop" alt="AI導入支援サービス" loading="lazy" width="600" height="450">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SaaS開発 ===== -->
+  <div class="svc" id="saas">
+    <div class="svc__inner">
+      <div class="reveal">
+        <p class="svc__number">05 — SaaS Development</p>
+        <h2 class="svc__title">SaaS開発</h2>
+        <p class="svc__desc">業務効率化・自動化ツールの企画・開発。AIを活用したプロダクトで事業を加速し、独自のデジタル資産を構築します。</p>
+        <ul class="svc__features">
+          <li>要件定義・プロダクト設計</li>
+          <li>UI/UXデザイン・プロトタイピング</li>
+          <li>フロントエンド・バックエンド開発</li>
+          <li>AI機能統合・API連携</li>
+          <li>運用・保守・継続改善</li>
+        </ul>
+      </div>
+      <div class="svc__visual reveal">
+        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=450&fit=crop" alt="SaaS開発サービス" loading="lazy" width="600" height="450">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HOW WE WORK ===== -->
+  <section class="process">
+    <div class="section__header reveal">
+      <div>
+        <p class="section__number">Process</p>
+        <h2 class="section__title">How We Work</h2>
+      </div>
+    </div>
+    <div class="process__grid reveal-stagger">
+      <div class="process__step reveal">
+        <div class="process__step-num">01</div>
+        <h3 class="process__step-title">ヒアリング</h3>
+        <p class="process__step-desc">課題・目標・ターゲットを丁寧にヒアリングし、最適な戦略を設計。</p>
+      </div>
+      <div class="process__step reveal">
+        <div class="process__step-num">02</div>
+        <h3 class="process__step-title">提案・設計</h3>
+        <p class="process__step-desc">データに基づいた戦略提案とKPI設計。ゴールまでのロードマップを共有。</p>
+      </div>
+      <div class="process__step reveal">
+        <div class="process__step-num">03</div>
+        <h3 class="process__step-title">制作・実行</h3>
+        <p class="process__step-desc">スピーディかつ高品質な制作。定期的な進捗共有で透明性を確保。</p>
+      </div>
+      <div class="process__step reveal">
+        <div class="process__step-num">04</div>
+        <h3 class="process__step-title">分析・改善</h3>
+        <p class="process__step-desc">データ分析に基づくPDCAサイクル。成果を最大化するための継続改善。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT CTA ===== -->
+  <ContactCTA sub="サービスの詳細やお見積もりなど、お気軽にお問い合わせください。" />
+</Base>
