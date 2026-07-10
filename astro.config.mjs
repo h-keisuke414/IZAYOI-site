@@ -9,5 +9,11 @@ export default defineConfig({
     build: {
       cssMinify: true,
     },
+    server: {
+      // iCloud同期下のDesktopフォルダではFSEventsのファイル監視がハングするためポーリングに切り替え
+      watch: {
+        usePolling: true,
+      },
+    },
   },
 });

@@ -1,0 +1,1265 @@
+---
+import Base from '../layouts/Base.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'プロダクト & AIラボ — IZAYOI LLC',
+  description: 'IZAYOIの自社プロダクト（Rheo・IZAYOI Hub・IZAYOI Fit）と、生成AIによる画像・映像・SNS動画制作の実例。',
+  url: 'https://izayoi-hiroshima.com/products',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'IZAYOI LLC',
+    url: 'https://izayoi-hiroshima.com',
+  },
+  provider: {
+    '@type': 'Organization',
+    name: 'IZAYOI合同会社',
+  },
+};
+
+const WORKS = [
+  { type: 'VIDEO', src: '/space-bg/lab-hero.mp4', video: true, title: 'リキッドゴールド', caption: '広告・ムービー用に生成した流体アート映像' },
+  { type: 'VIDEO', src: '/space-bg/hero.mp4', video: true, title: '宇宙背景映像', caption: 'トップページ背景用に生成したシネマティック映像' },
+  { type: 'IMAGE', src: '/img/ai-keyvisual.jpg', video: false, title: 'キービジュアル', caption: 'ブランドの世界観を封じ込めたオブジェ' },
+  { type: 'SEQUENCE', src: '/space-bg/frame-024.jpg', video: false, title: 'スクロール連動シーケンス', caption: '映像を48フレームに分解しスクロールで再生' },
+  { type: 'IMAGE', src: '/img/service-sns.jpg', video: false, title: 'SNSクリエイティブ', caption: 'ショート動画・投稿用のコンセプトビジュアル' },
+  { type: 'IMAGE', src: '/img/service-video.jpg', video: false, title: 'シネマティック素材', caption: '広告・ムービー用の質感スタディ' },
+  { type: 'IMAGE', src: '/img/service-saas.jpg', video: false, title: 'プロダクトUI素材', caption: 'SaaS・アプリのビジュアルアイデンティティ' },
+];
+
+const APPS = [
+  {
+    num: '01',
+    name: 'Rheo',
+    watermark: 'RHEO',
+    status: '公開中',
+    tagline: 'Send, review, decide.',
+    lead: '制作現場のための、ファイル便。',
+    desc: '動画・写真・PDFをアップして共有URLを発行するファイル共有SaaS。大容量ファイルの受け渡しと、クライアントのレビュー・フィードバックを、ひとつのリンクで完結させます。制作会社の「送って、確認してもらう」という日常を、いちばん短い動線に。自社で実際に運用しながら磨き続けています。',
+    checks: ['大容量ファイルの共有URL発行', 'クライアントレビュー・コメント', '転送履歴・アカウント管理', '有料プランで商用運用中'],
+    visual: '/img/service-saas.jpg',
+    link: { label: 'Visit site', href: 'https://pantarhei.studio', external: true },
+  },
+  {
+    num: '02',
+    name: 'IZAYOI Hub',
+    watermark: 'HUB',
+    status: '運用中',
+    tagline: 'Mission control for SNS.',
+    lead: 'SNS運用チームの、司令塔。',
+    desc: '投稿の企画から承認、実績の蓄積までを1画面で回す、SNS運用の進行管理アプリ。私たち自身の運用現場で毎日使いながら育てている「現場発」のツールで、複数ブランドのアカウント運用を支えています。クライアントとのやり取りに散らばるチャット・スプレッドシート・カレンダーを、ここにまとめました。',
+    checks: ['投稿スケジュール・進行管理', 'クライアント承認フロー', '実績レポートの自動集計', '複数アカウントの一元管理'],
+    visual: '/img/service-sns.jpg',
+    link: { label: '導入の相談をする', href: '/#contact', external: false },
+  },
+  {
+    num: '03',
+    name: 'IZAYOI Fit',
+    watermark: 'FIT',
+    status: 'β運用中',
+    tagline: 'Snap. Send. Improve.',
+    lead: '写真を送るだけの、AI食事管理。',
+    desc: 'LINEで完結するAI食事管理サービス。食事の写真を送るだけでAIが栄養バランスを解析し、毎日のフィードバックを返します。アプリのダウンロードも会員登録も不要、友だち追加だけで始められる手軽さが特長。「続かない」を前提に、続けられる体験を設計しました。',
+    checks: ['写真1枚でAI栄養解析', 'LINEだけで完結する体験', 'パーソナルなアドバイス配信'],
+    visual: '/img/ai-keyvisual.jpg',
+    link: { label: '導入の相談をする', href: '/#contact', external: false },
+  },
+];
+---
+
+<Base
+  title="プロダクト & AIラボ — IZAYOI LLC"
+  description="IZAYOIの自社プロダクトと、生成AIによる画像・映像・SNS動画制作の実例を紹介します。"
+  jsonLd={jsonLd}
+>
+  <style>
+    /* ============================================
+       LAB — 黒×ウォームクリームのシネマティック
+       ============================================ */
+    .lab {
+      --cream: #E1E0CC;
+      --cream-2: #DEDBC8;
+      background: #000;
+    }
+
+    .lab :global(.watermark-svg text) { stroke: rgba(225, 224, 204, 0.14); }
+
+    /* SVGノイズ（フラクタル） */
+    .noise-overlay {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .bg-noise {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    :global(.word) { display: inline-block; will-change: transform, opacity; }
+
+    /* このページは共通ナビを隠し、ヒーロー内の吊り下げピルナビに置き換える */
+    :global(.nav),
+    :global(.nav__mobile) { display: none !important; }
+
+    /* ============================================
+       HERO — インセット動画ヒーロー
+       ============================================ */
+    .lab-hero {
+      height: 100svh;
+      padding: clamp(16px, 2vw, 24px);
+    }
+
+    .lab-nav {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 3.5vw, 56px);
+      background: #000;
+      border-radius: 0 0 clamp(16px, 1.8vw, 24px) clamp(16px, 1.8vw, 24px);
+      padding: clamp(8px, 1vw, 12px) clamp(16px, 2.4vw, 32px);
+      white-space: nowrap;
+    }
+
+    .lab-nav a {
+      color: rgba(225, 224, 204, 0.8);
+      font-size: clamp(10px, 1vw, 14px);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: color 0.3s ease;
+    }
+
+    .lab-nav a:hover { color: #E1E0CC; }
+
+    .lab-hero__frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: clamp(16px, 2.4vw, 32px);
+      overflow: hidden;
+      background: #000;
+    }
+
+    .lab-hero__canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .lab-hero__label {
+      position: absolute;
+      top: 45%;
+      left: clamp(16px, 2.4vw, 40px);
+      z-index: 3;
+      color: rgba(225, 224, 204, 0.5);
+      font-size: clamp(9px, 0.85vw, 11px);
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg) translateY(50%);
+    }
+
+    @media (max-width: 700px) {
+      .lab-hero__label { display: none; }
+    }
+
+    .lab-hero__noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.7;
+      mix-blend-mode: overlay;
+      pointer-events: none;
+    }
+
+    .lab-hero__grad {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent 40%, rgba(0,0,0,0.6));
+      pointer-events: none;
+    }
+
+    .lab-hero__bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: clamp(12px, 1.5vw, 24px);
+      align-items: end;
+      padding: clamp(16px, 2.4vw, 40px);
+    }
+
+    .lab-hero__title {
+      grid-column: span 8;
+      color: var(--cream);
+      font-family: 'Almarai', 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: clamp(64px, 18vw, 320px);
+      line-height: 0.85;
+      letter-spacing: -0.07em;
+      white-space: nowrap;
+    }
+
+    .lab-hero__title :global(.word:last-of-type) { position: relative; }
+
+    .lab-hero__title .asterisk {
+      position: absolute;
+      top: 0.65em;
+      right: -0.3em;
+      font-size: 0.31em;
+      line-height: 1;
+      color: var(--cream);
+    }
+
+    .lab-hero__aside {
+      grid-column: span 4;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(14px, 1.6vw, 22px);
+      padding-bottom: 0.4em;
+    }
+
+    .lab-hero__desc {
+      color: rgba(225, 224, 204, 0.7);
+      font-size: clamp(12px, 1.1vw, 15px);
+      line-height: 1.6;
+    }
+
+    .lab-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      align-self: flex-start;
+      background: var(--cream-2);
+      color: #000;
+      border-radius: 100px;
+      padding: 6px 8px 6px 20px;
+      font-size: clamp(13px, 1.1vw, 15px);
+      font-weight: 700;
+      transition: gap 0.3s ease;
+    }
+
+    .lab-cta:hover { gap: 16px; }
+
+    .lab-cta__circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #000;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+
+    .lab-cta:hover .lab-cta__circle { transform: scale(1.1); }
+
+    .lab-cta__circle svg { width: 15px; height: 15px; stroke: var(--cream); }
+
+    @media (max-width: 860px) {
+      .lab-hero__bottom { grid-template-columns: 1fr; }
+      .lab-hero__title { grid-column: span 1; font-size: clamp(64px, 24vw, 200px); }
+      .lab-hero__aside { grid-column: span 1; max-width: 420px; }
+    }
+
+    /* ============================================
+       ABOUT — #101010カード
+       ============================================ */
+    .lab-about {
+      padding: clamp(48px, 7vw, 110px) clamp(16px, 3vw, 40px);
+      background:
+        radial-gradient(55vw 42vh at 88% 0%, rgba(106, 158, 192, 0.08), transparent 68%),
+        radial-gradient(46vw 38vh at 4% 96%, rgba(196, 136, 60, 0.07), transparent 68%);
+    }
+
+    .lab-about__card {
+      background: #101010;
+      border-radius: clamp(16px, 2.4vw, 32px);
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: clamp(48px, 7vw, 110px) clamp(20px, 4vw, 64px);
+      text-align: center;
+    }
+
+    .lab-about__label {
+      color: var(--cream-2);
+      font-size: clamp(10px, 1vw, 12px);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: clamp(20px, 3vw, 36px);
+    }
+
+    .lab-about__heading {
+      color: var(--cream);
+      font-size: clamp(28px, 4.6vw, 64px);
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      max-width: 820px;
+      margin: 0 auto clamp(28px, 4vw, 56px);
+    }
+
+    .lab-about__heading .serif {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .lab-about__body {
+      color: var(--cream-2);
+      font-size: clamp(12px, 1.2vw, 16px);
+      line-height: 2.1;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .lab-about__body :global(.char) { opacity: 0.2; will-change: opacity; }
+
+    /* ============================================
+       GALLERY（既存の横スクロール見せ場・黒に統一）
+       ============================================ */
+    .gallery {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(70vw 55vh at 50% 110%, rgba(196, 136, 60, 0.07), transparent 70%),
+        radial-gradient(40vw 40vh at 96% 8%, rgba(194, 88, 48, 0.05), transparent 70%),
+        #000;
+    }
+
+    .gallery__head {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-l) var(--gutter) var(--space-m);
+    }
+
+    .gallery__eyebrow {
+      font-size: clamp(10px, 1vw, 12px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: var(--cream-2);
+      text-transform: uppercase;
+      margin-bottom: clamp(8px, 1vw, 14px);
+    }
+
+    .gallery__title {
+      color: var(--cream);
+      font-size: clamp(26px, 3.8vw, 46px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .gallery__lede {
+      color: rgba(225, 224, 204, 0.6);
+      font-size: clamp(12.5px, 1.2vw, 14.5px);
+      line-height: 2;
+      max-width: 620px;
+    }
+
+    .gallery__hint {
+      color: rgba(225, 224, 204, 0.38);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 12px;
+    }
+
+    .gallery__viewport { overflow: hidden; }
+
+    .gallery__track {
+      display: flex;
+      gap: clamp(16px, 2vw, 28px);
+      padding: 0 var(--gutter) var(--space-xl);
+      width: max-content;
+      will-change: transform;
+    }
+
+    .work-card {
+      width: clamp(300px, 36vw, 520px);
+      flex-shrink: 0;
+      border: 1px solid rgba(225, 224, 204, 0.14);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #101010;
+    }
+
+    .work-card__media {
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(225, 224, 204, 0.12);
+    }
+
+    .work-card__media img,
+    .work-card__media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .work-card__body { padding: clamp(16px, 1.8vw, 22px); }
+
+    .work-card__type {
+      color: var(--cream-2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+
+    .work-card__title {
+      color: var(--cream);
+      font-size: clamp(15px, 1.5vw, 18px);
+      font-weight: 800;
+      margin: 6px 0 4px;
+    }
+
+    .work-card__caption {
+      color: rgba(225, 224, 204, 0.55);
+      font-size: clamp(11.5px, 1.05vw, 13px);
+      line-height: 1.8;
+    }
+
+    @media (max-width: 899px) {
+      .gallery__viewport { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    }
+
+    /* ============================================
+       FEATURES — 4カラムカード（自社プロダクト）
+       ============================================ */
+    .lab-features {
+      position: relative;
+      min-height: 100vh;
+      padding: clamp(56px, 8vw, 120px) clamp(16px, 3vw, 40px);
+    }
+
+    .lab-features__noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .lab-features__inner { position: relative; max-width: 1240px; margin: 0 auto; }
+
+    .lab-features__heading {
+      text-align: center;
+      font-size: clamp(20px, 2.8vw, 38px);
+      font-weight: 400;
+      line-height: 1.4;
+      max-width: 760px;
+      margin: 0 auto clamp(40px, 6vw, 80px);
+    }
+
+    .lab-features__heading .line-cream { color: var(--cream); }
+    .lab-features__heading .line-gray { color: #6B6B6B; }
+
+    .feat-card__checks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .feat-card__checks li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #9C9C94;
+      font-size: clamp(12px, 1.05vw, 13.5px);
+      line-height: 1.7;
+    }
+
+    .feat-card__checks svg {
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      margin-top: 4px;
+      stroke: var(--cream-2);
+    }
+
+    .feat-card__more {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cream);
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .feat-card__more svg {
+      width: 13px;
+      height: 13px;
+      stroke: var(--cream);
+      transform: rotate(-45deg);
+      transition: transform 0.3s ease;
+    }
+
+    .feat-card__more:hover svg { transform: rotate(0deg); }
+
+    /* ============================================
+       APPS — アプリごとの実績セクション
+       ============================================ */
+    .lab-apps {
+      position: relative;
+      padding: clamp(56px, 8vw, 120px) clamp(16px, 3vw, 40px) clamp(40px, 6vw, 90px);
+      background:
+        radial-gradient(50vw 45vh at 0% 12%, rgba(106, 158, 192, 0.06), transparent 68%),
+        radial-gradient(55vw 45vh at 100% 55%, rgba(196, 136, 60, 0.06), transparent 70%),
+        radial-gradient(60vw 40vh at 30% 100%, rgba(65, 90, 120, 0.05), transparent 72%);
+    }
+
+    .lab-apps__intro { position: relative; max-width: 1240px; margin: 0 auto; }
+
+    .app-sec {
+      position: relative;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: clamp(48px, 6.5vw, 100px) 0;
+      border-top: 1px solid rgba(225, 224, 204, 0.1);
+    }
+
+    .app-sec .watermark { top: clamp(20px, 3.5vw, 48px); }
+
+    .app-sec__grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 1fr);
+      gap: clamp(24px, 4vw, 64px);
+      align-items: center;
+    }
+
+    .app-sec:nth-of-type(even) .app-sec__grid { direction: rtl; }
+    .app-sec:nth-of-type(even) .app-sec__grid > * { direction: ltr; }
+
+    @media (max-width: 860px) {
+      .app-sec__grid,
+      .app-sec:nth-of-type(even) .app-sec__grid { grid-template-columns: 1fr; direction: ltr; }
+    }
+
+    .app-sec__num {
+      color: var(--cream-2);
+      font-size: clamp(10px, 1vw, 12px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: clamp(10px, 1.4vw, 18px);
+    }
+
+    .app-sec__namerow {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .app-sec__name {
+      color: var(--cream);
+      font-family: 'Almarai', 'Inter', sans-serif;
+      font-size: clamp(40px, 6vw, 84px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .app-sec__status {
+      color: var(--cream-2);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(225, 224, 204, 0.35);
+      border-radius: 100px;
+      padding: 4px 14px;
+      transform: translateY(-6px);
+    }
+
+    .app-sec__tagline {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      color: var(--cream-2);
+      font-size: clamp(18px, 2.2vw, 28px);
+      margin-bottom: clamp(12px, 1.6vw, 20px);
+    }
+
+    .app-sec__lead {
+      color: var(--cream);
+      font-size: clamp(16px, 1.7vw, 21px);
+      font-weight: 700;
+      margin-bottom: clamp(10px, 1.3vw, 16px);
+    }
+
+    .app-sec__desc {
+      color: #9C9C94;
+      font-size: clamp(12.5px, 1.15vw, 14.5px);
+      line-height: 2.05;
+      margin-bottom: clamp(16px, 2vw, 24px);
+    }
+
+    .app-sec__checks { margin-bottom: clamp(18px, 2.2vw, 28px); flex: none; }
+
+    .app-sec__visual {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(225, 224, 204, 0.14);
+      background: #101010;
+    }
+
+    .app-sec__visual img { width: 100%; height: auto; display: block; }
+
+    /* ============================================
+       OUTRO — アート調ヒーローの移植（フッター前の締め）
+       ============================================ */
+    .lab-outro {
+      position: relative;
+      min-height: 100svh;
+      overflow: hidden;
+    }
+
+    .lab-outro__art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: outroZoom 40s ease-in-out infinite alternate;
+    }
+
+    @keyframes outroZoom {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+
+    /* AIの物体検出ボックス（名画をAIが読んでいる演出） */
+    .lab-outro__boxes {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .det-box {
+      position: absolute;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+      animation: detPulse 5.5s ease-in-out infinite;
+      opacity: 0.4;
+    }
+
+    .det-box i {
+      position: absolute;
+      top: -20px;
+      left: -1px;
+      font-style: normal;
+      font-family: 'Inter', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+    }
+
+    @keyframes detPulse {
+      0%, 100% { opacity: 0.25; }
+      50% { opacity: 0.95; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lab-outro__art { animation: none; }
+      .det-box { animation: none; opacity: 0.7; }
+    }
+
+    .lab-outro__grad {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 38%, rgba(0,0,0,0.58));
+      pointer-events: none;
+    }
+
+    .lab-outro__top {
+      position: absolute;
+      top: clamp(20px, 4vw, 64px);
+      left: clamp(20px, 4vw, 64px);
+      right: clamp(20px, 4vw, 64px);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      z-index: 2;
+    }
+
+    .lab-outro__logo {
+      display: block;
+      font-weight: 800;
+      font-size: clamp(18px, 1.8vw, 24px);
+      letter-spacing: 0.14em;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .lab-outro__tag {
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: clamp(11px, 1.1vw, 15px);
+      font-weight: 700;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+    }
+
+    .lab-outro__cta {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(12px, 1.8vw, 28px) clamp(20px, 3vw, 44px);
+      border: 1px solid #fff;
+      border-radius: 100%;
+      color: #fff;
+      font-family: 'Italiana', serif;
+      font-size: clamp(12px, 1.3vw, 18px);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      background: rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease, backdrop-filter 0.3s ease;
+    }
+
+    .lab-outro__cta:hover {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(48px);
+    }
+
+    .lab-outro__left {
+      position: absolute;
+      left: clamp(20px, 4vw, 64px);
+      top: 46%;
+      width: min(320px, 28vw);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(14px, 1.8vw, 24px);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(12px, 1vw, 14px);
+      line-height: 1.9;
+      z-index: 2;
+    }
+
+    @media (max-width: 860px) {
+      .lab-outro__left { display: none; }
+    }
+
+    .lab-outro__headline {
+      position: absolute;
+      bottom: clamp(24px, 4.5vw, 64px);
+      right: clamp(20px, 4vw, 64px);
+      left: clamp(20px, 4vw, 64px);
+      text-align: right;
+      font-family: 'Italiana', serif;
+      font-weight: 400;
+      color: #fff;
+      font-size: clamp(38px, 7vw, 96px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      z-index: 2;
+    }
+
+    .lab-outro__headline span { display: block; }
+  </style>
+
+  <div class="lab">
+    <!-- ===== HERO ===== -->
+    <section class="lab-hero">
+      <div class="lab-hero__frame">
+        <canvas class="lab-hero__canvas" id="dataPaint" aria-hidden="true"></canvas>
+        <div class="lab-hero__noise noise-overlay"></div>
+        <div class="lab-hero__grad"></div>
+        <p class="lab-hero__label">Real-time generative — trained on IZAYOI's context</p>
+        <nav class="lab-nav" aria-label="ラボページナビゲーション">
+          <a href="/">ホーム</a>
+          <a href="/#ai">AI活用支援</a>
+          <a href="/services">サービス</a>
+          <a href="/about">会社概要</a>
+          <a href="/#contact">お問い合わせ</a>
+        </nav>
+        <div class="lab-hero__bottom">
+          <h1 class="lab-hero__title" id="labTitle">
+            <span class="word">AI</span> <span class="word">Lab<sup class="asterisk">*</sup></span>
+          </h1>
+          <div class="lab-hero__aside">
+            <p class="lab-hero__desc" id="labDesc">
+              この背景は、映像ではなくリアルタイム生成の色彩です。
+              広島の紅葉の朱、瀬戸内の藍、十六夜の月光——
+              IZAYOIのすべての文脈を色のデータとして与えた、私たちのデータ・ペインティング。
+              同じ絵は、二度と現れません。
+            </p>
+            <a href="/#contact" class="lab-cta" id="labCta">
+              相談してみる
+              <span class="lab-cta__circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section class="lab-about" id="about-lab">
+      <div class="lab-about__card">
+        <p class="lab-about__label">Visual arts × AI</p>
+        <h2 class="lab-about__heading" id="labHeading">
+          <span class="seg">私たちは、広島の</span>
+          <span class="seg serif">creative lab.</span>
+          <span class="seg">色彩、映像、物語、そしてコードまでを扱います。</span>
+        </h2>
+        <p class="lab-about__body" id="labBody">
+          この数年、私たちは数十のブランドとSNSで並走し、映像とWebで物語を届けてきました。いま生成AIとともに、表現の速度と自由度は次の段階へ。国内外30以上のモデルを用途で使い分け、想像したものをそのままかたちにします。
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== 生成AIワークス ギャラリー ===== -->
+    <section class="gallery" id="works">
+      <div class="gallery__head">
+        <p class="gallery__eyebrow reveal">Generated Works</p>
+        <h2 class="gallery__title reveal">生成AIワークス</h2>
+        <p class="gallery__lede reveal">
+          このサイトで実際に使っている生成物を含む、AI制作の実例です。
+          すべてIZAYOIのアートディレクションのもと、生成AIで制作しています。
+        </p>
+        <p class="gallery__hint reveal">Scroll →</p>
+      </div>
+      <div class="gallery__viewport">
+        <div class="gallery__track" id="galleryTrack">
+          {WORKS.map((w) => (
+            <figure class="work-card">
+              <div class="work-card__media">
+                {w.video
+                  ? <video src={w.src} autoplay loop muted playsinline></video>
+                  : <img src={w.src} alt={w.title} loading="lazy" />}
+              </div>
+              <figcaption class="work-card__body">
+                <span class="work-card__type">{w.type}</span>
+                <h3 class="work-card__title">{w.title}</h3>
+                <p class="work-card__caption">{w.caption}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== APPS（アプリごとの実績セクション） ===== -->
+    <section class="lab-apps" id="apps">
+      <div class="lab-features__noise bg-noise"></div>
+      <div class="lab-apps__intro">
+        <h2 class="lab-features__heading" id="featHeading">
+          <span class="seg line-cream">自社開発プロダクト。</span><br />
+          <span class="seg line-gray">Built and battle-tested in our own lab.</span>
+        </h2>
+      </div>
+
+      {APPS.map((app) => (
+        <div class="app-sec">
+          <span class="watermark watermark--dark" aria-hidden="true">{app.watermark}</span>
+          <div class="app-sec__grid">
+            <div class="app-sec__text">
+              <p class="app-sec__num reveal">{app.num} — Product</p>
+              <div class="app-sec__namerow">
+                <h3 class="app-sec__name">{app.name}</h3>
+                <span class="app-sec__status reveal">{app.status}</span>
+              </div>
+              <p class="app-sec__tagline reveal">{app.tagline}</p>
+              <p class="app-sec__lead reveal">{app.lead}</p>
+              <p class="app-sec__desc reveal">{app.desc}</p>
+              <ul class="feat-card__checks app-sec__checks reveal">
+                {app.checks.map((c) => (
+                  <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                    {c}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={app.link.href}
+                class="feat-card__more app-sec__more reveal"
+                target={app.link.external ? '_blank' : undefined}
+                rel={app.link.external ? 'noopener' : undefined}
+              >
+                {app.link.label}
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+            <div class="app-sec__visual reveal">
+              <img src={app.visual} alt={`${app.name}のビジュアル`} loading="lazy" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <!-- ===== OUTRO（アート調ヒーロー: 古典絵画×AI検出ボックス） ===== -->
+    <section class="lab-outro" id="contact-outro">
+      <img class="lab-outro__art" src="/img/outro-art.jpg" alt="" loading="lazy" />
+      <div class="lab-outro__boxes" aria-hidden="true">
+        <span class="det-box" style="top: 12%; left: 38%; width: 24%; height: 46%; animation-delay: 0s;"><i>0.9721</i></span>
+        <span class="det-box" style="top: 8%; left: 10%; width: 13%; height: 20%; animation-delay: 1.2s;"><i>0.2857</i></span>
+        <span class="det-box" style="top: 55%; left: 20%; width: 22%; height: 34%; animation-delay: 2.1s;"><i>1.0000</i></span>
+        <span class="det-box" style="top: 18%; left: 70%; width: 12%; height: 24%; animation-delay: 0.7s;"><i>0.5234</i></span>
+        <span class="det-box" style="top: 58%; left: 66%; width: 17%; height: 28%; animation-delay: 2.8s;"><i>0.7143</i></span>
+        <span class="det-box" style="top: 36%; left: 52%; width: 9%; height: 13%; animation-delay: 1.7s;"><i>0.1423</i></span>
+      </div>
+      <div class="lab-outro__grad"></div>
+      <div class="lab-outro__top">
+        <div class="reveal">
+          <span class="lab-outro__logo">IZAYOI</span>
+          <p class="lab-outro__tag">
+            デジタルとアートの力で、<br />
+            ブランドを前進させる。
+          </p>
+        </div>
+        <a href="/#contact" class="lab-outro__cta reveal">Get in Touch</a>
+      </div>
+      <div class="lab-outro__left reveal">
+        <p>
+          生成AIとアートディレクションを掛け合わせ、画像・映像からプロダクトまでをひとつのチームで制作しています。
+        </p>
+        <p>
+          「うちのブランドなら何ができる？」——その段階から、お気軽にご相談ください。
+        </p>
+      </div>
+      <h2 class="lab-outro__headline">
+        <span class="reveal">Where Art Meets</span>
+        <span class="reveal">Intelligence.</span>
+        <span class="reveal">We Craft, You Dream.</span>
+      </h2>
+    </section>
+  </div>
+
+  <script>
+    import * as THREE from 'three';
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+    gsap.registerPlugin(ScrollTrigger);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 単語単位で分割（プルアップ用）。テキストノードだけを対象に、要素のclassは保持する
+    function splitWords(el: Element) {
+      const walk = (node: Node) => {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+          const frag = document.createDocumentFragment();
+          const parts = node.textContent.split(/(\s+)/);
+          for (const part of parts) {
+            if (!part) continue;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(part));
+            } else {
+              const span = document.createElement('span');
+              span.className = 'word';
+              span.textContent = part;
+              frag.appendChild(span);
+            }
+          }
+          node.parentNode?.replaceChild(frag, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName !== 'BR') {
+          [...node.childNodes].forEach(walk);
+        }
+      };
+      walk(el);
+    }
+
+    function splitChars(el: Element) {
+      const walk = (node: Node) => {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+          const frag = document.createDocumentFragment();
+          for (const ch of node.textContent) {
+            const span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = ch;
+            frag.appendChild(span);
+          }
+          node.parentNode?.replaceChild(frag, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName !== 'BR') {
+          [...node.childNodes].forEach(walk);
+        }
+      };
+      walk(el);
+    }
+
+    function pullUp(targets: NodeListOf<Element> | Element[], opts: { delay?: number; trigger?: Element | null } = {}) {
+      gsap.fromTo(
+        targets,
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: 'power4.out',
+          stagger: 0.08,
+          delay: opts.delay ?? 0,
+          ...(opts.trigger
+            ? { scrollTrigger: { trigger: opts.trigger, start: 'top 82%', once: true } }
+            : {}),
+        }
+      );
+    }
+
+    // ============================================
+    // DATA PAINTING 3D — IZAYOIの文脈を学習した色彩を、実3Dメッシュの波で
+    // （Refik Anadol "Unsupervised" へのオマージュ。
+    //   学習データ = 広島もみじの朱・瀬戸内の藍・十六夜の月光の金・墨）
+    // ============================================
+    const paintCanvas = document.getElementById('dataPaint') as HTMLCanvasElement | null;
+    if (paintCanvas) {
+      const renderer = new THREE.WebGLRenderer({ canvas: paintCanvas, antialias: true });
+      renderer.setClearColor(0x0b0a09, 1);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 120);
+      camera.position.set(0, 2.3, 6);
+
+      const NOISE_GLSL = `
+        uniform float uSeed;
+        float hash(vec2 p) {
+          p = fract(p * vec2(123.34, 456.21) + uSeed);
+          p += dot(p, p + 45.32);
+          return fract(p.x * p.y);
+        }
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(
+            mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+            mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+            u.y
+          );
+        }
+        float fbm(vec2 p) {
+          float v = 0.0;
+          float a = 0.5;
+          for (int i = 0; i < 5; i++) {
+            v += a * noise(p);
+            p = p * 2.03 + vec2(1.7, 9.2);
+            a *= 0.55;
+          }
+          return v;
+        }
+      `;
+
+      // IZAYOIの文脈パレット: 墨 → 瀬戸内の藍 → 月藍 → 紅葉の朱 → 金 → 十六夜の月光
+      const PALETTE_GLSL = `
+        vec3 palette(float t) {
+          vec3 sumi   = vec3(0.043, 0.039, 0.035);
+          vec3 ai     = vec3(0.132, 0.204, 0.294);
+          vec3 tsuki  = vec3(0.416, 0.620, 0.753);
+          vec3 momiji = vec3(0.761, 0.345, 0.188);
+          vec3 kin    = vec3(0.769, 0.533, 0.235);
+          vec3 gekkou = vec3(0.910, 0.722, 0.427);
+          t = clamp(t, 0.0, 1.0);
+          if (t < 0.28) return mix(sumi, ai, t / 0.28);
+          if (t < 0.48) return mix(ai, tsuki, (t - 0.28) / 0.20);
+          if (t < 0.66) return mix(tsuki, momiji, (t - 0.48) / 0.18);
+          if (t < 0.84) return mix(momiji, kin, (t - 0.66) / 0.18);
+          return mix(kin, gekkou, (t - 0.84) / 0.16);
+        }
+      `;
+
+      const vertexShader = `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        varying float vCi;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        ${NOISE_GLSL}
+
+        float heightAt(vec2 xy, float t, out vec2 q) {
+          vec2 w = xy * 0.16;
+          w.y -= t * 1.25;
+          q = vec2(
+            fbm(w + t * 0.4 + uMouse * 0.25),
+            fbm(w + vec2(1.7, 4.6) - t * 0.3)
+          );
+          return fbm(w + 2.6 * q);
+        }
+
+        void main() {
+          vec3 pos = position;
+          float t = uTime * 0.05;
+          float AMP = 3.6;
+
+          vec2 q;
+          float h = heightAt(pos.xy, t, q);
+          pos.z = (h - 0.5) * AMP;
+
+          // 解析的に滑らかな法線を求める（近傍の高さから接ベクトルを作る）
+          float e = 0.45;
+          vec2 q2;
+          float hx = heightAt(pos.xy + vec2(e, 0.0), t, q2);
+          float hy = heightAt(pos.xy + vec2(0.0, e), t, q2);
+          vec3 ta = vec3(e, 0.0, (hx - h) * AMP);
+          vec3 tb = vec3(0.0, e, (hy - h) * AMP);
+          vNormal = normalize(mat3(modelMatrix) * normalize(cross(ta, tb)));
+
+          vCi = h * 1.05 - 0.15 + 0.45 * (q.x - q.y);
+          vec4 wp = modelMatrix * vec4(pos, 1.0);
+          vWorldPos = wp.xyz;
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `;
+
+      const fragmentShader = `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        varying float vCi;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        ${NOISE_GLSL}
+        ${PALETTE_GLSL}
+        void main() {
+          vec3 n = normalize(vNormal);
+          if (n.y < 0.0) n = -n;
+
+          vec3 lightDir = normalize(vec3(-0.4 + uMouse.x * 0.5, 0.8, 0.35 + uMouse.y * 0.3));
+          float diff = clamp(dot(n, lightDir), 0.0, 1.0);
+          vec3 viewDir = normalize(cameraPosition - vWorldPos);
+          vec3 hv = normalize(lightDir + viewDir);
+          float spec = pow(clamp(dot(n, hv), 0.0, 1.0), 30.0);
+
+          float detail = fbm(vWorldPos.xz * 0.9 + uTime * 0.03) * 0.14;
+          vec3 base = palette(clamp(vCi + detail, 0.0, 1.0));
+          vec3 gekkou = vec3(0.910, 0.722, 0.427);
+          vec3 col = base * (0.32 + 0.8 * diff) + gekkou * spec * 0.7;
+
+          // 距離フォグ: 奥は墨の靄に沈む
+          float dist = length(cameraPosition - vWorldPos);
+          float fog = 1.0 - exp(-max(dist - 5.0, 0.0) * 0.085);
+          vec3 sumi = vec3(0.055, 0.052, 0.05);
+          col = mix(col, sumi, clamp(fog, 0.0, 1.0));
+
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `;
+
+      const paintUniforms = {
+        uTime: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uSeed: { value: Math.random() * 100 },
+      };
+
+      const material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: paintUniforms,
+      });
+
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(46, 30, 260, 170), material);
+      plane.rotation.x = -Math.PI / 2;
+      plane.position.set(0, 0, -10);
+      scene.add(plane);
+
+      function resizePaint() {
+        const dpr = Math.min(window.devicePixelRatio, 1.5);
+        const w = paintCanvas!.clientWidth;
+        const h = paintCanvas!.clientHeight;
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      resizePaint();
+      window.addEventListener('resize', resizePaint);
+
+      let mx = 0, my = 0, emx = 0, emy = 0;
+      window.addEventListener('pointermove', (e) => {
+        mx = (e.clientX / window.innerWidth - 0.5) * 2.0;
+        my = (e.clientY / window.innerHeight - 0.5) * 2.0;
+      });
+
+      const start = performance.now();
+      function paintFrame() {
+        const t = (performance.now() - start) / 1000;
+        emx += (mx - emx) * 0.03;
+        emy += (my - emy) * 0.03;
+        paintUniforms.uTime.value = t;
+        paintUniforms.uMouse.value.set(emx, emy);
+        // カメラは波の上をゆっくり漂う
+        camera.position.x = Math.sin(t * 0.07) * 0.5 + emx * 0.5;
+        camera.position.y = 2.3 + Math.sin(t * 0.11) * 0.12 - emy * 0.2;
+        camera.lookAt(0, 0.1, -13);
+        renderer.render(scene, camera);
+        if (!reduceMotion) requestAnimationFrame(paintFrame);
+      }
+      paintFrame();
+    }
+
+    if (!reduceMotion) {
+      // HERO: タイトル語プルアップ + 説明/CTAフェード
+      pullUp(document.querySelectorAll('#labTitle .word'));
+      gsap.fromTo('#labDesc', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: 'expo.out' });
+      gsap.fromTo('#labCta', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.7, ease: 'expo.out' });
+
+      // ABOUT: 見出し語プルアップ
+      const labHeading = document.getElementById('labHeading');
+      if (labHeading) {
+        splitWords(labHeading);
+        pullUp(labHeading.querySelectorAll('.word'), { trigger: labHeading });
+      }
+
+      // ABOUT: 本文の文字単位スクロールリビール（opacity 0.2 → 1）
+      const labBody = document.getElementById('labBody');
+      if (labBody) {
+        splitChars(labBody);
+        gsap.to(labBody.querySelectorAll('.char'), {
+          opacity: 1,
+          ease: 'none',
+          stagger: 0.3,
+          scrollTrigger: { trigger: labBody, start: 'top 80%', end: 'bottom 20%', scrub: 0.4 },
+        });
+      }
+
+      // APPS: 見出し語プルアップ + 各アプリ名のプルアップ
+      const featHeading = document.getElementById('featHeading');
+      if (featHeading) {
+        splitWords(featHeading);
+        pullUp(featHeading.querySelectorAll('.word'), { trigger: featHeading });
+      }
+
+      document.querySelectorAll('.app-sec').forEach((sec) => {
+        const name = sec.querySelector('.app-sec__name');
+        if (name) {
+          splitWords(name);
+          pullUp(name.querySelectorAll('.word'), { trigger: sec });
+        }
+      });
+
+      // GALLERY: 横スクロールのピン留め（デスクトップのみ）
+      const track = document.getElementById('galleryTrack');
+      if (track) {
+        const mm = gsap.matchMedia();
+        mm.add('(min-width: 900px)', () => {
+          gsap.to(track, {
+            x: () => -(track.scrollWidth - window.innerWidth + 48),
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.gallery',
+              start: 'top top',
+              end: () => `+=${track.scrollWidth - window.innerWidth + 48}`,
+              pin: true,
+              scrub: 0.5,
+              invalidateOnRefresh: true,
+            },
+          });
+        });
+      }
+    }
+  </script>
+</Base>

@@ -1,0 +1,430 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'AI活用支援 — IZAYOI LLC',
+  description: '生成AIをマーケティングと業務の両面で「現場で使える形」に。SNS運用×AI、AI画像・動画生成、業務効率化、AI内製化研修まで、広島のIZAYOIが伴走支援します。',
+  url: 'https://izayoi-hiroshima.com/ai',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'IZAYOI LLC',
+    url: 'https://izayoi-hiroshima.com',
+  },
+  provider: {
+    '@type': 'Organization',
+    name: 'IZAYOI合同会社',
+  },
+};
+
+const THEMES = [
+  {
+    id: 'sns-ai',
+    title: 'SNS運用 × AI',
+    desc: '投稿企画・台本・キャプションの下書きをAIで量産し、人は「磨き」と「判断」に集中する運用体制を構築。コメントやインサイトの分析もAIに任せ、伸びる理由を言語化しながら回します。',
+  },
+  {
+    id: 'gen',
+    title: 'AI画像・動画生成',
+    desc: '広告クリエイティブ、商品ビジュアル、Web背景映像、ブランドムービー。30以上の生成モデルを用途で使い分け、アートディレクションを掛けて「使える品質」まで仕上げます。',
+  },
+  {
+    id: 'content',
+    title: 'コンテンツ制作の自動化',
+    desc: 'ブログ・コラム記事、メルマガ、企画書の初稿づくりをAIワークフロー化。トーン&マナーを学習させ、ブランドの声を保ったまま制作量を数倍にします。',
+  },
+  {
+    id: 'line',
+    title: 'LINE構築・CRM',
+    desc: 'LINE公式アカウントの設計から、リッチメニュー・自動応答・セグメント配信まで。AIチャット対応を組み込み、顧客対応の質とスピードを両立させます。',
+  },
+  {
+    id: 'meo',
+    title: 'MEO・ローカル集客',
+    desc: 'Googleビジネスプロフィールの投稿・口コミ返信・写真運用をAIで効率化。地域検索での露出を伸ばし、「近くのお店」で選ばれる状態を作ります。',
+  },
+  {
+    id: 'report',
+    title: 'レポート・分析の自動化',
+    desc: 'SNS・広告・売上データの集計と月次レポート作成を自動化。数字を集める時間をゼロに近づけ、打ち手を考える時間に変えます。',
+  },
+  {
+    id: 'ops',
+    title: '業務効率化・自動化',
+    desc: '議事録の自動作成、請求・見積の定型化、スケジュール調整、社内FAQ。日々の「地味に時間を食う仕事」からAIワークフローに置き換えていきます。',
+  },
+  {
+    id: 'training',
+    title: 'AI内製化・研修',
+    desc: 'ChatGPT・Claude等を社内で使いこなせる状態まで伴走。プロンプトの型、業務ごとの活用レシピ、運用ルールの整備まで含めた定着支援です。',
+  },
+];
+
+const REASONS = [
+  {
+    title: '自分たちが毎日使っている',
+    desc: 'このサイトの映像もビジュアルも、実務のレポートも生成AI。売る前に、まず自分たちの現場で使い倒しているのが私たちです。',
+  },
+  {
+    title: 'マーケティングに直結する',
+    desc: 'SNS運用・Web制作・動画制作の会社だからこそ、AIを「集客と売上につながる形」で設計できます。ツール導入で終わらせません。',
+  },
+  {
+    title: '開発まで一気通貫',
+    desc: '既製ツールで足りなければ、自社SaaSを運営する開発チームがワークフローやアプリごと作ります。提案から実装まで窓口はひとつ。',
+  },
+];
+
+const PAINS = [
+  '生成AIを業務に活かしたいが、何から始めるべきか分からない',
+  'ChatGPTを契約したが、一部の社員しか使っていない',
+  'SNSやWebの運用に人手が回っていない',
+  '毎月のレポート作成に時間を取られている',
+  '問い合わせ対応や定型業務を自動化したい',
+  'ツールの導入だけでなく、定着まで伴走してほしい',
+];
+
+const FLOW = [
+  { step: '01', title: '30分無料相談', desc: '現状の課題やお困りごとを、オンラインで気軽にお聞かせください。' },
+  { step: '02', title: '現状整理・診断', desc: '業務フローとマーケティングの現状を拝見し、AIが効く場所を整理します。' },
+  { step: '03', title: 'テーマ選定・小さく検証', desc: '効果の出やすいテーマから優先順位をつけ、小さく試して手応えを確認します。' },
+  { step: '04', title: '設計・実装', desc: 'ワークフローの設計、ツールの整備、必要ならシステム開発まで実行します。' },
+  { step: '05', title: '定着・改善の伴走', desc: '使われ続ける状態まで運用ルールと研修で支え、月次で改善を回します。' },
+];
+---
+
+<Base
+  title="AI活用支援 — IZAYOI LLC"
+  description="生成AIをマーケティングと業務の両面で「現場で使える形」に。SNS運用×AI、AI画像・動画生成、業務効率化、AI内製化研修まで伴走支援します。"
+  jsonLd={jsonLd}
+>
+  <style>
+    /* ============================================
+       PAGE HERO — 左寄せ（TSUQREA型）
+       ============================================ */
+    .ai-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: calc(var(--space-2xl) + 40px) var(--gutter) var(--space-l);
+      position: relative;
+    }
+
+    .ai-hero__eyebrow {
+      font-size: clamp(10px, 1.2vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-s);
+    }
+
+    .ai-hero__title {
+      font-size: clamp(34px, 5vw, 60px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: clamp(14px, 1.8vw, 22px);
+    }
+
+    .ai-hero__statement {
+      font-size: clamp(19px, 2.4vw, 30px);
+      font-weight: 700;
+      line-height: 1.6;
+      margin-bottom: clamp(18px, 2.4vw, 30px);
+    }
+
+    .ai-hero__desc {
+      font-size: clamp(13px, 1.25vw, 15px);
+      color: var(--text-secondary);
+      line-height: 2.05;
+      max-width: 720px;
+    }
+
+    .ai-hero__desc + .ai-hero__desc { margin-top: 1em; }
+
+    .ai-hero__cta { margin-top: var(--space-m); }
+
+    /* ============================================
+       SECTIONS
+       ============================================ */
+    .ai-sec {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-l) var(--gutter);
+      overflow: visible;
+    }
+
+    .ai-sec--full { max-width: none; background: var(--bg-secondary); }
+    .ai-sec--full > .ai-sec__inner { max-width: 1200px; margin: 0 auto; }
+
+    .ai-sec__title {
+      font-size: clamp(22px, 3vw, 36px);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: clamp(10px, 1.4vw, 16px);
+    }
+
+    .ai-sec__lede {
+      font-size: clamp(12.5px, 1.2vw, 14.5px);
+      color: var(--text-secondary);
+      line-height: 2;
+      max-width: 640px;
+      margin-bottom: var(--space-m);
+    }
+
+    /* テーマ8カード */
+    .ai-themes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: clamp(10px, 1.4vw, 16px);
+    }
+
+    @media (min-width: 900px) { .ai-themes { grid-template-columns: repeat(2, 1fr); } }
+
+    /* 違う理由 3カード */
+    .ai-reasons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: clamp(10px, 1.4vw, 16px);
+    }
+
+    .reason-card {
+      border-top: 1px solid var(--text-primary);
+      padding-top: clamp(14px, 1.8vw, 20px);
+    }
+
+    .reason-card__num {
+      font-size: clamp(11px, 1vw, 12px);
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .reason-card__title {
+      font-size: clamp(16px, 1.6vw, 20px);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .reason-card__desc {
+      font-size: clamp(12.5px, 1.1vw, 14px);
+      color: var(--text-secondary);
+      line-height: 1.95;
+    }
+
+    /* こんな企業に */
+    .ai-pains {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(20px, 2.6vw, 36px);
+    }
+
+    .ai-pains ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: 12px clamp(16px, 2.5vw, 40px);
+    }
+
+    .ai-pains li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: clamp(12.5px, 1.15vw, 14px);
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .ai-pains li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 7px;
+      height: 7px;
+      margin-top: 9px;
+      border-radius: 50%;
+      background: var(--accent-secondary);
+    }
+
+    /* ご支援の流れ（縦ステップ） */
+    .ai-flow__list {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .flow__item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: clamp(14px, 2vw, 24px);
+      padding: clamp(18px, 2vw, 26px) 0;
+    }
+
+    .flow__item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 27px;
+      top: calc(clamp(18px, 2vw, 26px) + 56px);
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .flow__num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      transition: background 0.45s ease, color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+    }
+
+    .flow__title {
+      font-size: clamp(15px, 1.5vw, 18px);
+      font-weight: 700;
+      margin-bottom: 4px;
+      padding-top: 4px;
+      color: var(--text-muted);
+      transition: color 0.45s ease;
+    }
+
+    .flow__desc {
+      font-size: clamp(12.5px, 1.15vw, 14px);
+      color: var(--text-muted);
+      line-height: 1.8;
+      transition: color 0.45s ease;
+    }
+
+    .flow__item.is-active .flow__num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 0 6px var(--accent-glow);
+    }
+
+    .flow__item.is-active .flow__title { color: var(--text-primary); }
+    .flow__item.is-active .flow__desc { color: var(--text-secondary); }
+  </style>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="ai-hero">
+    <span class="watermark" aria-hidden="true">AI</span>
+    <p class="ai-hero__eyebrow hero-anim">AI Support</p>
+    <h1 class="ai-hero__title hero-anim">AI活用支援</h1>
+    <p class="ai-hero__statement hero-anim">
+      生成AIを、現場で使える業務改善と<br />新しい集客のかたちへつなげます。
+    </p>
+    <p class="ai-hero__desc hero-anim">
+      生成AIは、一時的な話題のツールではなく、仕事の進め方そのものを見直すための選択肢になっています。
+      一方で実際の現場では、どの業務に使うべきか、どこまで自動化すべきか、既存の仕事にどう組み込むべきかが
+      整理できないまま、活用が進まないケースが少なくありません。
+    </p>
+    <p class="ai-hero__desc hero-anim">
+      IZAYOIは、SNS運用・Web・映像の制作現場で自ら生成AIを使い倒しているマーケティング会社です。
+      その実践知をもとに、導入すること自体を目的にせず、集客・売上・業務負荷の削減という
+      「実際の成果」につながる形でAI活用を設計し、定着まで伴走します。
+    </p>
+    <div class="ai-hero__cta hero-anim">
+      <a href="/#contact" class="btn-dark">30分無料相談を予約 →</a>
+    </div>
+  </section>
+
+  <!-- ===== 主な対応領域 ===== -->
+  <section class="ai-sec" id="themes">
+    <span class="watermark" aria-hidden="true">THEMES</span>
+    <h2 class="ai-sec__title reveal">主な対応領域</h2>
+    <p class="ai-sec__lede reveal">
+      マーケティングと日々の業務、両方の側面からテーマをご用意しています。気になるところから、そのままご相談ください。
+    </p>
+    <div class="ai-themes reveal-stagger">
+      {THEMES.map((t) => (
+        <div class="tile reveal" id={t.id}>
+          <h3 class="tile__title"><span class="tile__arrow">→</span>{t.title}</h3>
+          <p class="tile__desc">{t.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ===== IZAYOIのAI支援が違う理由 ===== -->
+  <section class="ai-sec" id="why">
+    <span class="watermark" aria-hidden="true">WHY US</span>
+    <h2 class="ai-sec__title reveal">IZAYOIのAI支援が違う理由</h2>
+    <p class="ai-sec__lede reveal">
+      コンサルでも、ツール販売でもありません。「作って、使って、成果を出す」会社としての支援です。
+    </p>
+    <div class="ai-reasons reveal-stagger">
+      {REASONS.map((r, i) => (
+        <div class="reason-card reveal">
+          <p class="reason-card__num">0{i + 1}</p>
+          <h3 class="reason-card__title">{r.title}</h3>
+          <p class="reason-card__desc">{r.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ===== こんな企業に ===== -->
+  <section class="ai-sec" id="pains">
+    <h2 class="ai-sec__title reveal">こんな企業に</h2>
+    <div class="ai-pains reveal">
+      <ul>
+        {PAINS.map((p) => <li>{p}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== ご支援の流れ ===== -->
+  <section class="ai-sec ai-sec--full" id="flow">
+    <div class="ai-sec__inner">
+      <span class="watermark" aria-hidden="true">FLOW</span>
+      <h2 class="ai-sec__title reveal">ご支援のイメージ</h2>
+      <p class="ai-sec__lede reveal">
+        いきなり大きく導入せず、小さく試して確かめながら進めます。
+      </p>
+      <div class="ai-flow__list reveal-stagger">
+        {FLOW.map((f) => (
+          <div class="flow__item reveal">
+            <div class="flow__num">{f.step}</div>
+            <div>
+              <h3 class="flow__title">{f.title}</h3>
+              <p class="flow__desc">{f.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT CTA ===== -->
+  <ContactCTA sub="「うちの業務だとどこから？」の段階から、お気軽にどうぞ。" />
+
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ご支援の流れ: スクロール位置と連動してステップが点灯
+    gsap.utils.toArray<HTMLElement>('.flow__item').forEach((item) => {
+      ScrollTrigger.create({
+        trigger: item,
+        start: 'top 60%',
+        end: 'bottom 35%',
+        toggleClass: { targets: item, className: 'is-active' },
+      });
+    });
+  </script>
+</Base>
