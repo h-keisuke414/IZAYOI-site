@@ -1,0 +1,730 @@
+---
+import Base from '../layouts/Base.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '実績 — IZAYOI ORBIT',
+  description: 'IZAYOIの実績を、地球を周回しながら巡るインタラクティブ・ショーケース。自社プロダクトとクライアントワーク。',
+  url: 'https://izayoi-hiroshima.com/works',
+  provider: { '@type': 'Organization', name: 'IZAYOI合同会社' },
+};
+
+// 章 = 軌道上のウェイポイント
+const CHAPTERS = [
+  {
+    num: '01',
+    en: 'File Sharing SaaS',
+    title: 'Rheo',
+    desc: '制作現場のためのファイル便。大容量ファイルの受け渡しとクライアントレビューを、ひとつのリンクで。有料プランで商用運用中の自社SaaSです。',
+    checks: ['共有URL発行', 'レビュー・コメント', '商用運用中'],
+    link: { label: 'プロダクト詳細 →', href: '/products/rheo' },
+    side: 'left',
+  },
+  {
+    num: '02',
+    en: 'SNS Operations',
+    title: 'IZAYOI Hub',
+    desc: 'SNS運用チームの司令塔。投稿の企画から承認、実績の蓄積までを1画面で回す進行管理アプリ。自社の運用現場で毎日使いながら育てています。',
+    checks: ['進行・承認フロー', 'レポート自動集計', '複数アカウント管理'],
+    link: { label: 'プロダクト詳細 →', href: '/products/izayoi-hub' },
+    side: 'right',
+  },
+  {
+    num: '03',
+    en: 'AI × Trainer Meal Coaching',
+    title: 'RELIFE',
+    desc: 'AIが解析し、プロトレーナーが必ず確認する食事管理。LINEだけで完結する体験を、ジムの現場と一緒に磨いている実運用中のサービスです。',
+    checks: ['写真1枚でAI解析', 'プロが必ず確認', 'LINE完結'],
+    link: { label: 'プロダクト詳細 →', href: '/products/relife' },
+    side: 'left',
+  },
+  {
+    num: '04',
+    en: 'Client Works',
+    title: 'クライアントワーク',
+    desc: '広島の飲食・美容・不動産・EC・アパレルなど多業種で、SNS運用・HP制作・動画制作を伴走しています。掲載許可の取れた事例から順次公開予定です。',
+    checks: ['SNS運用・AIOS', 'HP・Web制作', '動画制作'],
+    link: { label: '事業内容を見る →', href: '/services' },
+    side: 'right',
+  },
+];
+---
+
+<Base
+  title="実績 — IZAYOI ORBIT"
+  description="IZAYOIの実績を、地球を周回しながら巡るインタラクティブ・ショーケース。"
+  jsonLd={jsonLd}
+>
+  <style>
+    /* このページは共通ナビを隠し、ピルナビに置き換える（ラボと同様） */
+    :global(.nav),
+    :global(.nav__mobile) { display: none !important; }
+
+    .orbit {
+      --cream: #E1E0CC;
+      --cream-2: #DEDBC8;
+      background: #000;
+      position: relative;
+    }
+
+    .orbit-nav {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 3.5vw, 56px);
+      background: #000;
+      border-radius: 0 0 clamp(16px, 1.8vw, 24px) clamp(16px, 1.8vw, 24px);
+      padding: clamp(8px, 1vw, 12px) clamp(16px, 2.4vw, 32px);
+      white-space: nowrap;
+    }
+
+    .orbit-nav a {
+      color: rgba(225, 224, 204, 0.8);
+      font-size: clamp(10px, 1vw, 14px);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: color 0.3s ease;
+    }
+
+    .orbit-nav a:hover { color: var(--cream); }
+
+    /* 3D舞台（固定・背景） */
+    .orbit-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 章カード表示中に3D背景を沈める暗幕（JSがスクロールで制御） */
+    .orbit-dim {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 実況HUD */
+    .orbit-hud {
+      position: fixed;
+      left: clamp(16px, 2.4vw, 40px);
+      bottom: clamp(16px, 2.4vw, 36px);
+      z-index: 20;
+      color: rgba(225, 224, 204, 0.6);
+      font-size: clamp(10px, 0.95vw, 12px);
+      letter-spacing: 0.06em;
+      line-height: 1.9;
+      max-width: min(420px, 60vw);
+    }
+
+    .orbit-hud strong { color: var(--cream); font-weight: 700; }
+
+    /* コンテンツ（オーバーレイ章） */
+    .orbit-flow { position: relative; z-index: 10; }
+
+    .orbit-sec {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      padding: var(--space-l) clamp(20px, 5vw, 72px);
+    }
+
+    .orbit-sec--right { justify-content: flex-end; }
+    .orbit-sec--center { justify-content: center; text-align: center; }
+
+    /* イントロ */
+    .orbit-intro__eyebrow {
+      color: var(--cream-2);
+      font-size: clamp(10px, 1.1vw, 13px);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: clamp(14px, 2vw, 22px);
+    }
+
+    .orbit-intro__title {
+      color: var(--cream);
+      font-family: 'Almarai', 'Inter', sans-serif;
+      font-size: clamp(52px, 11vw, 160px);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      margin-bottom: clamp(14px, 2vw, 24px);
+    }
+
+    .orbit-intro__lead {
+      color: rgba(225, 224, 204, 0.7);
+      font-size: clamp(12.5px, 1.25vw, 15.5px);
+      line-height: 2.1;
+      max-width: 560px;
+      margin: 0 auto clamp(20px, 3vw, 32px);
+    }
+
+    .orbit-intro__scroll {
+      color: rgba(225, 224, 204, 0.45);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    /* 章カード（黒ガラス） */
+    .orbit-card {
+      width: min(460px, 88vw);
+      background: rgba(10, 10, 9, 0.62);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(225, 224, 204, 0.16);
+      border-radius: 18px;
+      padding: clamp(24px, 3vw, 40px);
+    }
+
+    .orbit-card__num {
+      color: var(--cream-2);
+      font-size: clamp(10px, 1vw, 12px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: clamp(10px, 1.4vw, 16px);
+    }
+
+    .orbit-card__title {
+      color: var(--cream);
+      font-family: 'Almarai', 'Inter', sans-serif;
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: clamp(10px, 1.4vw, 16px);
+    }
+
+    .orbit-card__desc {
+      color: #9C9C94;
+      font-size: clamp(12.5px, 1.15vw, 14.5px);
+      line-height: 2.05;
+      margin-bottom: clamp(14px, 1.8vw, 20px);
+    }
+
+    .orbit-card__checks {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: clamp(16px, 2vw, 24px);
+    }
+
+    .orbit-card__checks li {
+      color: var(--cream-2);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(225, 224, 204, 0.28);
+      border-radius: 100px;
+      padding: 4px 12px;
+    }
+
+    .orbit-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cream);
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      transition: gap 0.3s ease;
+    }
+
+    .orbit-card__link:hover { gap: 14px; }
+
+    /* フィナーレ */
+    .orbit-finale__title {
+      color: var(--cream);
+      font-size: clamp(26px, 3.8vw, 52px);
+      font-weight: 800;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      margin-bottom: clamp(16px, 2.4vw, 28px);
+    }
+
+    .orbit-finale__cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(18px, 2.4vw, 32px) clamp(34px, 4.4vw, 60px);
+      border: 1px solid #fff;
+      border-radius: 100%;
+      color: #fff;
+      font-family: 'Italiana', serif;
+      font-size: clamp(14px, 1.6vw, 21px);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      background: rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .orbit-finale__cta:hover { background: rgba(255, 255, 255, 0.12); transform: scale(1.04); }
+
+    /* リビール */
+    .orbit-reveal { opacity: 0; transform: translateY(34px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .orbit-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* モバイル・reduce-motion: 3Dなしの静的フォールバック */
+    @media (prefers-reduced-motion: reduce) {
+      .orbit-canvas { display: none; }
+      .orbit { background: radial-gradient(70vw 60vh at 50% 30%, #10131C, #000); }
+      .orbit-reveal { opacity: 1; transform: none; }
+    }
+  </style>
+
+  <div class="orbit">
+    <nav class="orbit-nav" aria-label="実績ページナビゲーション">
+      <a href="/">ホーム</a>
+      <a href="/ai">AI導入支援</a>
+      <a href="/services">サービス</a>
+      <a href="/products">プロダクト</a>
+      <a href="/contact">お問い合わせ</a>
+    </nav>
+
+    <canvas class="orbit-canvas" id="orbitCanvas" aria-hidden="true"></canvas>
+    <div class="orbit-dim" id="orbitDim" aria-hidden="true"></div>
+
+    <p class="orbit-hud" id="orbitHud" aria-live="off">
+      <strong>EARTH — LIVE</strong><br />
+      <span id="orbitHudData">広島の実況データを取得中…</span><br />
+      出典: 気象庁 アメダス（広島）
+    </p>
+
+    <div class="orbit-flow">
+      <!-- 章0: イントロ -->
+      <section class="orbit-sec orbit-sec--center">
+        <div class="orbit-intro orbit-reveal">
+          <p class="orbit-intro__eyebrow">IZAYOI Works Showcase</p>
+          <h1 class="orbit-intro__title">ORBIT</h1>
+          <p class="orbit-intro__scroll">Scroll to Launch ↓</p>
+        </div>
+      </section>
+
+      <!-- 章1〜4 -->
+      {CHAPTERS.map((c) => (
+        <section class={`orbit-sec ${c.side === 'right' ? 'orbit-sec--right' : ''}`}>
+          <div class="orbit-card orbit-reveal">
+            <p class="orbit-card__num">{c.num} — {c.en}</p>
+            <h2 class="orbit-card__title">{c.title}</h2>
+            <p class="orbit-card__desc">{c.desc}</p>
+            <ul class="orbit-card__checks">
+              {c.checks.map((k) => <li>{k}</li>)}
+            </ul>
+            <a href={c.link.href} class="orbit-card__link">{c.link.label}</a>
+          </div>
+        </section>
+      ))}
+
+      <!-- フィナーレ -->
+      <section class="orbit-sec orbit-sec--center">
+        <div class="orbit-finale orbit-reveal">
+          <p class="orbit-card__num">Next Chapter</p>
+          <h2 class="orbit-finale__title">
+            あなたのブランドが、<br />次の章です。
+          </h2>
+          <a href="/contact" class="orbit-finale__cta">Get in Touch</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    import * as THREE from 'three';
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+    gsap.registerPlugin(ScrollTrigger);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ===== 章カード表示中は3D背景を沈める（イントロとフィナーレでは晴らす） =====
+    if (!reduceMotion) {
+      const dimTl = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: { trigger: '.orbit-flow', start: 'top top', end: 'bottom bottom', scrub: true },
+      });
+      dimTl
+        .to('#orbitDim', { opacity: 0.62, duration: 0.1 }, 0.08)
+        .to('#orbitDim', { opacity: 0.62, duration: 0.64 }, 0.18)
+        .to('#orbitDim', { opacity: 0.18, duration: 0.14 }, 0.84);
+    }
+
+    // ===== 章カードのリビール =====
+    document.querySelectorAll('.orbit-reveal').forEach((el) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 76%',
+        onEnter: () => el.classList.add('visible'),
+        once: true,
+      });
+    });
+
+    // ===== 実況HUD（気象庁アメダス・広島67437） =====
+    (async () => {
+      const out = document.getElementById('orbitHudData');
+      if (!out) return;
+      try {
+        const latest = (await (await fetch('https://www.jma.go.jp/bosai/amedas/data/latest_time.txt')).text()).trim();
+        const d = new Date(latest);
+        const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+        const h3 = String(Math.floor(d.getHours() / 3) * 3).padStart(2, '0');
+        const res = await fetch(`https://www.jma.go.jp/bosai/amedas/data/point/67437/${ymd}_${h3}.json`);
+        const json = await res.json();
+        const keys = Object.keys(json).sort();
+        const last = json[keys[keys.length - 1]];
+        const parts: string[] = [];
+        if (last?.temp?.[0] != null) parts.push(`気温 ${last.temp[0].toFixed(1)}°C`);
+        if (last?.wind?.[0] != null) parts.push(`風速 ${last.wind[0].toFixed(1)} m/s`);
+        if (last?.humidity?.[0] != null) parts.push(`湿度 ${last.humidity[0]}%`);
+        if (last?.precipitation1h?.[0] != null) parts.push(`降水 ${last.precipitation1h[0]} mm/h`);
+        const hh = keys[keys.length - 1].slice(8, 10);
+        const mm = keys[keys.length - 1].slice(10, 12);
+        out.textContent = `${parts.join(' ・ ')}（${hh}:${mm} JST 実況）`;
+      } catch {
+        out.textContent = '実況データは本番環境で表示されます';
+      }
+    })();
+
+    // ===== 3Dシーン（地球＋宇宙船） =====
+    const canvas = document.getElementById('orbitCanvas') as HTMLCanvasElement | null;
+    const isNarrow = window.matchMedia('(max-width: 860px)').matches;
+
+    if (canvas && !reduceMotion) {
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer.setClearColor(0x000000, 1);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 300);
+
+      const R = 10; // 地球半径
+      camera.position.set(0, R * 0.35, R * 3.1);
+
+      // --- ライティング（太陽＋宇宙の環境光） ---
+      const sun = new THREE.DirectionalLight(0xfff4e0, 2.6);
+      sun.position.set(-R * 4, R * 1.6, R * 2.4);
+      scene.add(sun);
+      scene.add(new THREE.AmbientLight(0x223344, 0.55));
+
+      // --- 星空（背景） ---
+      const starGeo = new THREE.BufferGeometry();
+      const STAR_N = 1600;
+      const starPos = new Float32Array(STAR_N * 3);
+      for (let i = 0; i < STAR_N; i++) {
+        const r = 160 + Math.random() * 60;
+        const th = Math.random() * Math.PI * 2;
+        const ph = Math.acos(Math.random() * 2 - 1);
+        starPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+        starPos[i * 3 + 1] = r * Math.cos(ph);
+        starPos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+      }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+      scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xddddcc, size: 0.35, sizeAttenuation: true, transparent: true, opacity: 0.85 })));
+
+      // --- 地球（実テクスチャ） ---
+      const loader = new THREE.TextureLoader();
+      const dayTex = loader.load('/img/earth/earth_atmos_2048.jpg');
+      const normalTex = loader.load('/img/earth/earth_normal_2048.jpg');
+      const lightsTex = loader.load('/img/earth/earth_lights_2048.png');
+      const cloudsTex = loader.load('/img/earth/earth_clouds_1024.png');
+      dayTex.colorSpace = THREE.SRGBColorSpace;
+      lightsTex.colorSpace = THREE.SRGBColorSpace;
+
+      const earth = new THREE.Mesh(
+        new THREE.SphereGeometry(R, 96, 96),
+        new THREE.MeshStandardMaterial({
+          map: dayTex,
+          normalMap: normalTex,
+          normalScale: new THREE.Vector2(0.7, 0.7),
+          roughness: 0.9,
+          metalness: 0.0,
+        })
+      );
+      scene.add(earth);
+
+      // 夜の街明かり（加算・控えめ）
+      const nightLights = new THREE.Mesh(
+        new THREE.SphereGeometry(R * 1.001, 96, 96),
+        new THREE.MeshBasicMaterial({ map: lightsTex, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.5, depthWrite: false })
+      );
+      scene.add(nightLights);
+
+      // 雲レイヤー
+      const clouds = new THREE.Mesh(
+        new THREE.SphereGeometry(R * 1.012, 96, 96),
+        new THREE.MeshStandardMaterial({ map: cloudsTex, transparent: true, opacity: 0.5, depthWrite: false, roughness: 1 })
+      );
+      scene.add(clouds);
+
+      // 大気のフレネル発光（裏面描画）
+      const atmosphere = new THREE.Mesh(
+        new THREE.SphereGeometry(R * 1.06, 96, 96),
+        new THREE.ShaderMaterial({
+          side: THREE.BackSide,
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          vertexShader: `
+            varying vec3 vNormal;
+            void main() {
+              vNormal = normalize(normalMatrix * normal);
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+          fragmentShader: `
+            varying vec3 vNormal;
+            void main() {
+              float glow = pow(0.72 - dot(vNormal, vec3(0.0, 0.0, -1.0)), 3.5);
+              vec3 blue = vec3(0.32, 0.55, 0.85);
+              vec3 gold = vec3(0.91, 0.72, 0.43);
+              gl_FragColor = vec4(mix(blue, gold, 0.22) * glow, glow * 0.9);
+            }
+          `,
+        })
+      );
+      scene.add(atmosphere);
+
+      // --- ロケット（精密プリミティブ造形・機首=X+） ---
+      const ship = new THREE.Group();
+      const hullCream = new THREE.MeshStandardMaterial({ color: 0xe9e7da, roughness: 0.38, metalness: 0.3 });
+      const hullDark = new THREE.MeshStandardMaterial({ color: 0x23211d, roughness: 0.35, metalness: 0.8 });
+      const aoMat = new THREE.MeshStandardMaterial({ color: 0x5b9bb5, roughness: 0.3, metalness: 0.6 });
+      const nozzleMat = new THREE.MeshStandardMaterial({ color: 0x14120f, roughness: 0.25, metalness: 0.95 });
+      const winMat = new THREE.MeshStandardMaterial({ color: 0x0a0c10, emissive: 0xbfe3ff, emissiveIntensity: 1.6, roughness: 0.2, metalness: 0.2 });
+
+      const alongX = (m: THREE.Mesh) => { m.rotation.z = Math.PI / 2; return m; };
+
+      // 主胴体（2段）＋ノーズ
+      const bodyMain = alongX(new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 1.45, 32), hullCream));
+      bodyMain.position.x = -0.15;
+      ship.add(bodyMain);
+      const bodyFwd = alongX(new THREE.Mesh(new THREE.CylinderGeometry(0.155, 0.17, 0.5, 32), hullCream));
+      bodyFwd.position.x = 0.82;
+      ship.add(bodyFwd);
+      const nose = alongX(new THREE.Mesh(new THREE.ConeGeometry(0.155, 0.58, 32), hullCream));
+      nose.rotation.z = -Math.PI / 2;
+      nose.position.x = 1.36;
+      ship.add(nose);
+      const tip = alongX(new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.16, 16), hullDark));
+      tip.rotation.z = -Math.PI / 2;
+      tip.position.x = 1.62;
+      ship.add(tip);
+
+      // 段間の帯リング（ダーク）＋浅葱のブランドリング
+      for (const [x, r, mat] of [[0.55, 0.176, hullDark], [-0.52, 0.176, hullDark], [0.32, 0.18, aoMat]] as const) {
+        const ring = alongX(new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.05, 32), mat));
+        ring.position.x = x;
+        ship.add(ring);
+      }
+
+      // 窓（発光ドット3つ・前方セクション）
+      for (let i = 0; i < 3; i++) {
+        const win = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 12), winMat);
+        win.position.set(0.92 - i * 0.14, 0.1, 0.125);
+        ship.add(win);
+      }
+
+      // RCSスラスタ（ノーズ周りに小ブロック4つ）
+      for (let i = 0; i < 4; i++) {
+        const a = (i * Math.PI) / 2 + Math.PI / 4;
+        const rcs = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.045, 0.045), hullDark);
+        rcs.position.set(1.02, Math.cos(a) * 0.15, Math.sin(a) * 0.15);
+        rcs.rotation.x = -a;
+        ship.add(rcs);
+      }
+
+      // アンテナ
+      const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.34, 8), hullDark);
+      antenna.position.set(0.55, 0.24, 0);
+      ship.add(antenna);
+
+      // 後部スカート＋メインエンジンベル＋サブノズル2基
+      const skirt = alongX(new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.19, 0.3, 32), hullDark));
+      skirt.position.x = -0.95;
+      ship.add(skirt);
+      const bell = alongX(new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.15, 0.3, 32, 1, true), nozzleMat));
+      bell.position.x = -1.24;
+      ship.add(bell);
+      for (const z of [-0.11, 0.11]) {
+        const sub = alongX(new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.06, 0.16, 20, 1, true), nozzleMat));
+        sub.position.set(-1.16, 0, z);
+        ship.add(sub);
+      }
+
+      // 後退角つきフィン4枚（Extrudeの台形・1枚は浅葱）
+      const finShape = new THREE.Shape();
+      finShape.moveTo(0.12, 0.16);
+      finShape.lineTo(-0.46, 0.16);
+      finShape.lineTo(-0.62, 0.55);
+      finShape.lineTo(-0.34, 0.52);
+      finShape.closePath();
+      const finGeo = new THREE.ExtrudeGeometry(finShape, { depth: 0.028, bevelEnabled: false });
+      finGeo.translate(0, 0, -0.014);
+      for (let i = 0; i < 4; i++) {
+        const holder = new THREE.Group();
+        const fin = new THREE.Mesh(finGeo, i === 0 ? aoMat : hullDark);
+        fin.position.x = -0.5;
+        holder.add(fin);
+        holder.rotation.x = (i * Math.PI) / 2;
+        ship.add(holder);
+      }
+
+      // エンジンプルーム（内炎＋外炎＋グロー）
+      const plumeInner = alongX(new THREE.Mesh(
+        new THREE.ConeGeometry(0.07, 0.62, 20, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0xfff4d6, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })
+      ));
+      plumeInner.rotation.z = Math.PI / 2;
+      plumeInner.position.x = -1.62;
+      ship.add(plumeInner);
+      const plumeOuter = alongX(new THREE.Mesh(
+        new THREE.ConeGeometry(0.13, 1.0, 20, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0xe8a850, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false })
+      ));
+      plumeOuter.rotation.z = Math.PI / 2;
+      plumeOuter.position.x = -1.82;
+      ship.add(plumeOuter);
+      const glowCanvas = document.createElement('canvas');
+      glowCanvas.width = glowCanvas.height = 64;
+      const gctx = glowCanvas.getContext('2d')!;
+      const grad = gctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255, 234, 190, 1)');
+      grad.addColorStop(0.4, 'rgba(232, 168, 80, 0.55)');
+      grad.addColorStop(1, 'rgba(232, 168, 80, 0)');
+      gctx.fillStyle = grad;
+      gctx.fillRect(0, 0, 64, 64);
+      const engine = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(glowCanvas), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }));
+      engine.scale.set(0.9, 0.9, 1);
+      engine.position.x = -1.35;
+      ship.add(engine);
+      const shipLight = new THREE.PointLight(0xffc476, 2.4, 8);
+      shipLight.position.x = -1.4;
+      ship.add(shipLight);
+
+      ship.userData.plumes = [plumeInner, plumeOuter];
+      ship.scale.setScalar(isNarrow ? 0.95 : 1.2);
+      scene.add(ship);
+
+      // 航跡（過去位置を結ぶフェード線）
+      const TRAIL_N = 90;
+      const trailPos = new Float32Array(TRAIL_N * 3);
+      const trailGeo = new THREE.BufferGeometry();
+      trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPos, 3));
+      const trail = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ color: 0x7fb2d0, transparent: true, opacity: 0.35 }));
+      trail.frustumCulled = false;
+      scene.add(trail);
+      let trailInit = false;
+
+      // --- 軌道パラメータ ---
+      const ORBIT_R = R * 1.62;
+      const INCLINATION = THREE.MathUtils.degToRad(26);
+      const orbitQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), INCLINATION);
+
+      function shipPosAt(angle: number, out: THREE.Vector3) {
+        out.set(Math.cos(angle) * ORBIT_R, 0, Math.sin(angle) * ORBIT_R);
+        out.applyQuaternion(orbitQuat);
+        return out;
+      }
+
+      // --- スクロール進行（0..1） ---
+      let scrollP = 0;
+      ScrollTrigger.create({
+        trigger: '.orbit-flow',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        onUpdate: (self) => { scrollP = self.progress; },
+      });
+
+      // --- ポインタ視差 ---
+      let pmx = 0, pmy = 0, epx = 0, epy = 0;
+      window.addEventListener('pointermove', (e) => {
+        pmx = (e.clientX / window.innerWidth - 0.5) * 2;
+        pmy = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio, 1.75);
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(window.innerWidth, window.innerHeight, false);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const shipPos = new THREE.Vector3();
+      const shipAhead = new THREE.Vector3();
+      const camTarget = new THREE.Vector3();
+      const start = performance.now();
+
+      function frame() {
+        const t = (performance.now() - start) / 1000;
+        epx += (pmx - epx) * 0.04;
+        epy += (pmy - epy) * 0.04;
+
+        // 地球はゆっくり自転し、スクロールでも回り込む
+        const spin = t * 0.018 + scrollP * 1.35;
+        earth.rotation.y = spin;
+        nightLights.rotation.y = spin;
+        clouds.rotation.y = spin * 1.35 + 0.4;
+
+        // 船：スクロールで軌道を進む（2.4周）＋わずかな漂い
+        const angle = -scrollP * Math.PI * 2 * 2.4 - t * 0.05;
+        shipPosAt(angle, shipPos);
+        shipPosAt(angle - 0.045, shipAhead); // 進行方向（角度が減る向き）
+        ship.position.copy(shipPos);
+        ship.lookAt(shipAhead);
+        ship.rotateY(-Math.PI / 2); // 機首をX+に合わせた造形の補正
+        ship.rotateX(Math.sin(t * 0.8) * 0.06); // 微バンク
+
+        // プルームの揺らぎ（炎らしいちらつき）
+        const plumes = ship.userData.plumes as THREE.Mesh[] | undefined;
+        if (plumes) {
+          const flicker = 1 + Math.sin(t * 42) * 0.07 + Math.sin(t * 17.3) * 0.05;
+          plumes[0].scale.set(flicker, 1 + (flicker - 1) * 0.5, flicker);
+          plumes[1].scale.set(2 - flicker, 1, 2 - flicker);
+        }
+
+        // 航跡
+        if (!trailInit) {
+          for (let i = 0; i < TRAIL_N; i++) {
+            shipPosAt(angle + i * 0.02, camTarget);
+            trailPos[i * 3] = camTarget.x;
+            trailPos[i * 3 + 1] = camTarget.y;
+            trailPos[i * 3 + 2] = camTarget.z;
+          }
+          trailInit = true;
+        } else {
+          for (let i = TRAIL_N - 1; i > 0; i--) {
+            trailPos[i * 3] = trailPos[(i - 1) * 3];
+            trailPos[i * 3 + 1] = trailPos[(i - 1) * 3 + 1];
+            trailPos[i * 3 + 2] = trailPos[(i - 1) * 3 + 2];
+          }
+          trailPos[0] = shipPos.x;
+          trailPos[1] = shipPos.y;
+          trailPos[2] = shipPos.z;
+        }
+        trailGeo.attributes.position.needsUpdate = true;
+
+        // カメラ：基本位置＋船方向へ少し寄る＋視差
+        camTarget.copy(shipPos).multiplyScalar(0.12);
+        camera.position.x = camTarget.x + epx * 1.6;
+        camera.position.y = R * 0.35 + camTarget.y * 0.6 - epy * 1.2;
+        camera.position.z = R * 3.1;
+        camera.lookAt(camTarget.x * 0.4, camTarget.y * 0.3, 0);
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(frame);
+      }
+      frame();
+    }
+  </script>
+</Base>

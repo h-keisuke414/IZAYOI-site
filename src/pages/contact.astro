@@ -1,0 +1,303 @@
+---
+import Base from '../layouts/Base.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'お問い合わせ — IZAYOI LLC',
+  description: 'IZAYOI合同会社へのお問い合わせ。AI導入支援・AIOS・HP制作・動画制作・プロダクト開発のご相談は30分無料相談から。',
+  url: 'https://izayoi-hiroshima.com/contact',
+};
+
+const TOPICS = [
+  'AI導入支援（AI導入伴走プログラム）',
+  'AIOS（SNS×LINE×MEO 統合運用）',
+  'HP・Web制作',
+  '動画制作',
+  'SaaS・アプリ開発',
+  'プロダクト（Rheo / IZAYOI Hub / RELIFE）',
+  '取材・その他',
+];
+---
+
+<Base
+  title="お問い合わせ — IZAYOI LLC"
+  description="IZAYOI合同会社へのお問い合わせ。AI導入支援・AIOS・HP制作・動画制作のご相談は30分無料相談から。"
+  jsonLd={jsonLd}
+>
+  <style>
+    .ct-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: calc(var(--space-2xl) + 40px) var(--gutter) var(--space-m);
+      position: relative;
+    }
+
+    .ct-hero__eyebrow {
+      font-size: clamp(10px, 1.2vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-s);
+    }
+
+    .ct-hero__title {
+      font-size: clamp(34px, 5vw, 60px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: var(--space-s);
+    }
+
+    .ct-hero__sub {
+      font-size: clamp(13px, 1.3vw, 16px);
+      color: var(--text-secondary);
+      line-height: 2;
+      max-width: 640px;
+    }
+
+    /* ===== フォーム ===== */
+    .ct-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 var(--gutter) var(--space-2xl);
+    }
+
+    .ct-form {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg-card);
+      padding: clamp(24px, 3.4vw, 48px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(18px, 2.2vw, 26px);
+    }
+
+    .ct-field { display: flex; flex-direction: column; gap: 8px; }
+
+    .ct-label {
+      font-size: clamp(12.5px, 1.15vw, 14px);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ct-req {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 100px;
+      padding: 2px 10px;
+    }
+
+    .ct-opt {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 2px 10px;
+    }
+
+    .ct-input,
+    .ct-select,
+    .ct-textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: clamp(14px, 1.25vw, 15.5px);
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: clamp(12px, 1.5vw, 16px) clamp(14px, 1.8vw, 18px);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      appearance: none;
+    }
+
+    .ct-input:focus,
+    .ct-select:focus,
+    .ct-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+
+    .ct-select-wrap { position: relative; }
+
+    .ct-select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--text-muted);
+      border-bottom: 2px solid var(--text-muted);
+      transform: translateY(-70%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    .ct-textarea { min-height: 180px; resize: vertical; line-height: 1.9; }
+
+    /* ハニーポット（人間には見えない） */
+    .ct-hp { position: absolute; left: -9999px; opacity: 0; height: 0; overflow: hidden; }
+
+    .ct-note {
+      font-size: clamp(11.5px, 1.05vw, 13px);
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+
+    .ct-submit-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+    .ct-submit {
+      cursor: none;
+    }
+
+    .ct-submit[disabled] { opacity: 0.55; pointer-events: none; }
+
+    .ct-status {
+      font-size: clamp(12.5px, 1.15vw, 14px);
+      font-weight: 600;
+      line-height: 1.8;
+    }
+
+    .ct-status--ok { color: #2E7D46; }
+    .ct-status--err { color: #B3452E; }
+
+    /* 直接連絡 */
+    .ct-direct {
+      margin-top: var(--space-m);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: clamp(16px, 2vw, 24px);
+    }
+
+    .ct-direct__label { font-size: clamp(12px, 1.1vw, 13.5px); color: var(--text-secondary); }
+
+    .ct-direct__mail {
+      font-size: clamp(14px, 1.4vw, 17px);
+      font-weight: 700;
+      color: var(--accent);
+    }
+  </style>
+
+  <!-- ===== HERO ===== -->
+  <section class="ct-hero">
+    <span class="watermark" aria-hidden="true">CONTACT</span>
+    <p class="ct-hero__eyebrow hero-anim">Contact</p>
+    <h1 class="ct-hero__title hero-anim">お問い合わせ</h1>
+    <p class="ct-hero__sub hero-anim">
+      30分の無料相談から、お気軽にどうぞ。「うちの場合はどこから？」という段階のご相談も歓迎です。
+      通常1営業日以内にご返信します。
+    </p>
+  </section>
+
+  <!-- ===== FORM ===== -->
+  <div class="ct-wrap">
+    <form class="ct-form hero-anim" id="ctForm" novalidate>
+      <div class="ct-field">
+        <label class="ct-label" for="ctName">お名前 <span class="ct-req">必須</span></label>
+        <input class="ct-input" id="ctName" name="name" type="text" required autocomplete="name" placeholder="山田 太郎" />
+      </div>
+
+      <div class="ct-field">
+        <label class="ct-label" for="ctCompany">会社名・屋号 <span class="ct-opt">任意</span></label>
+        <input class="ct-input" id="ctCompany" name="company" type="text" autocomplete="organization" placeholder="株式会社〇〇" />
+      </div>
+
+      <div class="ct-field">
+        <label class="ct-label" for="ctEmail">メールアドレス <span class="ct-req">必須</span></label>
+        <input class="ct-input" id="ctEmail" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="ct-field">
+        <label class="ct-label" for="ctTopic">ご相談内容 <span class="ct-req">必須</span></label>
+        <div class="ct-select-wrap">
+          <select class="ct-select" id="ctTopic" name="topic" required>
+            <option value="" disabled selected>選択してください</option>
+            {TOPICS.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div class="ct-field">
+        <label class="ct-label" for="ctMessage">メッセージ <span class="ct-req">必須</span></label>
+        <textarea class="ct-textarea" id="ctMessage" name="message" required placeholder="現状の課題やご相談したいこと、ご希望の時期などをご記入ください。"></textarea>
+      </div>
+
+      <!-- ハニーポット（botよけ・人間には見えません） -->
+      <div class="ct-hp" aria-hidden="true">
+        <label for="ctWebsite">Website</label>
+        <input id="ctWebsite" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <p class="ct-note">
+        いただいた情報はお問い合わせへの対応のみに使用し、第三者に提供することはありません。
+      </p>
+
+      <div class="ct-submit-row">
+        <button type="submit" class="btn-dark ct-submit" id="ctSubmit">送信する →</button>
+        <p class="ct-status" id="ctStatus" role="status"></p>
+      </div>
+    </form>
+
+    <div class="ct-direct hero-anim">
+      <p class="ct-direct__label">メールでの直接のご連絡はこちらへ</p>
+      <a href="mailto:info@izayoi.co.jp" class="ct-direct__mail">info@izayoi.co.jp</a>
+    </div>
+  </div>
+
+  <script>
+    // 送信: 本番（Xserver）のPHPエンドポイントへPOST。
+    // ローカルプレビューではPHPが動かないため、失敗時はメールへのフォールバック案内を出す。
+    const form = document.getElementById('ctForm') as HTMLFormElement | null;
+    const statusEl = document.getElementById('ctStatus');
+    const submitBtn = document.getElementById('ctSubmit') as HTMLButtonElement | null;
+
+    if (form && statusEl && submitBtn) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        statusEl.className = 'ct-status';
+        statusEl.textContent = '送信しています…';
+        submitBtn.disabled = true;
+
+        try {
+          const res = await fetch('/contact/send.php', {
+            method: 'POST',
+            body: new FormData(form),
+          });
+          const data = await res.json().catch(() => null);
+          if (res.ok && data && data.ok) {
+            statusEl.className = 'ct-status ct-status--ok';
+            statusEl.textContent = '送信しました。1営業日以内にご返信します。ありがとうございました。';
+            form.reset();
+          } else {
+            throw new Error(data?.error || 'send failed');
+          }
+        } catch {
+          statusEl.className = 'ct-status ct-status--err';
+          statusEl.textContent = '送信に失敗しました。お手数ですが info@izayoi.co.jp まで直接ご連絡ください。';
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    }
+  </script>
+</Base>

@@ -1,6 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import ContactCTA from '../components/ContactCTA.astro';
+import { getCollection } from 'astro:content';
+
+const latestPosts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -8,7 +17,7 @@ const jsonLd = {
   name: 'IZAYOI LLC',
   alternateName: 'IZAYOI合同会社',
   url: 'https://izayoi-hiroshima.com',
-  description: '広島発のデジタルマーケティング会社。AI活用支援・SNS運用代行・HP制作・動画制作・SaaS開発。',
+  description: '広島発のデジタルマーケティング会社。AI導入支援・SNS運用代行・HP制作・動画制作・SaaS開発。',
   publisher: {
     '@type': 'Organization',
     name: 'IZAYOI合同会社',
@@ -24,24 +33,21 @@ const NEWS = [
   { date: '2026.05', tag: '事例', text: 'TikTok Shop運用支援・EC販売プロジェクトが始動しました' },
 ];
 
+// AI導入伴走プログラム（唯一の商品）の主要モジュール抜粋
 const AI_THEMES = [
-  { title: 'SNS運用 × AI', desc: '企画・投稿・分析のサイクルにAIを組み込み、運用の質と量を両立させます。' },
-  { title: 'AI画像・動画生成', desc: '生成AIで広告クリエイティブやブランドムービーを制作。撮影だけに頼らない表現を。' },
-  { title: 'コンテンツ制作の自動化', desc: 'キャプション・記事・企画案の下書きをAIで量産し、人は磨きに集中します。' },
-  { title: 'LINE構築・CRM', desc: 'LINE公式アカウントの設計から顧客管理・自動応答まで一気通貫で構築します。' },
-  { title: 'MEO・ローカル集客', desc: 'Googleビジネスプロフィールの運用・口コミ管理をAIで効率化し来店に繋げます。' },
-  { title: 'レポート・分析の自動化', desc: 'SNS・広告・売上データの集計とレポート作成を自動化し、意思決定を速くします。' },
-  { title: '業務効率化・自動化', desc: '議事録・請求・スケジュール管理など、日々の定型業務をAIワークフローに。' },
-  { title: 'AI内製化・研修', desc: 'ChatGPT・Claude等の社内活用を定着させる導入設計と研修を伴走で支援します。' },
+  { title: '現状診断・AI活用マップ', desc: '業務とマーケティングを棚卸しし、AIが効く場所を優先順位つきで整理します。' },
+  { title: 'マーケティングのAI化', desc: 'SNS・コンテンツ・画像/動画生成。集客の制作量と質をAIで両立させます。' },
+  { title: '業務自動化・ワークフロー構築', desc: 'レポート・議事録・定型業務をAIワークフローへ。人の時間を判断に返します。' },
+  { title: '社内研修・定着支援', desc: '「一部の人だけ使える」を全社の当たり前に。プロンプトの型とルール整備まで。' },
 ];
 
 const SERVICES = [
   {
-    title: 'SNS運用代行',
-    en: 'Social Media',
+    title: 'AIOS — SNS×LINE×MEO 統合運用',
+    en: 'Integrated Growth Package',
     img: '/img/service-sns.jpg',
-    desc: 'Instagram・TikTokを中心に、アカウント戦略の設計からコンテンツ企画・撮影・編集・投稿代行・月次分析まで、専属チームがワンストップで伴走します。飲食・美容・不動産・ECなど広島の多業種で運用実績。',
-    tags: ['アカウント戦略設計', 'コンテンツ企画', '撮影・編集', '投稿代行', '月次レポート'],
+    desc: 'SNSで出会い、Googleマップで選ばれ、LINEでリピートへ。集客の3本柱をひとつのパッケージで運用する統合サービスです。AIを組み込んだ制作体制と、飲食・美容・不動産・ECなど広島の多業種での運用実績で伴走します。',
+    tags: ['SNS戦略・運用', 'ショート動画', 'LINE構築・配信', 'MEO・クチコミ', '統合レポート'],
     href: '/services#sns',
   },
   {
@@ -71,9 +77,9 @@ const SERVICES = [
 ];
 
 const PRODUCTS = [
-  { name: 'Rheo', kana: 'レオ', desc: '動画・写真・PDFをアップして共有URLを発行する、制作現場のためのファイル共有SaaS。', url: 'https://pantarhei.studio' },
-  { name: 'IZAYOI Hub', kana: 'イザヨイ ハブ', desc: 'SNS運用の進行・承認・レポートを一元管理する運用チーム向けアプリ。', url: null },
-  { name: 'IZAYOI Fit', kana: 'イザヨイ フィット', desc: 'LINEで完結するAI食事管理サービス。写真を送るだけで栄養バランスを解析。', url: null },
+  { name: 'Rheo', kana: 'レオ', desc: '動画・写真・PDFをアップして共有URLを発行する、制作現場のためのファイル共有SaaS。', href: '/products/rheo' },
+  { name: 'IZAYOI Hub', kana: 'イザヨイ ハブ', desc: 'SNS運用の進行・承認・レポートを一元管理する運用チーム向けアプリ。', href: '/products/izayoi-hub' },
+  { name: 'RELIFE', kana: 'リライフ', desc: 'AI×プロトレーナーの食事管理。写真を送るだけ、プロが必ず確認するLINE完結サービス。', href: '/products/relife' },
 ];
 
 const FLOW = [
@@ -87,97 +93,133 @@ const FLOW = [
 
 <Base
   title="IZAYOI LLC — デジタルとアートで、ブランドを前進させる"
-  description="広島発のデジタルマーケティング会社。AI活用支援・SNS運用代行・HP制作・動画制作・SaaS開発で、ブランドの可能性を最大化。"
+  description="広島発のデジタルマーケティング会社。AI導入支援・SNS運用代行・HP制作・動画制作・SaaS開発で、ブランドの可能性を最大化。"
   jsonLd={jsonLd}
 >
   <style>
     /* ============================================
-       HERO — 暗転の見せ場①（星雲動画）
+       HERO — 黒インセットフレーム（Lusion型・大型タイポ）
        ============================================ */
     .hero {
-      position: relative;
-      min-height: 92vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      overflow: hidden;
-      background: var(--bg-dark);
-      padding: var(--space-2xl) var(--gutter);
+      height: 100svh;
+      padding: clamp(14px, 2vw, 24px);
     }
 
-    .hero__video {
-      position: absolute;
-      inset: 0;
+    .hero__frame {
+      position: relative;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      opacity: 0.6;
+      border-radius: clamp(16px, 2.4vw, 32px);
+      overflow: hidden;
+      background: #0B0A09;
     }
 
-    .hero__scrim {
+    /* カーソルを追う月光のグロー（重い3Dの代わりの軽い没入） */
+    .hero__glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 64vmax;
+      height: 64vmax;
+      margin: -32vmax 0 0 -32vmax;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(74, 124, 168, 0.18), rgba(106, 158, 192, 0.06) 46%, transparent 66%);
+      filter: blur(50px);
+      pointer-events: none;
+      will-change: transform;
+      transform: translate(52vw, 42vh);
+    }
+
+    .hero__noise {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%);
+      opacity: 0.55;
+      mix-blend-mode: overlay;
       pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    .hero__inner { position: relative; z-index: 2; }
-
     .hero__eyebrow {
+      position: absolute;
+      top: clamp(76px, 9vw, 110px);
+      left: clamp(20px, 3vw, 48px);
+      z-index: 2;
       font-size: clamp(10px, 1.2vw, 13px);
       font-weight: 500;
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--accent-secondary);
-      margin-bottom: var(--space-s);
+    }
+
+    .hero__bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: clamp(12px, 1.5vw, 24px);
+      align-items: end;
+      padding: clamp(20px, 3vw, 48px);
     }
 
     .hero__title {
+      grid-column: span 8;
       color: var(--text-on-dark);
-      font-size: clamp(34px, 5.6vw, 72px);
+      font-size: clamp(30px, 4.9vw, 84px);
       font-weight: 900;
-      line-height: 1.25;
-      letter-spacing: -0.02em;
-      margin-bottom: var(--space-s);
+      line-height: 1.16;
+      letter-spacing: -0.03em;
+      text-align: left;
     }
 
     .hero__title .accent {
-      background: linear-gradient(135deg, #E8B86D, #C4883C);
+      background: linear-gradient(135deg, #7FB2D0, #4A7CA8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
+    /* 文字分割アニメで.char化された後もグラデを維持する
+       （background-clip:textはinline-blockの子スパンへ波及しないため各charに直接当てる） */
+    .hero__title .accent :global(.char) {
+      background: linear-gradient(135deg, #7FB2D0, #4A7CA8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero__aside {
+      grid-column: span 4;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: clamp(14px, 1.8vw, 24px);
+      padding-bottom: 0.3em;
+      text-align: left;
+    }
+
     .hero__sub {
       color: rgba(240, 236, 227, 0.78);
-      font-size: clamp(13px, 1.4vw, 16px);
+      font-size: clamp(12.5px, 1.2vw, 15px);
       font-weight: 300;
       line-height: 2;
-      max-width: 560px;
-      margin: 0 auto var(--space-m);
     }
 
     .hero__scroll {
-      position: absolute;
-      bottom: clamp(20px, 4vw, 40px);
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       color: rgba(240, 236, 227, 0.5);
       font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      z-index: 2;
     }
 
     .hero__scroll-line {
       width: 1px;
-      height: clamp(32px, 4vw, 48px);
+      height: clamp(28px, 3vw, 40px);
       background: rgba(240, 236, 227, 0.25);
       position: relative;
       overflow: hidden;
@@ -198,6 +240,66 @@ const FLOW = [
       0% { top: -100%; }
       50% { top: 100%; }
       100% { top: 100%; }
+    }
+
+    /* ローダー明けにJSでリビールする要素（reduce-motionでは常時表示） */
+    .hero [data-hero-reveal] { opacity: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero [data-hero-reveal] { opacity: 1; }
+    }
+
+    @media (max-width: 860px) {
+      .hero__bottom { grid-template-columns: 1fr; }
+      .hero__title { grid-column: span 1; }
+      .hero__aside { grid-column: span 1; max-width: 460px; }
+    }
+
+    @media (max-width: 520px) {
+      .hero__title { font-size: clamp(24px, 7.6vw, 34px); }
+    }
+
+    /* ============================================
+       LOADER — Lusionオマージュの軽量ローダー
+       （初回セッションのみ・最長1.6秒で必ず明ける）
+       ============================================ */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      background: #0B0A09;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.55s ease;
+    }
+
+    .loader.done { opacity: 0; pointer-events: none; }
+
+    .loader__bar {
+      width: clamp(140px, 18vw, 240px);
+      height: 14px;
+      background: #1E1B17;
+      overflow: hidden;
+    }
+
+    .loader__bar span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--text-on-dark);
+    }
+
+    .loader__num {
+      position: absolute;
+      left: clamp(16px, 3vw, 48px);
+      bottom: clamp(4px, 1.5vw, 20px);
+      font-weight: 900;
+      font-size: clamp(90px, 17vw, 220px);
+      line-height: 0.8;
+      letter-spacing: -0.05em;
+      color: var(--text-on-dark);
+      font-variant-numeric: tabular-nums;
     }
 
     /* 共通: セクションにウォーターマークを重ねるための下地 */
@@ -286,93 +388,98 @@ const FLOW = [
     }
 
     /* ============================================
-       SERVICES — 事業内容（画像付き4カラム）
+       SERVICES — 事業内容（事業ごとの交互ワイドレイアウト）
        ============================================ */
-    .services-grid {
+    .svc-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
-      gap: clamp(12px, 1.6vw, 20px);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: clamp(24px, 4vw, 72px);
+      align-items: center;
+      padding: clamp(36px, 5vw, 72px) 0;
+      border-top: 1px solid var(--border);
     }
 
-    @media (min-width: 1000px) {
-      .services-grid { grid-template-columns: repeat(4, 1fr); }
+    .svc-row:first-of-type { border-top: none; padding-top: clamp(12px, 2vw, 24px); }
+
+    /* 偶数行は画像と本文を左右反転 */
+    .svc-row--rev { direction: rtl; }
+    .svc-row--rev > * { direction: ltr; }
+
+    @media (max-width: 860px) {
+      .svc-row,
+      .svc-row--rev { grid-template-columns: 1fr; direction: ltr; gap: clamp(16px, 3vw, 28px); }
     }
 
-    .service-col {
-      display: flex;
-      flex-direction: column;
+    .svc-row__visual {
+      border-radius: 18px;
+      overflow: hidden;
       border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      background: var(--bg-card);
-      transition: border-color 0.3s ease, transform 0.3s ease;
+      aspect-ratio: 16 / 11;
     }
 
-    .service-col:hover { border-color: var(--accent-secondary); transform: translateY(-3px); }
-
-    .service-col__img {
-      aspect-ratio: 16 / 10;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .service-col__img img {
+    .svc-row__visual img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s ease;
+      transition: transform 0.7s ease;
     }
 
-    .service-col:hover .service-col__img img { transform: scale(1.04); }
+    .svc-row:hover .svc-row__visual img { transform: scale(1.04); }
 
-    .service-col__body {
-      padding: clamp(18px, 2vw, 24px);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
-    }
-
-    .service-col__en {
-      font-size: 10px;
-      letter-spacing: 0.16em;
+    .svc-row__num {
+      font-size: clamp(10px, 1vw, 12px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--accent);
+      margin-bottom: clamp(10px, 1.4vw, 16px);
     }
 
-    .service-col__title { font-size: clamp(16px, 1.6vw, 19px); font-weight: 800; }
+    .svc-row__title {
+      font-size: clamp(22px, 2.8vw, 36px);
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: clamp(10px, 1.4vw, 16px);
+    }
 
-    .service-col__desc {
-      font-size: clamp(12px, 1.05vw, 13.5px);
+    .svc-row__desc {
+      font-size: clamp(13px, 1.2vw, 14.5px);
       color: var(--text-secondary);
-      line-height: 1.9;
-      flex: 1;
+      line-height: 2.05;
+      margin-bottom: clamp(14px, 1.8vw, 20px);
     }
 
-    .service-col__tags {
+    .svc-row__tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+      margin-bottom: clamp(14px, 1.8vw, 20px);
     }
 
-    .service-col__tags span {
+    .svc-row__tags span {
       font-size: 10.5px;
       letter-spacing: 0.04em;
       color: var(--text-secondary);
       border: 1px solid var(--border);
       background: var(--bg-primary);
       border-radius: 100px;
-      padding: 3px 10px;
+      padding: 4px 12px;
     }
 
-    .service-col__more {
-      margin-top: 4px;
-      font-size: 11.5px;
-      font-weight: 600;
+    .svc-row__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--accent);
+      transition: gap 0.3s ease;
     }
+
+    .svc-row:hover .svc-row__link { gap: 14px; }
 
     /* ============================================
        PRODUCTS — 自社プロダクト
@@ -405,75 +512,13 @@ const FLOW = [
     .product-card__link { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase; }
 
     /* ============================================
-       SHOWCASE — 暗転の見せ場②（AI動画生成）
-       ============================================ */
-    .showcase {
-      position: relative;
-      background: var(--bg-dark);
-      color: var(--text-on-dark);
-      overflow: hidden;
-      padding: var(--space-2xl) var(--gutter);
-    }
-
-    .showcase__canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.55;
-    }
-
-    .showcase__scrim {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.6) 100%);
-      pointer-events: none;
-    }
-
-    .showcase__inner {
-      position: relative;
-      z-index: 2;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .showcase__eyebrow {
-      font-size: clamp(10px, 1vw, 12px);
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      color: var(--accent-secondary);
-      text-transform: uppercase;
-      margin-bottom: clamp(8px, 1vw, 16px);
-    }
-
-    .showcase__title {
-      font-size: clamp(26px, 4vw, 48px);
-      font-weight: 800;
-      line-height: 1.3;
-      letter-spacing: -0.02em;
-      margin-bottom: var(--space-s);
-    }
-
-    .showcase__desc {
-      font-size: clamp(13px, 1.25vw, 15px);
-      color: rgba(240, 236, 227, 0.75);
-      line-height: 2;
-      max-width: 620px;
-      margin-bottom: var(--space-m);
-    }
-
-    .showcase__note {
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      color: rgba(240, 236, 227, 0.45);
-    }
-
-    /* ============================================
        VISION — スクロール色塗りステートメント
        ============================================ */
     .philosophy {
       position: relative;
-      overflow: hidden;
+      /* 筆ストロークを隣セクションへ被せるためクリップしない
+         （横あふれは html の overflow-x: hidden が受ける） */
+      overflow: visible;
     }
 
     .philosophy__text {
@@ -586,29 +631,91 @@ const FLOW = [
 
     .flow__item.is-active .flow__title { color: var(--text-primary); }
     .flow__item.is-active .flow__desc { color: var(--text-secondary); }
+
+    /* ============================================
+       COLUMN — 最新コラム
+       ============================================ */
+    .column-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: clamp(12px, 1.6vw, 20px);
+    }
+
+    @media (min-width: 900px) { .column-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .column-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg-card);
+      padding: clamp(20px, 2.4vw, 28px);
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .column-card:hover { border-color: var(--accent-secondary); transform: translateY(-3px); }
+
+    .column-card__meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .column-card__date { font-size: 11.5px; color: var(--text-muted); letter-spacing: 0.05em; }
+    .column-card__tag {
+      font-size: 10.5px;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid currentColor;
+      border-radius: 100px;
+      padding: 2px 10px;
+    }
+
+    .column-card__title { font-size: clamp(15px, 1.5vw, 18px); font-weight: 800; line-height: 1.5; }
+    .column-card__desc { font-size: clamp(12px, 1.05vw, 13.5px); color: var(--text-secondary); line-height: 1.85; flex: 1; }
+    .column-card__more { font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; color: var(--accent); text-transform: uppercase; }
+
+    /* ============================================
+       BRUSH ARC — スクロールで描かれる筆ストローク
+       ============================================ */
+    .brush-arc {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: visible;
+    }
   </style>
 
-  <!-- ===== HERO（見せ場①） ===== -->
+  <!-- ===== LOADER（初回セッションのみ） ===== -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__bar"><span id="loaderFill"></span></div>
+    <div class="loader__num" id="loaderNum">000</div>
+  </div>
+
+  <!-- ===== HERO（黒インセットフレーム・見せ場①） ===== -->
   <section class="hero" id="hero">
-    <video class="hero__video" src="/space-bg/hero.mp4" autoplay loop muted playsinline></video>
-    <div class="hero__scrim"></div>
-    <div class="hero__inner">
-      <p class="hero__eyebrow hero-anim">IZAYOI LLC — HIROSHIMA</p>
-      <h1 class="hero__title" id="heroTitle">
-        デジタルとアートの力で、<br />
-        ブランドを<span class="accent">前進</span>させる。
-      </h1>
-      <p class="hero__sub hero-anim">
-        AI活用支援・SNS運用・Web制作・動画制作。<br />
-        戦略から表現まで、ブランドのデジタル体験をひとつのチームで。
-      </p>
-      <a href="#contact" class="btn-dark hero-anim" style="background: rgba(240,236,227,0.94); color: #16130F; border-color: transparent;">
-        30分無料相談 →
-      </a>
-    </div>
-    <div class="hero__scroll">
-      <div class="hero__scroll-line"></div>
-      Scroll
+    <div class="hero__frame" id="heroFrame">
+      <div class="hero__glow" id="heroGlow"></div>
+      <div class="hero__noise"></div>
+      <p class="hero__eyebrow" data-hero-reveal>IZAYOI LLC — HIROSHIMA</p>
+      <div class="hero__bottom">
+        <h1 class="hero__title" id="heroTitle">
+          デジタルとアートの力で、<br />
+          ブランドを<span class="accent">前進</span>させる。
+        </h1>
+        <div class="hero__aside">
+          <p class="hero__sub" data-hero-reveal>
+            AI導入支援・SNS運用・Web制作・動画制作。<br />
+            戦略から表現まで、ブランドのデジタル体験をひとつのチームで。
+          </p>
+          <a href="/contact" class="btn-dark" data-hero-reveal style="background-color: rgba(240,236,227,0.94); color: #16130F; border-color: transparent;">
+            30分無料相談 →
+          </a>
+          <div class="hero__scroll" data-hero-reveal>
+            <div class="hero__scroll-line"></div>
+            Scroll
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -632,20 +739,32 @@ const FLOW = [
     </div>
   </section>
 
-  <!-- ===== AI活用支援（メイン事業） ===== -->
+  <!-- ===== AI導入支援（メイン事業） ===== -->
   <section class="section" id="ai">
     <span class="watermark" aria-hidden="true">AI</span>
+    <svg class="brush-arc" viewBox="0 0 1440 760" preserveAspectRatio="none" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;">
+      <defs>
+        <linearGradient id="brushGoldA" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#5B9BB5" stop-opacity="0.14" />
+          <stop offset="0.55" stop-color="#4A7CA8" stop-opacity="0.42" />
+          <stop offset="1" stop-color="#7FB2D0" stop-opacity="0.6" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M -100 900 C 250 980, 520 760, 640 560 C 760 360, 620 240, 480 320 C 340 400, 460 560, 700 520 C 1000 470, 1180 220, 1560 -260"
+        fill="none" stroke="url(#brushGoldA)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+    </svg>
     <div class="section__header reveal">
       <div>
-        <p class="section__number">01 — AI Support</p>
-        <h2 class="section__title">AI活用支援</h2>
+        <p class="section__number">01 — AI Adoption</p>
+        <h2 class="section__title">AI導入支援</h2>
         <p class="section__lede">
-          生成AIの活用を、マーケティングと日々の業務の両方で「現場で使える形」に落とし込む支援をしています。
-          導入すること自体を目的にせず、集客・売上・業務負荷の削減など、実際の成果につながる形で設計します。
-          気になるテーマから、そのままご相談いただけます。
+          商品はひとつだけ。診断から設計・実装・研修・定着までをまとめて引き受ける
+          「AI導入伴走プログラム」で、御社が“AIで回る会社”になるまで並走します。
+          このサイトの映像も背景の生成アートも、私たち自身の実践です。
         </p>
       </div>
-      <a href="/ai" class="section__link">View All →</a>
+      <a href="/ai" class="section__link">プログラム詳細 →</a>
     </div>
     <div class="ai-layout">
       <div class="ai-visual reveal">
@@ -676,20 +795,20 @@ const FLOW = [
       </div>
       <a href="/services" class="section__link">View All →</a>
     </div>
-    <div class="services-grid reveal-stagger">
-      {SERVICES.map((s) => (
-        <a href={s.href} class="service-col reveal">
-          <div class="service-col__img">
+    <div class="svc-rows">
+      {SERVICES.map((s, i) => (
+        <a href={s.href} class={`svc-row reveal ${i % 2 === 1 ? 'svc-row--rev' : ''}`}>
+          <div class="svc-row__visual">
             <img src={s.img} alt={s.title} loading="lazy" />
           </div>
-          <div class="service-col__body">
-            <span class="service-col__en">{s.en}</span>
-            <h3 class="service-col__title">{s.title}</h3>
-            <p class="service-col__desc">{s.desc}</p>
-            <div class="service-col__tags">
+          <div class="svc-row__body">
+            <p class="svc-row__num">0{i + 1} — {s.en}</p>
+            <h3 class="svc-row__title">{s.title}</h3>
+            <p class="svc-row__desc">{s.desc}</p>
+            <div class="svc-row__tags">
               {s.tags.map((tag) => <span>{tag}</span>)}
             </div>
-            <span class="service-col__more">Learn More →</span>
+            <span class="svc-row__link">詳しく見る →</span>
           </div>
         </a>
       ))}
@@ -713,36 +832,16 @@ const FLOW = [
       </div>
       <div class="products__grid reveal-stagger">
         {PRODUCTS.map((p) => (
-          <div class="product-card reveal">
+          <a href={p.href} class="product-card reveal">
             <div>
               <div class="product-card__name">{p.name}</div>
               <div class="product-card__kana">{p.kana}</div>
             </div>
             <p class="product-card__desc">{p.desc}</p>
-            {p.url && <a href={p.url} target="_blank" rel="noopener" class="product-card__link">Visit Site →</a>}
-          </div>
+            <span class="product-card__link">詳細を見る →</span>
+          </a>
         ))}
       </div>
-    </div>
-  </section>
-
-  <!-- ===== AI動画生成ショーケース（見せ場②） ===== -->
-  <section class="showcase" id="showcase">
-    <canvas class="showcase__canvas" id="showcase-canvas"></canvas>
-    <div class="showcase__scrim"></div>
-    <span class="watermark watermark--dark" aria-hidden="true">AI × ART</span>
-    <div class="showcase__inner">
-      <p class="showcase__eyebrow reveal">04 — AI × Art</p>
-      <h2 class="showcase__title reveal">
-        この背景も、AIで生成した映像です。
-      </h2>
-      <p class="showcase__desc reveal">
-        IZAYOIは生成AIによる画像・映像制作を実務に取り入れています。
-        撮影が難しい世界観も、ブランドの想像力もそのままビジュアルに。
-        アートディレクションとAIを掛け合わせた表現で、広告クリエイティブからブランドムービーまで制作します。
-      </p>
-      <a href="#contact" class="btn-ghost reveal" style="color: var(--text-on-dark); border-color: rgba(240,236,227,0.3);">AI動画制作の相談をする →</a>
-      <p class="showcase__note reveal" style="margin-top: 16px;">スクロールに合わせて、映像が動きます</p>
     </div>
   </section>
 
@@ -750,6 +849,18 @@ const FLOW = [
   <section class="philosophy" id="vision">
     <div class="section">
       <span class="watermark" aria-hidden="true">VISION</span>
+      <svg class="brush-arc" viewBox="0 0 1440 700" preserveAspectRatio="none" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;">
+        <defs>
+          <linearGradient id="brushGoldB" x1="1" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#5B9BB5" stop-opacity="0.14" />
+            <stop offset="0.55" stop-color="#4A7CA8" stop-opacity="0.42" />
+            <stop offset="1" stop-color="#7FB2D0" stop-opacity="0.6" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M 1560 860 C 1150 940, 900 700, 800 520 C 700 340, 850 240, 960 320 C 1070 400, 940 540, 700 500 C 420 450, 220 200, -120 -220"
+          fill="none" stroke="url(#brushGoldB)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+      </svg>
       <p class="philosophy__text" id="philosophyText">
         デジタルとアートの力で、<br />
         <span class="accent-word">ブランドの可能性</span>を最大化する。<br />
@@ -787,7 +898,7 @@ const FLOW = [
       <span class="watermark" aria-hidden="true">FLOW</span>
       <div class="section__header reveal">
         <div>
-          <p class="section__number">05 — Flow</p>
+          <p class="section__number">04 — Flow</p>
           <h2 class="section__title">ご支援の流れ</h2>
         </div>
       </div>
@@ -804,6 +915,36 @@ const FLOW = [
       </div>
     </div>
   </section>
+
+  <!-- ===== 最新コラム ===== -->
+  {latestPosts.length > 0 && (
+    <section class="section" id="column">
+      <span class="watermark" aria-hidden="true">COLUMN</span>
+      <div class="section__header reveal">
+        <div>
+          <p class="section__number">05 — Column</p>
+          <h2 class="section__title">コラム</h2>
+          <p class="section__lede">
+            AI活用・SNS運用・Web制作の現場から、成果につながる実践知を発信しています。
+          </p>
+        </div>
+        <a href="/blog" class="section__link">View All →</a>
+      </div>
+      <div class="column-grid reveal-stagger">
+        {latestPosts.map((p) => (
+          <a href={`/blog/${p.id}`} class="column-card reveal">
+            <div class="column-card__meta">
+              <span class="column-card__date">{fmtDate(p.data.pubDate)}</span>
+              {p.data.tags[0] && <span class="column-card__tag">{p.data.tags[0]}</span>}
+            </div>
+            <h3 class="column-card__title">{p.data.title}</h3>
+            <p class="column-card__desc">{p.data.description}</p>
+            <span class="column-card__more">続きを読む →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <!-- ===== CONTACT CTA ===== -->
   <ContactCTA sub="30分の無料相談から。プロジェクトのご相談、お気軽にどうぞ。" />
@@ -834,33 +975,118 @@ const FLOW = [
       walk(el);
     }
 
+    // === HERO: ローダー明け → タイトル文字プルアップ + 順次リビール ===
     const heroTitle = document.getElementById('heroTitle');
-    if (heroTitle && !reduceMotion) {
-      splitChars(heroTitle);
+    let heroStarted = false;
+    function startHero() {
+      if (heroStarted || reduceMotion) return;
+      heroStarted = true;
+      if (heroTitle) {
+        splitChars(heroTitle);
+        gsap.fromTo(
+          '#heroTitle .char',
+          { yPercent: 110, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.9, ease: 'power4.out', stagger: 0.03, delay: 0.1 }
+        );
+      }
       gsap.fromTo(
-        '#heroTitle .char',
-        { yPercent: 110, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: 0.9, ease: 'power4.out', stagger: 0.03, delay: 0.35 }
+        '.hero [data-hero-reveal]',
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.12, delay: 0.5 }
       );
     }
 
-    // === HERO: スクロールで映像がズームしながら白セクションへ ===
-    if (!reduceMotion) {
-      gsap.to('.hero__video', {
-        scale: 1.18,
-        opacity: 0.32,
-        ease: 'none',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    // === LOADER: 初回セッションのみ・実ロードに追従しつつ最長1.6秒で必ず明ける ===
+    const loader = document.getElementById('loader');
+    const loaderSeen = (() => {
+      try { return sessionStorage.getItem('izayoi-loader'); } catch { return '1'; }
+    })();
+    if (loader && (reduceMotion || loaderSeen)) {
+      loader.remove();
+      startHero();
+    } else if (loader) {
+      try { sessionStorage.setItem('izayoi-loader', '1'); } catch {}
+      const loaderFill = document.getElementById('loaderFill')!;
+      const loaderNum = document.getElementById('loaderNum')!;
+      let assetsReady = false;
+      Promise.race([
+        new Promise<void>((r) => window.addEventListener('load', () => r(), { once: true })),
+        new Promise<void>((r) => setTimeout(r, 1400)),
+      ]).then(() => { assetsReady = true; });
+      let lp = 0;
+      const lt0 = performance.now();
+      (function loaderTick() {
+        // 実ロード完了までは86%で待機、完了で100%へ
+        const target = assetsReady ? 100 : Math.min(86, (performance.now() - lt0) / 11);
+        lp += (target - lp) * 0.14;
+        if (lp > 99.2) lp = 100;
+        loaderFill.style.width = `${lp}%`;
+        loaderNum.textContent = String(Math.round(lp)).padStart(3, '0');
+        if (lp < 100) requestAnimationFrame(loaderTick);
+        else {
+          loader.classList.add('done');
+          startHero();
+          setTimeout(() => loader.remove(), 650);
+        }
+      })();
+    } else {
+      startHero();
+    }
+
+    // === HERO: 月光グローがカーソルを追う（軽い没入） ===
+    const heroGlow = document.getElementById('heroGlow');
+    const heroFrame = document.getElementById('heroFrame');
+    if (heroGlow && heroFrame && !reduceMotion && window.matchMedia('(pointer: fine)').matches) {
+      let gtx = heroFrame.clientWidth * 0.55;
+      let gty = heroFrame.clientHeight * 0.42;
+      let ggx = gtx, ggy = gty;
+      window.addEventListener('pointermove', (e) => {
+        const r = heroFrame.getBoundingClientRect();
+        gtx = e.clientX - r.left;
+        gty = e.clientY - r.top;
       });
-      gsap.to('.hero__inner', {
+      (function glowFrame() {
+        ggx += (gtx - ggx) * 0.055;
+        ggy += (gty - ggy) * 0.055;
+        heroGlow.style.transform = `translate(${ggx.toFixed(1)}px, ${ggy.toFixed(1)}px)`;
+        requestAnimationFrame(glowFrame);
+      })();
+    }
+
+    // === HERO: スクロールで沈み込みながら白セクションへ ===
+    if (!reduceMotion) {
+      gsap.to('.hero__bottom, .hero__eyebrow', {
         y: -70,
         opacity: 0,
         ease: 'none',
         scrollTrigger: { trigger: '.hero', start: '15% top', end: 'bottom top', scrub: true },
       });
+      gsap.to('.hero__frame', {
+        scale: 0.965,
+        ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+      });
     }
 
-    // === AI活用支援: カードのスタガー表示（ピン留めなしの通常スクロール） ===
+    // === BRUSH: スクロールで描かれる筆ストローク（Lusionの線画オマージュ） ===
+    document.querySelectorAll<SVGPathElement>('.brush-arc path').forEach((path) => {
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = `${len}`;
+      if (reduceMotion) return;
+      path.style.strokeDashoffset = `${len}`;
+      gsap.to(path, {
+        strokeDashoffset: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: path.closest('section') || path,
+          start: 'top 78%',
+          end: 'center 42%',
+          scrub: 0.6,
+        },
+      });
+    });
+
+    // === AI導入支援: カードのスタガー表示（ピン留めなしの通常スクロール） ===
     const aiTiles = gsap.utils.toArray<HTMLElement>('#aiGrid .tile');
     if (aiTiles.length && !reduceMotion) {
       gsap.set(aiTiles, { opacity: 0, y: 26 });
@@ -902,49 +1128,5 @@ const FLOW = [
       });
     });
 
-    // Showcase — scroll-scrubbed frame sequence (AI-generated clip)
-    const FRAME_COUNT = 48;
-    const canvas = document.getElementById('showcase-canvas') as HTMLCanvasElement | null;
-
-    if (canvas && !window.matchMedia('(max-width: 768px)').matches) {
-      const ctx = canvas.getContext('2d')!;
-      const frames: HTMLImageElement[] = [];
-      for (let i = 1; i <= FRAME_COUNT; i++) {
-        const img = new Image();
-        img.src = `/space-bg/frame-${String(i).padStart(3, '0')}.jpg`;
-        frames.push(img);
-      }
-
-      const section = canvas.parentElement!;
-
-      function resizeCanvas() {
-        const dpr = Math.min(window.devicePixelRatio, 2);
-        canvas.width = section.clientWidth * dpr;
-        canvas.height = section.clientHeight * dpr;
-      }
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-
-      function drawFrame(index: number) {
-        const img = frames[index];
-        if (!img || !img.complete || img.naturalWidth === 0) return;
-        const cw = canvas.width, ch = canvas.height;
-        const iw = img.naturalWidth, ih = img.naturalHeight;
-        const scale = Math.max(cw / iw, ch / ih);
-        const dw = iw * scale, dh = ih * scale;
-        ctx.clearRect(0, 0, cw, ch);
-        ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
-      }
-
-      let eased = 0;
-      (function loop() {
-        const rect = section.getBoundingClientRect();
-        const vh = window.innerHeight;
-        const progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh + rect.height)));
-        eased += (progress - eased) * 0.1;
-        drawFrame(Math.min(FRAME_COUNT - 1, Math.floor(eased * FRAME_COUNT)));
-        requestAnimationFrame(loop);
-      })();
-    }
   </script>
 </Base>

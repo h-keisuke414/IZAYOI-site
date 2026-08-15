@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://izayoi-hiroshima.com/sitemap-index.xml
+Sitemap: https://izayoi-hiroshima.com/sitemap.xml

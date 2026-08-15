@@ -1,0 +1,155 @@
+---
+import Base from '../../layouts/Base.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'コラム — IZAYOI LLC',
+  description: 'AI活用・SNS運用・Web制作の実践知を発信する、広島のマーケティング会社IZAYOIのコラム。',
+  url: 'https://izayoi-hiroshima.com/blog',
+  publisher: { '@type': 'Organization', name: 'IZAYOI合同会社' },
+  blogPost: posts.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.data.title,
+    datePublished: p.data.pubDate.toISOString(),
+    url: `https://izayoi-hiroshima.com/blog/${p.id}`,
+  })),
+};
+---
+
+<Base
+  title="コラム — IZAYOI LLC"
+  description="AI活用・SNS運用・Web制作の実践知を発信する、広島のマーケティング会社IZAYOIのコラム。"
+  jsonLd={jsonLd}
+>
+  <style>
+    .blog-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: calc(var(--space-2xl) + 40px) var(--gutter) var(--space-l);
+      position: relative;
+    }
+    .blog-hero__eyebrow {
+      font-size: clamp(10px, 1.2vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-s);
+    }
+    .blog-hero__title {
+      font-size: clamp(34px, 5vw, 60px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: var(--space-s);
+    }
+    .blog-hero__sub {
+      font-size: clamp(13px, 1.3vw, 16px);
+      color: var(--text-secondary);
+      line-height: 2;
+      max-width: 640px;
+    }
+
+    .blog-list {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--gutter) var(--space-2xl);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: clamp(16px, 2vw, 28px);
+    }
+
+    @media (min-width: 900px) { .blog-list { grid-template-columns: repeat(3, 1fr); } }
+
+    .post-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--bg-card);
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .post-card:hover { border-color: var(--accent-secondary); transform: translateY(-3px); }
+
+    .post-card__media {
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .post-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .post-card:hover .post-card__media img { transform: scale(1.04); }
+
+    .post-card__body { padding: clamp(18px, 2vw, 24px); display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+    .post-card__meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .post-card__date { font-size: 11.5px; color: var(--text-muted); letter-spacing: 0.05em; }
+    .post-card__tag {
+      font-size: 10.5px;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid currentColor;
+      border-radius: 100px;
+      padding: 2px 10px;
+    }
+
+    .post-card__title { font-size: clamp(16px, 1.6vw, 19px); font-weight: 800; line-height: 1.5; }
+    .post-card__desc { font-size: clamp(12.5px, 1.1vw, 13.5px); color: var(--text-secondary); line-height: 1.85; flex: 1; }
+    .post-card__more { font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; color: var(--accent); text-transform: uppercase; }
+
+    .blog-empty {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--gutter) var(--space-2xl);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+
+  <section class="blog-hero">
+    <span class="watermark" aria-hidden="true">COLUMN</span>
+    <p class="blog-hero__eyebrow hero-anim">Column</p>
+    <h1 class="blog-hero__title hero-anim">コラム</h1>
+    <p class="blog-hero__sub hero-anim">
+      AI活用・SNS運用・Web制作の現場から、成果につながる実践知を発信します。
+    </p>
+  </section>
+
+  {posts.length === 0 ? (
+    <p class="blog-empty">記事は準備中です。</p>
+  ) : (
+    <div class="blog-list reveal-stagger">
+      {posts.map((p) => (
+        <a href={`/blog/${p.id}`} class="post-card reveal">
+          {p.data.cover && (
+            <div class="post-card__media">
+              <img src={p.data.cover} alt={p.data.title} loading="lazy" />
+            </div>
+          )}
+          <div class="post-card__body">
+            <div class="post-card__meta">
+              <span class="post-card__date">{fmt(p.data.pubDate)}</span>
+              {p.data.tags[0] && <span class="post-card__tag">{p.data.tags[0]}</span>}
+            </div>
+            <h2 class="post-card__title">{p.data.title}</h2>
+            <p class="post-card__desc">{p.data.description}</p>
+            <span class="post-card__more">続きを読む →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+
+  <ContactCTA sub="AI活用やSNS運用のご相談は、30分無料相談から。" />
+</Base>

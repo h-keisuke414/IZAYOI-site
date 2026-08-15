@@ -5,8 +5,8 @@ import ContactCTA from '../components/ContactCTA.astro';
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'AI活用支援 — IZAYOI LLC',
-  description: '生成AIをマーケティングと業務の両面で「現場で使える形」に。SNS運用×AI、AI画像・動画生成、業務効率化、AI内製化研修まで、広島のIZAYOIが伴走支援します。',
+  name: 'AI導入支援 — IZAYOI LLC',
+  description: '広島の中小企業のための、AI導入伴走プログラム。診断・設計・実装・研修・定着までをひとつのサービスで。SNS・Web・映像の現場で生成AIを使い倒すIZAYOIが伴走します。',
   url: 'https://izayoi-hiroshima.com/ai',
   isPartOf: {
     '@type': 'WebSite',
@@ -19,47 +19,27 @@ const jsonLd = {
   },
 };
 
-const THEMES = [
-  {
-    id: 'sns-ai',
-    title: 'SNS運用 × AI',
-    desc: '投稿企画・台本・キャプションの下書きをAIで量産し、人は「磨き」と「判断」に集中する運用体制を構築。コメントやインサイトの分析もAIに任せ、伸びる理由を言語化しながら回します。',
-  },
-  {
-    id: 'gen',
-    title: 'AI画像・動画生成',
-    desc: '広告クリエイティブ、商品ビジュアル、Web背景映像、ブランドムービー。30以上の生成モデルを用途で使い分け、アートディレクションを掛けて「使える品質」まで仕上げます。',
-  },
-  {
-    id: 'content',
-    title: 'コンテンツ制作の自動化',
-    desc: 'ブログ・コラム記事、メルマガ、企画書の初稿づくりをAIワークフロー化。トーン&マナーを学習させ、ブランドの声を保ったまま制作量を数倍にします。',
-  },
-  {
-    id: 'line',
-    title: 'LINE構築・CRM',
-    desc: 'LINE公式アカウントの設計から、リッチメニュー・自動応答・セグメント配信まで。AIチャット対応を組み込み、顧客対応の質とスピードを両立させます。',
-  },
-  {
-    id: 'meo',
-    title: 'MEO・ローカル集客',
-    desc: 'Googleビジネスプロフィールの投稿・口コミ返信・写真運用をAIで効率化。地域検索での露出を伸ばし、「近くのお店」で選ばれる状態を作ります。',
-  },
-  {
-    id: 'report',
-    title: 'レポート・分析の自動化',
-    desc: 'SNS・広告・売上データの集計と月次レポート作成を自動化。数字を集める時間をゼロに近づけ、打ち手を考える時間に変えます。',
-  },
-  {
-    id: 'ops',
-    title: '業務効率化・自動化',
-    desc: '議事録の自動作成、請求・見積の定型化、スケジュール調整、社内FAQ。日々の「地味に時間を食う仕事」からAIワークフローに置き換えていきます。',
-  },
-  {
-    id: 'training',
-    title: 'AI内製化・研修',
-    desc: 'ChatGPT・Claude等を社内で使いこなせる状態まで伴走。プロンプトの型、業務ごとの活用レシピ、運用ルールの整備まで含めた定着支援です。',
-  },
+// ひとつの旗艦サービス「AI導入伴走プログラム」に含まれるもの
+// （旧・4サービス/8テーマはすべてこのプログラムのモジュールとして内包）
+const PROGRAM_MODULES = [
+  { id: 'diagnosis', title: '現状診断・AI活用マップ', desc: '業務とマーケティングを棚卸しし、AIが効く場所を優先順位つきで整理します。' },
+  { id: 'sns-ai', title: 'マーケティングのAI化', desc: 'SNS・コンテンツ・画像/動画生成・MEO。集客の制作量と質をAIで両立させます。' },
+  { id: 'ops', title: '業務自動化・ワークフロー構築', desc: 'レポート・議事録・定型業務をAIワークフローへ。人の時間を判断に返します。' },
+  { id: 'training', title: '社内研修・プロンプトの型', desc: '「一部の人だけ使える」を全社の当たり前に。職種別レシピで定着させます。' },
+  { id: 'rules', title: '運用ルール整備', desc: '情報管理・利用範囲のガイドラインを整え、安全に使える状態をつくります。' },
+  { id: 'dev', title: 'システム・ツール開発', desc: '既製ツールで足りなければ、自社SaaS運営の知見で必要な仕組みごと作ります。' },
+  { id: 'review', title: '月次レビュー・改善', desc: '数字と現場の声で効果を確認し、翌月の打ち手まで一緒に決めます。' },
+  { id: 'chat', title: 'いつでもチャット相談', desc: '「これAIでできる？」をすぐ聞ける窓口。小さな疑問を溜めません。' },
+];
+
+// 絶対に買ってほしい人＝この商品が刺さる会社
+const TARGETS = [
+  'ChatGPTやClaudeを契約したが、一部の社員しか使っていない',
+  '生成AIを業務に活かしたいが、何から始めるべきか分からない',
+  '毎月のレポート・議事録・定型業務に時間を取られている',
+  'SNSやWebの運用に人手が回っていない',
+  'ツール導入で終わらせず、定着まで伴走してほしい',
+  '広島（または中国地方）で、顔の見える相手に頼みたい',
 ];
 
 const REASONS = [
@@ -77,15 +57,6 @@ const REASONS = [
   },
 ];
 
-const PAINS = [
-  '生成AIを業務に活かしたいが、何から始めるべきか分からない',
-  'ChatGPTを契約したが、一部の社員しか使っていない',
-  'SNSやWebの運用に人手が回っていない',
-  '毎月のレポート作成に時間を取られている',
-  '問い合わせ対応や定型業務を自動化したい',
-  'ツールの導入だけでなく、定着まで伴走してほしい',
-];
-
 const FLOW = [
   { step: '01', title: '30分無料相談', desc: '現状の課題やお困りごとを、オンラインで気軽にお聞かせください。' },
   { step: '02', title: '現状整理・診断', desc: '業務フローとマーケティングの現状を拝見し、AIが効く場所を整理します。' },
@@ -96,8 +67,8 @@ const FLOW = [
 ---
 
 <Base
-  title="AI活用支援 — IZAYOI LLC"
-  description="生成AIをマーケティングと業務の両面で「現場で使える形」に。SNS運用×AI、AI画像・動画生成、業務効率化、AI内製化研修まで伴走支援します。"
+  title="AI導入支援 — IZAYOI LLC"
+  description="広島の中小企業のための、AI導入伴走プログラム。診断・設計・実装・研修・定着までをひとつのサービスで伴走します。"
   jsonLd={jsonLd}
 >
   <style>
@@ -155,6 +126,7 @@ const FLOW = [
       margin: 0 auto;
       padding: var(--space-l) var(--gutter);
       overflow: visible;
+      scroll-margin-top: 90px;
     }
 
     .ai-sec--full { max-width: none; background: var(--bg-secondary); }
@@ -175,14 +147,129 @@ const FLOW = [
       margin-bottom: var(--space-m);
     }
 
-    /* テーマ8カード */
-    .ai-themes {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-      gap: clamp(10px, 1.4vw, 16px);
+    /* 対象（絶対に買ってほしい人） */
+    .ai-targets {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(20px, 2.6vw, 36px);
     }
 
-    @media (min-width: 900px) { .ai-themes { grid-template-columns: repeat(2, 1fr); } }
+    .ai-targets ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: 12px clamp(16px, 2.5vw, 40px);
+    }
+
+    .ai-targets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: clamp(12.5px, 1.15vw, 14px);
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .ai-targets li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 7px;
+      height: 7px;
+      margin-top: 9px;
+      border-radius: 50%;
+      background: var(--accent-secondary);
+    }
+
+    /* プログラム（唯一の商品） */
+    .ai-program {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg-card);
+      padding: clamp(24px, 3.4vw, 56px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ai-program__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-secondary);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: clamp(14px, 1.8vw, 22px);
+    }
+
+    .ai-program__name {
+      font-size: clamp(24px, 3.2vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: clamp(10px, 1.4vw, 16px);
+    }
+
+    .ai-program__statement {
+      font-size: clamp(15px, 1.6vw, 19px);
+      font-weight: 700;
+      line-height: 1.7;
+      margin-bottom: clamp(12px, 1.6vw, 18px);
+    }
+
+    .ai-program__desc {
+      font-size: clamp(13px, 1.2vw, 14.5px);
+      color: var(--text-secondary);
+      line-height: 2.05;
+      max-width: 760px;
+    }
+
+    .ai-program__includes-title {
+      font-size: clamp(16px, 1.6vw, 20px);
+      font-weight: 800;
+      margin: var(--space-m) 0 var(--space-s);
+    }
+
+    .ai-program__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: clamp(10px, 1.3vw, 14px);
+    }
+
+    @media (min-width: 960px) { .ai-program__grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .ai-program__cta { margin-top: var(--space-m); display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* 料金 */
+    .ai-price {
+      margin-top: var(--space-m);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 16px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      background: var(--bg-primary);
+      padding: clamp(18px, 2.2vw, 26px);
+    }
+
+    .ai-price__label {
+      width: 100%;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .ai-price__amount { font-size: clamp(24px, 3vw, 36px); font-weight: 900; letter-spacing: -0.02em; }
+    .ai-price__unit { font-size: clamp(13px, 1.2vw, 15px); color: var(--text-secondary); font-weight: 600; }
+    .ai-price__note { width: 100%; font-size: clamp(11.5px, 1.05vw, 13px); color: var(--text-muted); line-height: 1.7; }
 
     /* 違う理由 3カード */
     .ai-reasons {
@@ -196,58 +283,9 @@ const FLOW = [
       padding-top: clamp(14px, 1.8vw, 20px);
     }
 
-    .reason-card__num {
-      font-size: clamp(11px, 1vw, 12px);
-      letter-spacing: 0.18em;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-
-    .reason-card__title {
-      font-size: clamp(16px, 1.6vw, 20px);
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .reason-card__desc {
-      font-size: clamp(12.5px, 1.1vw, 14px);
-      color: var(--text-secondary);
-      line-height: 1.95;
-    }
-
-    /* こんな企業に */
-    .ai-pains {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: clamp(20px, 2.6vw, 36px);
-    }
-
-    .ai-pains ul {
-      list-style: none;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
-      gap: 12px clamp(16px, 2.5vw, 40px);
-    }
-
-    .ai-pains li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: clamp(12.5px, 1.15vw, 14px);
-      color: var(--text-secondary);
-      line-height: 1.8;
-    }
-
-    .ai-pains li::before {
-      content: '';
-      flex-shrink: 0;
-      width: 7px;
-      height: 7px;
-      margin-top: 9px;
-      border-radius: 50%;
-      background: var(--accent-secondary);
-    }
+    .reason-card__num { font-size: clamp(11px, 1vw, 12px); letter-spacing: 0.18em; color: var(--accent); margin-bottom: 8px; }
+    .reason-card__title { font-size: clamp(16px, 1.6vw, 20px); font-weight: 800; margin-bottom: 8px; }
+    .reason-card__desc { font-size: clamp(12.5px, 1.1vw, 14px); color: var(--text-secondary); line-height: 1.95; }
 
     /* ご支援の流れ（縦ステップ） */
     .ai-flow__list {
@@ -321,40 +359,78 @@ const FLOW = [
   <!-- ===== PAGE HERO ===== -->
   <section class="ai-hero">
     <span class="watermark" aria-hidden="true">AI</span>
-    <p class="ai-hero__eyebrow hero-anim">AI Support</p>
-    <h1 class="ai-hero__title hero-anim">AI活用支援</h1>
+    <p class="ai-hero__eyebrow hero-anim">AI Adoption</p>
+    <h1 class="ai-hero__title hero-anim">AI導入支援</h1>
     <p class="ai-hero__statement hero-anim">
-      生成AIを、現場で使える業務改善と<br />新しい集客のかたちへつなげます。
+      「AIで会社が回る」状態まで、<br />ひとつのプログラムで伴走します。
     </p>
     <p class="ai-hero__desc hero-anim">
-      生成AIは、一時的な話題のツールではなく、仕事の進め方そのものを見直すための選択肢になっています。
-      一方で実際の現場では、どの業務に使うべきか、どこまで自動化すべきか、既存の仕事にどう組み込むべきかが
-      整理できないまま、活用が進まないケースが少なくありません。
+      研修だけ、ツール導入だけ、コンサルだけ——バラバラに頼んでも、AIは現場に根づきません。
+      IZAYOIのAI導入支援は、診断から設計・実装・研修・定着までを
+      <strong>ひとつの伴走プログラム</strong>にまとめた、それだけを売る商品です。
     </p>
     <p class="ai-hero__desc hero-anim">
-      IZAYOIは、SNS運用・Web・映像の制作現場で自ら生成AIを使い倒しているマーケティング会社です。
-      その実践知をもとに、導入すること自体を目的にせず、集客・売上・業務負荷の削減という
-      「実際の成果」につながる形でAI活用を設計し、定着まで伴走します。
+      私たちはSNS運用・Web・映像の制作現場で、自ら生成AIを毎日使い倒している広島の会社です。
+      このサイトの映像も、背景の生成アートも、その実践の一部。
+      「導入すること」ではなく、集客・売上・業務負荷の削減という実際の成果につなげます。
     </p>
     <div class="ai-hero__cta hero-anim">
-      <a href="/#contact" class="btn-dark">30分無料相談を予約 →</a>
+      <a href="/contact" class="btn-dark">30分無料相談を予約 →</a>
+      <a href="#program" class="btn-ghost">プログラムの中身を見る ↓</a>
     </div>
   </section>
 
-  <!-- ===== 主な対応領域 ===== -->
-  <section class="ai-sec" id="themes">
-    <span class="watermark" aria-hidden="true">THEMES</span>
-    <h2 class="ai-sec__title reveal">主な対応領域</h2>
+  <!-- ===== 対象（絶対に買ってほしい人） ===== -->
+  <section class="ai-sec" id="targets">
+    <h2 class="ai-sec__title reveal">こんな会社のための、サービスです</h2>
     <p class="ai-sec__lede reveal">
-      マーケティングと日々の業務、両方の側面からテーマをご用意しています。気になるところから、そのままご相談ください。
+      全部の会社には合いません。次のどれかに当てはまるなら、力になれます。
     </p>
-    <div class="ai-themes reveal-stagger">
-      {THEMES.map((t) => (
-        <div class="tile reveal" id={t.id}>
-          <h3 class="tile__title"><span class="tile__arrow">→</span>{t.title}</h3>
-          <p class="tile__desc">{t.desc}</p>
-        </div>
-      ))}
+    <div class="ai-targets reveal">
+      <ul>
+        {TARGETS.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== プログラム（唯一の商品） ===== -->
+  <section class="ai-sec" id="program">
+    <span class="watermark" aria-hidden="true">PROGRAM</span>
+    <div class="ai-program reveal">
+      <span class="ai-program__badge">The Only Service — 商品はこれひとつ</span>
+      <h2 class="ai-program__name">AI導入伴走プログラム</h2>
+      <p class="ai-program__statement">
+        診断 → 設計 → 実装 → 研修 → 定着。<br />
+        会社にAIが根づくまでの全工程を、月額の伴走でまとめて引き受けます。
+      </p>
+      <p class="ai-program__desc">
+        メニューを細かく分けて売ることはしません。会社ごとに効く場所が違うからです。
+        診断で優先順位を決め、効果の出やすいところから小さく実装し、
+        使われ続ける状態になるまで研修とルール整備で支える——この一連をひとつの契約で回します。
+      </p>
+
+      <h3 class="ai-program__includes-title">プログラムに含まれるもの</h3>
+      <div class="ai-program__grid reveal-stagger">
+        {PROGRAM_MODULES.map((m) => (
+          <div class="tile reveal" id={m.id}>
+            <h4 class="tile__title"><span class="tile__arrow">→</span>{m.title}</h4>
+            <p class="tile__desc">{m.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="ai-price reveal">
+        <span class="ai-price__label">料金の目安</span>
+        <span class="ai-price__amount">月額 100,000円</span>
+        <span class="ai-price__unit">〜（税別）</span>
+        <span class="ai-price__note">
+          支援範囲・貴社の規模により個別にお見積もりします。単発の研修や診断のみのご相談、補助金の活用もお気軽に。
+        </span>
+      </div>
+
+      <div class="ai-program__cta reveal">
+        <a href="/contact" class="btn-dark">30分無料相談を予約 →</a>
+      </div>
     </div>
   </section>
 
@@ -376,21 +452,11 @@ const FLOW = [
     </div>
   </section>
 
-  <!-- ===== こんな企業に ===== -->
-  <section class="ai-sec" id="pains">
-    <h2 class="ai-sec__title reveal">こんな企業に</h2>
-    <div class="ai-pains reveal">
-      <ul>
-        {PAINS.map((p) => <li>{p}</li>)}
-      </ul>
-    </div>
-  </section>
-
   <!-- ===== ご支援の流れ ===== -->
   <section class="ai-sec ai-sec--full" id="flow">
     <div class="ai-sec__inner">
       <span class="watermark" aria-hidden="true">FLOW</span>
-      <h2 class="ai-sec__title reveal">ご支援のイメージ</h2>
+      <h2 class="ai-sec__title reveal">ご支援の流れ</h2>
       <p class="ai-sec__lede reveal">
         いきなり大きく導入せず、小さく試して確かめながら進めます。
       </p>

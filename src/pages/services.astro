@@ -23,29 +23,29 @@ const SERVICES = [
   {
     id: 'sns',
     num: '01',
-    en: 'Social Media Management',
-    watermark: 'SNS',
-    title: 'SNS運用代行',
-    statement: '「投稿を続ける」から、「成果を積み上げる」運用へ。',
+    en: 'Integrated Growth Package',
+    watermark: 'AIOS',
+    title: 'AIOS — SNS × LINE × MEO 統合運用',
+    statement: '集客の3本柱を、ひとつのチームでまるごと運用。',
     paragraphs: [
-      'SNSはいまや検索媒体であり、ブランドと出会う最初の入口です。一方で、ただ投稿を続けるだけではフォロワーも売上も伸びず、担当者の負担だけが増えていくケースが少なくありません。',
-      'IZAYOIでは、アカウント戦略の設計からコンテンツ企画・撮影・編集・投稿・分析までを専属チームが一気通貫で担当します。AIを組み込んだ制作体制で「質」と「量」を両立させ、飲食・美容・不動産・EC・アパレルなど広島の多業種で運用してきた知見を、そのまま貴社のアカウントに反映します。',
+      'SNSで出会い、Googleマップで選ばれ、LINEでリピートにつなげる——いまの集客はこの3つが連動してはじめて機能します。ところが多くの場合、それぞれ別の業者・別の担当に分かれ、データも導線もバラバラになりがちです。',
+      'AIOS（アイオス）は、SNS運用代行を核に、LINE構築・配信、MEO（Googleビジネスプロフィール）運用までをひとつのパッケージにした統合運用サービスです。AIを組み込んだ制作体制で「質」と「量」を両立させ、飲食・美容・不動産・EC・アパレルなど広島の多業種で運用してきた知見を、貴社の集客全体に反映します。',
     ],
     img: '/img/service-sns.jpg',
     areas: [
-      { title: 'アカウント戦略設計', desc: 'ターゲット・世界観・KPIを整理し、伸ばすための設計図を作ります。' },
-      { title: 'コンテンツ企画・制作', desc: 'トレンドとブランドらしさを両立した企画で、保存されるコンテンツを。' },
-      { title: '撮影・編集', desc: '現場での撮影ディレクションからショート動画の編集まで対応します。' },
-      { title: '投稿・運用代行', desc: '投稿スケジュール管理・コメント対応まで、日々の運用を代行します。' },
-      { title: 'インサイト分析・月次レポート', desc: '数字の変化を読み解き、翌月の打ち手まで提案します。' },
+      { title: 'SNSアカウント戦略・運用', desc: '戦略設計から企画・撮影・編集・投稿・コメント対応まで一気通貫で。' },
+      { title: 'ショート動画制作', desc: '冒頭1秒で止める企画力。リール・TikTokをAI併用の量産体制で。' },
+      { title: 'LINE構築・配信運用', desc: 'リッチメニュー・自動応答・セグメント配信で、リピートの仕組みを。' },
+      { title: 'MEO・クチコミ運用', desc: 'Googleマップでの露出を伸ばし、「近くのお店」で選ばれる状態に。' },
+      { title: '統合レポート・分析', desc: 'SNS・LINE・MEOの数字をひとつのレポートで。翌月の打ち手まで提案。' },
       { title: 'SNS広告・キャンペーン', desc: '少額から始める広告運用とキャンペーン設計で成長を加速します。' },
     ],
     pains: [
       '投稿が続かない・社内にリソースがない',
+      'SNS・LINE・Googleマップの管理がバラバラになっている',
       'フォロワーはいるが売上や来店につながらない',
-      '何を投稿すべきか分からなくなってきた',
       '撮影・編集から丸ごと任せたい',
-      '広告費に頼らずに集客の仕組みを作りたい',
+      '複数の業者とやり取りする手間をなくしたい',
     ],
   },
   {
@@ -175,6 +175,8 @@ const SERVICES = [
       max-width: 640px;
     }
 
+    .svc-hero__cta { margin-top: var(--space-m); }
+
     /* ============================================
        SUBNAV — ページ内アンカー
        ============================================ */
@@ -216,6 +218,7 @@ const SERVICES = [
       position: relative;
       border-top: 1px solid var(--border);
       overflow: hidden;
+      scroll-margin-top: 90px; /* 固定ナビの下に着地させる（TOP事業内容→業務内容アンカー用） */
     }
 
     .svc__wrap {
@@ -344,7 +347,8 @@ const SERVICES = [
       background: var(--accent-secondary);
     }
 
-    .svc__cta { margin-top: var(--space-m); }
+    /* CTAは「意味づけ」の直後・「業務内容」の手前に置く（head のmargin-bottomが上余白を担う） */
+    .svc__cta { margin: 0; }
 
     /* ============================================
        PROCESS
@@ -406,6 +410,9 @@ const SERVICES = [
       AI活用を軸に、ブランドの集客と表現に必要な領域をワンチームで支援します。
       戦略・制作・運用が分断されないことが、成果への最短距離だと考えています。
     </p>
+    <div class="svc-hero__cta hero-anim">
+      <a href="/contact" class="btn-dark">30分無料相談を予約 →</a>
+    </div>
   </section>
 
   <!-- ===== SUBNAV ===== -->
@@ -413,7 +420,7 @@ const SERVICES = [
     {SERVICES.map((s) => (
       <a href={`#${s.id}`}><span>{s.num}</span>{s.title}</a>
     ))}
-    <a href="/ai"><span>AI</span>AI活用支援はこちら</a>
+    <a href="/ai"><span>AI</span>AI導入支援はこちら</a>
   </nav>
 
   <!-- ===== SERVICE BLOCKS ===== -->
@@ -433,7 +440,11 @@ const SERVICES = [
           </div>
         </div>
 
-        <h3 class="svc__areas-title reveal">主な対応領域</h3>
+        <div class="svc__cta reveal">
+          <a href="/contact" class="btn-dark">30分無料相談を予約 →</a>
+        </div>
+
+        <h3 class="svc__areas-title reveal">主な業務内容</h3>
         <div class="svc__areas reveal-stagger">
           {s.areas.map((a) => (
             <div class="tile reveal">
@@ -448,10 +459,6 @@ const SERVICES = [
           <ul>
             {s.pains.map((p) => <li>{p}</li>)}
           </ul>
-        </div>
-
-        <div class="svc__cta reveal">
-          <a href="/#contact" class="btn-dark">30分無料相談を予約 →</a>
         </div>
       </div>
     </section>

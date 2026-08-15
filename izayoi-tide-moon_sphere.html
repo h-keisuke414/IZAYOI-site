@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>瀬戸内の潮と、十六夜の月 — IZAYOI Data Painting</title>
+<style>
+  :root{ --hud:#7f8896; --hud-bright:#e8e2d2; --accent:#e8b871; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; background:#05060a; overflow:hidden; }
+  canvas{ display:block; }
+  .hud{
+    position:fixed; z-index:10; pointer-events:none;
+    font-family:"SF Mono","Menlo","Consolas",monospace;
+    color:var(--hud); font-size:11px; line-height:1.7; letter-spacing:.06em;
+  }
+  .hud-tl{ top:26px; left:28px; }
+  .hud-tl h1{ font-size:13px; font-weight:600; color:var(--hud-bright); letter-spacing:.28em; margin-bottom:5px; }
+  .hud-tl .sub{ font-size:10px; letter-spacing:.14em; }
+  .hud-tl .chapter{ color:var(--accent); font-size:11px; letter-spacing:.3em; margin-top:3px; }
+  .hud-bl{ bottom:26px; left:28px; max-width:560px; }
+  .hud-bl .data{ color:var(--hud-bright); }
+  .hud-bl .moon{ color:var(--accent); }
+  .hud-br{ bottom:26px; right:28px; text-align:right; opacity:.68; }
+  .hud .dim{ opacity:.5; }
+  @media (max-width:680px){ .hud-br{ display:none; } .hud{ font-size:10px; } }
+</style>
+</head>
+<body>
+<div class="hud hud-tl">
+  <h1>IZAYOI</h1>
+  <div class="sub">瀬戸内の潮と、十六夜の月 — データ絵画</div>
+  <div class="chapter" id="chapter">CHAPTER 01 — 瀬戸内の潮</div>
+</div>
+<div class="hud hud-bl">
+  <div class="data" id="tideData">潮位: 取得中…</div>
+  <div class="moon" id="moonData">月齢: 計算中…</div>
+  <div class="dim" id="src">出典: 気象庁（広島 アメダス67437・広島検潮所166744）／ 月齢は天文計算（広島 34.39°N 132.46°E）</div>
+</div>
+<div class="hud hud-br">
+  <div>IZAYOI 合同会社</div>
+  <div class="dim">実データによるリアルタイム生成 — 録画ではありません</div>
+  <div class="dim">同じ絵は二度と現れません</div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js"></script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ============ 実データ①: HYG星表 — 実在の恒星900個 [赤経°, 赤緯°, 等級, B-V色指数] ============ */
+const STARS = __STARS__;
+
+/* ============ 実データ②: 気象庁 広島アメダス＋広島検潮所（商用可・出典明記）。
+   フォールバックは 2026-07-20 23:40 JST の実測スナップショット ============ */
+const HIROSHIMA={ lat:34.3853, lng:132.4553 };
+const AMEDAS_LATEST='https://www.jma.go.jp/bosai/amedas/data/latest_time.txt';
+const AMEDAS_POINT ='https://www.jma.go.jp/bosai/amedas/data/point/67437/';
+const TIDE_LATEST ='https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_time.json';
+const TIDE_OBS    ='https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_';
+const FB={ temp:29.5, humidity:71, pressure:1003.6, wind:1.7, windDir16:9, gust:8.1, precip:0, tide:68, departure:2, _cached:true };
+
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const renderer=new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
+renderer.setSize(innerWidth,innerHeight);
+renderer.setClearColor(0x05060a,1);
+document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 300);
+
+/* ============ IZAYOIの文脈パレット（productsヒーローと統一）:
+   墨 → 瀬戸内の藍 → 月藍 → 紅葉の朱 → 金 → 十六夜の月光 ============ */
+const PALETTE_GLSL=`
+  vec3 palette(float t){
+    vec3 sumi  =vec3(0.043,0.039,0.035);
+    vec3 ai    =vec3(0.132,0.204,0.294);
+    vec3 tsuki =vec3(0.416,0.620,0.753);
+    vec3 momiji=vec3(0.761,0.345,0.188);
+    vec3 kin   =vec3(0.769,0.533,0.235);
+    vec3 gekkou=vec3(0.910,0.722,0.427);
+    t=clamp(t,0.,1.);
+    if(t<0.28) return mix(sumi,ai,t/0.28);
+    if(t<0.48) return mix(ai,tsuki,(t-0.28)/0.20);
+    if(t<0.66) return mix(tsuki,momiji,(t-0.48)/0.18);
+    if(t<0.84) return mix(momiji,kin,(t-0.66)/0.18);
+    return mix(kin,gekkou,(t-0.84)/0.16);
+  }`;
+const NOISE_GLSL=`
+  uniform float uSeed;
+  float hash(vec2 p){ p=fract(p*vec2(123.34,456.21)+uSeed); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+  float noise(vec2 p){ vec2 i=floor(p),f=fract(p); vec2 u=f*f*(3.-2.*f);
+    return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y); }
+  float fbm(vec2 p){ float v=0.,a=.5; for(int i=0;i<5;i++){ v+=a*noise(p); p=p*2.03+vec2(1.7,9.2); a*=.55; } return v; }
+`;
+
+/* ============ 潮の球: 頂点を潮の波で変位＋文脈パレットで着色。
+   月光(uMoon)が満ちると全体が十六夜の月光色へ寄る ============ */
+const uni={
+  uTime:{value:0}, uSeed:{value:Math.random()*100},
+  uTideLevel:{value:.4},   // 潮位（満ち引き＝半径オフセット）
+  uRough:{value:.3},       // 偏差（気象由来の荒れ＝波の乱れ）
+  uFlow:{value:.5},        // 風速→流れ
+  uWarm:{value:.5},        // 気温→暖色度
+  uWindDir:{value:0},      // 風向
+  uMoon:{value:0},         // 月光の満ち（月齢15-17でピーク×月が地平線上）
+  uMouse:{value:new THREE.Vector2(0,0)},
+};
+const sphereVert=`
+  uniform float uTime,uTideLevel,uRough,uFlow,uWindDir;
+  uniform vec2 uMouse;
+  varying float vCi; varying vec3 vN; varying vec3 vW;
+  ${NOISE_GLSL}
+  void main(){
+    vec3 p=normalize(position);
+    // 風向で流れる方向へ潮を移流
+    vec2 dir=vec2(cos(uWindDir),sin(uWindDir));
+    vec2 uv=vec2(atan(p.z,p.x), asin(clamp(p.y,-1.,1.)));
+    float t=uTime*(.04+uFlow*.05);
+    vec2 w=uv*1.6 + dir*t;
+    vec2 q=vec2(fbm(w+uMouse*.3), fbm(w+vec2(3.1,7.4)-t));
+    float h=fbm(w+2.2*q);
+    // 潮の満ち引き＝球全体がゆっくり呼吸、荒れ＝波の振幅
+    float amp=.045 + uRough*.11;
+    float disp=1.0 + (uTideLevel-.5)*.05 + (h-.5)*amp;
+    vec3 pos=p*disp*1.6;
+    vCi=h*1.05-.12+.4*(q.x-q.y);
+    vN=normalize(mat3(modelMatrix)*p);
+    vec4 wp=modelMatrix*vec4(pos,1.);
+    vW=wp.xyz;
+    gl_Position=projectionMatrix*viewMatrix*wp;
+  }`;
+const sphereFrag=`
+  uniform float uTime,uWarm,uMoon;
+  varying float vCi; varying vec3 vN; varying vec3 vW;
+  ${NOISE_GLSL} ${PALETTE_GLSL}
+  void main(){
+    vec3 n=normalize(vN);
+    vec3 lightDir=normalize(vec3(-.4,.7,.5));
+    float diff=clamp(dot(n,lightDir),0.,1.);
+    vec3 viewDir=normalize(cameraPosition-vW);
+    vec3 hv=normalize(lightDir+viewDir);
+    float spec=pow(clamp(dot(n,hv),0.,1.),28.);
+    // 気温で色域を暖色側へシフト（暑い日は朱・金、涼しい日は藍）
+    float ci=clamp(vCi + (uWarm-.5)*.28, 0., 1.);
+    float detail=fbm(vW.xy*.9+uTime*.03)*.12;
+    vec3 base=palette(clamp(ci+detail,0.,1.));
+    vec3 gekkou=vec3(0.910,0.722,0.427);
+    vec3 col=base*(0.34+0.8*diff)+gekkou*spec*0.6;
+    // 十六夜の月光: uMoonが満ちると球全体が月光色に包まれ内側から発光
+    float rim=pow(1.-clamp(dot(n,viewDir),0.,1.),2.0);
+    col=mix(col, gekkou, uMoon*0.5*(0.4+0.6*ci));
+    col+=gekkou*uMoon*(rim*0.6+0.15);
+    // 距離フォグ: 奥は墨に沈む
+    float dist=length(cameraPosition-vW);
+    float fog=1.-exp(-max(dist-3.5,0.)*0.11);
+    col=mix(col, vec3(0.03,0.03,0.05), clamp(fog,0.,1.));
+    gl_FragColor=vec4(col,1.);
+  }`;
+const sphereMat=new THREE.ShaderMaterial({ vertexShader:sphereVert, fragmentShader:sphereFrag, uniforms:uni });
+const sphere=new THREE.Mesh(new THREE.SphereGeometry(1,256,192), sphereMat);
+scene.add(sphere);
+camera.position.set(0,0.4,4.6);
+
+/* ============ 実在の星（夜空のドーム）＋ 月光の粒（月齢連動で増減） ============ */
+function bv2rgb(bv){ bv=Math.max(-.4,Math.min(2,bv));
+  let r=bv<0?.62+.6*(bv+.4)/.4:1, g=bv<0?.70+.3*(bv+.4)/.4:Math.max(.55,1-.28*bv), b=bv<.4?1:Math.max(.35,1-.55*(bv-.4));
+  return [r,g,b]; }
+const sN=STARS.length, sPos=new Float32Array(sN*3), sCol=new Float32Array(sN*3), sSize=new Float32Array(sN);
+STARS.forEach((s,i)=>{ const [ra,dec,mag,ci]=s, raR=ra*Math.PI/180, decR=dec*Math.PI/180;
+  sPos[i*3]=90*Math.cos(decR)*Math.cos(raR); sPos[i*3+1]=90*Math.sin(decR); sPos[i*3+2]=-90*Math.cos(decR)*Math.sin(raR);
+  const c=bv2rgb(ci); sCol[i*3]=c[0]; sCol[i*3+1]=c[1]; sCol[i*3+2]=c[2]; sSize[i]=Math.max(.4,5.2-mag); });
+const starGeo=new THREE.BufferGeometry();
+starGeo.setAttribute('position',new THREE.BufferAttribute(sPos,3));
+starGeo.setAttribute('aColor',new THREE.BufferAttribute(sCol,3));
+starGeo.setAttribute('aSize',new THREE.BufferAttribute(sSize,1));
+const starMat=new THREE.ShaderMaterial({
+  uniforms:{ uPx:{value:1.1} },
+  vertexShader:`attribute vec3 aColor; attribute float aSize; varying vec3 vC; uniform float uPx;
+    void main(){ vC=aColor; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=aSize*uPx; gl_Position=projectionMatrix*mv; }`,
+  fragmentShader:`varying vec3 vC; void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard;
+    float a=smoothstep(.5,.08,d); gl_FragColor=vec4(vC*a,a); }`,
+  transparent:true, depthWrite:false, blending:THREE.AdditiveBlending });
+scene.add(new THREE.Points(starGeo,starMat));
+
+/* 月光の粒: 球のまわりを漂う。月齢が満ちるほど数と輝きが増す（十六夜の光の粉） */
+const MN=1200; const mSeed=new Float32Array(MN);
+for(let i=0;i<MN;i++) mSeed[i]=Math.random()*1000;
+const moteGeo=new THREE.BufferGeometry();
+moteGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(MN*3),3));
+moteGeo.setAttribute('aSeed',new THREE.BufferAttribute(mSeed,1));
+const moteMat=new THREE.ShaderMaterial({
+  uniforms:{ uTime:uni.uTime, uMoon:uni.uMoon, uScale:{value:innerHeight} },
+  vertexShader:`
+    uniform float uTime,uMoon,uScale; attribute float aSeed; varying float vA;
+    float h(float s){ return fract(sin(s*127.1)*43758.5); }
+    void main(){
+      float a=aSeed*6.283+uTime*(.08+.1*h(aSeed));
+      float r=2.0+h(aSeed*1.3)*1.6;
+      float y=(h(aSeed*2.1)-.5)*3.4 + sin(uTime*.3+aSeed)*.15;
+      vec3 p=vec3(cos(a)*r, y, sin(a)*r);
+      vec4 mv=modelViewMatrix*vec4(p,1.);
+      float sz=(0.5+h(aSeed*3.7)*1.4);
+      gl_PointSize=sz*uScale*0.0016/max(-mv.z,.1);
+      gl_Position=projectionMatrix*mv;
+      // 月齢が満ちるほど粒が見える
+      vA=uMoon*(0.4+0.6*h(aSeed*5.1));
+    }`,
+  fragmentShader:`varying float vA; void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard;
+    float a=smoothstep(.5,.05,d)*vA; gl_FragColor=vec4(vec3(0.95,0.80,0.52)*a,a); }`,
+  transparent:true, depthWrite:false, blending:THREE.AdditiveBlending });
+const motes=new THREE.Points(moteGeo,moteMat);
+motes.frustumCulled=false; scene.add(motes);
+
+/* ============ 月齢・月の高度（天文計算・広島） ============ */
+function moonState(){
+  const now=new Date();
+  const ill=SunCalc.getMoonIllumination(now);           // phase: 0=新月, .5=満月
+  const age=ill.phase*29.530589;                        // 月齢（日）
+  const pos=SunCalc.getMoonPosition(now,HIROSHIMA.lat,HIROSHIMA.lng);
+  const up=Math.max(0,Math.min(1,(pos.altitude+0.05)/0.25));  // 地平線上か
+  // 十六夜の帯: 月齢15〜17でピーク（伝統的な十六夜=旧暦16日の月の月齢幅に対応）
+  const band=Math.max(0, 1 - Math.abs(age-16)/3.0);
+  const moon=band*band*up;                              // 満ち×月が出ている
+  const toIzayoi=((16-age)+29.530589)%29.530589;        // 次の十六夜まで
+  return { age, moon, up, illum:ill.fraction, toIzayoi };
+}
+
+/* ============ 実データ取得＆マッピング ============ */
+const tgt={ tide:.4, rough:.3, flow:.5, warm:.5, dir:0 };
+function applyAmedas(a){
+  const temp=a.temp?.[0]??FB.temp, hum=a.humidity?.[0]??FB.humidity;
+  const wind=a.wind?.[0]??FB.wind, gust=a.gust?.[0]??FB.gust;
+  const dir16=a.windDirection?.[0]??FB.windDir16, precip=a.precipitation10m?.[0]??FB.precip;
+  const press=a.pressure?.[0]??FB.pressure;
+  tgt.flow=.2+Math.min(1,wind/12)*1.0;
+  tgt.warm=Math.max(0,Math.min(1,(temp-8)/28));         // 8℃→藍, 36℃→朱金
+  tgt.dir=(dir16/16)*Math.PI*2;
+  window._amedas={ temp, hum, wind, gust, precip, press };
+}
+function applyTide(tideCm, depCm){
+  tgt.tide=Math.max(0,Math.min(1,tideCm/350));           // 瀬戸内の潮位レンジ
+  tgt.rough=.15+Math.min(1,Math.abs(depCm)/30)*.9;       // 偏差=気象由来の荒れ
+  window._tide={ tideCm, depCm };
+}
+applyAmedas({ temp:[FB.temp],humidity:[FB.humidity],wind:[FB.wind],gust:[FB.gust],windDirection:[FB.windDir16],precipitation10m:[FB.precip] });
+applyTide(FB.tide,FB.departure);
+
+async function fetchData(){
+  try{
+    const lt=(await (await fetch(AMEDAS_LATEST)).text()).trim();  // 2026-07-20T23:40:00+09:00
+    const d=lt.slice(0,10).replace(/-/g,''), blk=String(Math.floor(+lt.slice(11,13)/3)*3).padStart(2,'0');
+    const j=await (await fetch(`${AMEDAS_POINT}${d}/${d}_${blk}.json`)).json();
+    const keys=Object.keys(j); applyAmedas(j[keys[keys.length-1]]);
+    window._live=true;
+  }catch(e){}
+  try{
+    const tt=(await (await fetch(TIDE_LATEST)).json()).time;
+    const td=tt.slice(0,10).replace(/-/g,'');
+    const tj=await (await fetch(`${TIDE_OBS}${td}_166744.json`)).json();
+    const arr=tj.tide.filter(v=>v!=null), dep=(tj.departure||[]).filter(v=>v!=null);
+    applyTide(arr[arr.length-1], dep.length?dep[dep.length-1]:0);
+    window._live=true;
+  }catch(e){}
+  updateHud();
+}
+function updateHud(){
+  const a=window._amedas||{}, t=window._tide||{}, live=window._live;
+  document.getElementById('tideData').textContent=
+    `潮位 ${t.tideCm??'–'}cm（偏差 ${t.depCm>=0?'+':''}${t.depCm??'–'}cm）・ 気温 ${a.temp??'–'}°C ・ 風 ${a.wind??'–'}m/s ・ 突風 ${a.gust??'–'} ・ 気圧 ${a.press??'–'}hPa${live?'':' （キャッシュ）'}`;
+}
+fetchData(); setInterval(fetchData, 5*60*1000);
+
+/* 月齢HUDは毎秒更新 */
+let ms=moonState();
+function updateMoonHud(){
+  ms=moonState();
+  const izayoi=ms.age>=15&&ms.age<=17;
+  document.getElementById('moonData').textContent=
+    `月齢 ${ms.age.toFixed(1)}（輝面比 ${(ms.illum*100).toFixed(0)}%）・ ${ms.up>.5?'月は地平線上':'月は地平線下'}` +
+    (izayoi ? ' ・ ✦ 今宵は十六夜。月光が満ちています' : ` ・ 次の十六夜まで約${ms.toIzayoi.toFixed(1)}日`);
+}
+updateMoonHud(); setInterval(updateMoonHud,1000);
+
+/* ============ 章の交代（潮 45s ⇄ 月 45s）。ただし実際に十六夜なら月章に固定 ============ */
+const chapterEl=document.getElementById('chapter');
+
+/* ============ 入力・リサイズ ============ */
+let mx=0,my=0,emx=0,emy=0, theta=0, drag=false, dpx=0;
+addEventListener('pointermove',e=>{ mx=(e.clientX/innerWidth-.5)*2; my=(e.clientY/innerHeight-.5)*2;
+  if(drag){ theta+=(e.clientX-dpx)*.005; dpx=e.clientX; } });
+addEventListener('pointerdown',e=>{ drag=true; dpx=e.clientX; });
+addEventListener('pointerup',()=>drag=false);
+addEventListener('resize',()=>{ renderer.setSize(innerWidth,innerHeight); camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix(); moteMat.uniforms.uScale.value=innerHeight; });
+
+/* ============ ループ ============ */
+const start=performance.now();
+function lerp(a,b,k){ return a+(b-a)*k; }
+function frame(){
+  const t=(performance.now()-start)/1000;
+  emx+=(mx-emx)*.04; emy+=(my-emy)*.04;
+  uni.uTime.value=t; uni.uMouse.value.set(emx,emy);
+  uni.uTideLevel.value=lerp(uni.uTideLevel.value,tgt.tide,.02);
+  uni.uRough.value=lerp(uni.uRough.value,tgt.rough,.02);
+  uni.uFlow.value=lerp(uni.uFlow.value,tgt.flow,.02);
+  uni.uWarm.value=lerp(uni.uWarm.value,tgt.warm,.02);
+  uni.uWindDir.value=lerp(uni.uWindDir.value,tgt.dir,.01);
+
+  // 章と月光: 実際に十六夜(月齢15-17かつ月が出ている)なら月章、それ以外は45秒交代
+  const realIzayoi = ms.moon>0.15;
+  let chapMoon;
+  if(realIzayoi){ chapMoon=1; }
+  else { const cyc=(45+5)*2, x=t%cyc; chapMoon = x<45?0 : x<50?(x-45)/5 : x<95?1 : 1-(x-95)/5; chapMoon=chapMoon*chapMoon*(3-2*chapMoon); }
+  // 月章の月光量は「章の演出」×「実際の月齢の満ち」を掛ける（データに正直）
+  const moonTarget = chapMoon * Math.max(realIzayoi?0.8:0.25, ms.moon);
+  uni.uMoon.value=lerp(uni.uMoon.value, reduceMotion?ms.moon:moonTarget, .03);
+  const name = uni.uMoon.value>0.35 ? 'CHAPTER 02 — 十六夜の月' : 'CHAPTER 01 — 瀬戸内の潮';
+  if(chapterEl.textContent!==name) chapterEl.textContent=name;
+
+  // カメラは球のまわりをゆっくり周回＋ドラッグ
+  if(!reduceMotion && !drag) theta+=.0009;
+  camera.position.x=Math.sin(theta)*4.6+emx*.3;
+  camera.position.z=Math.cos(theta)*4.6;
+  camera.position.y=0.4-emy*.3;
+  camera.lookAt(0,0,0);
+  sphere.rotation.y=t*.02;
+  renderer.render(scene,camera);
+  if(!reduceMotion) requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@ const WORKS = [
   { type: 'VIDEO', src: '/space-bg/lab-hero.mp4', video: true, title: 'リキッドゴールド', caption: '広告・ムービー用に生成した流体アート映像' },
   { type: 'VIDEO', src: '/space-bg/hero.mp4', video: true, title: '宇宙背景映像', caption: 'トップページ背景用に生成したシネマティック映像' },
   { type: 'IMAGE', src: '/img/ai-keyvisual.jpg', video: false, title: 'キービジュアル', caption: 'ブランドの世界観を封じ込めたオブジェ' },
-  { type: 'SEQUENCE', src: '/space-bg/frame-024.jpg', video: false, title: '生成フレームシーケンス', caption: '映像を48フレームに分解した生成スタディ' },
+  { type: 'SEQUENCE', src: '/space-bg/frame-024.jpg', video: false, title: 'スクロール連動シーケンス', caption: '映像を48フレームに分解しスクロールで再生' },
   { type: 'IMAGE', src: '/img/service-sns.jpg', video: false, title: 'SNSクリエイティブ', caption: 'ショート動画・投稿用のコンセプトビジュアル' },
   { type: 'IMAGE', src: '/img/service-video.jpg', video: false, title: 'シネマティック素材', caption: '広告・ムービー用の質感スタディ' },
   { type: 'IMAGE', src: '/img/service-saas.jpg', video: false, title: 'プロダクトUI素材', caption: 'SaaS・アプリのビジュアルアイデンティティ' },
@@ -39,8 +39,7 @@ const APPS = [
     lead: '制作現場のための、ファイル便。',
     desc: '動画・写真・PDFをアップして共有URLを発行するファイル共有SaaS。大容量ファイルの受け渡しと、クライアントのレビュー・フィードバックを、ひとつのリンクで完結させます。制作会社の「送って、確認してもらう」という日常を、いちばん短い動線に。自社で実際に運用しながら磨き続けています。',
     checks: ['大容量ファイルの共有URL発行', 'クライアントレビュー・コメント', '転送履歴・アカウント管理', '有料プランで商用運用中'],
-    visual: '/img/rheo-logo-dark.png',
-    logoPad: true,
+    visual: '/img/service-saas.jpg',
     link: { label: 'Visit site', href: 'https://pantarhei.studio', external: true },
   },
   {
@@ -54,20 +53,20 @@ const APPS = [
     desc: '投稿の企画から承認、実績の蓄積までを1画面で回す、SNS運用の進行管理アプリ。私たち自身の運用現場で毎日使いながら育てている「現場発」のツールで、複数ブランドのアカウント運用を支えています。クライアントとのやり取りに散らばるチャット・スプレッドシート・カレンダーを、ここにまとめました。',
     checks: ['投稿スケジュール・進行管理', 'クライアント承認フロー', '実績レポートの自動集計', '複数アカウントの一元管理'],
     visual: '/img/service-sns.jpg',
-    link: { label: '導入の相談をする', href: '/contact', external: false },
+    link: { label: '導入の相談をする', href: '/#contact', external: false },
   },
   {
     num: '03',
-    name: 'RELIFE',
-    slug: 'relife',
-    watermark: 'RELIFE',
-    status: '運用中',
-    tagline: 'AI × プロトレーナーの食事管理。',
-    lead: 'AIが解析し、プロが必ず確認する。',
-    desc: 'LINEで完結する食事管理サービス。食事の写真を送るだけでAIが栄養バランスを解析し、その結果を人間のプロトレーナーが必ず確認してフィードバック。AIの手軽さとプロの目の確かさを両立させた、ジムの現場と一緒に磨いている実運用中のサービスです。',
-    checks: ['写真1枚でAI栄養解析', 'プロトレーナーが必ず確認', 'LINEだけで完結する体験'],
-    visual: '/img/relife-lp.png',
-    link: { label: '導入の相談をする', href: '/contact', external: false },
+    name: 'IZAYOI Fit',
+    slug: 'izayoi-fit',
+    watermark: 'FIT',
+    status: 'β運用中',
+    tagline: 'Snap. Send. Improve.',
+    lead: '写真を送るだけの、AI食事管理。',
+    desc: 'LINEで完結するAI食事管理サービス。食事の写真を送るだけでAIが栄養バランスを解析し、毎日のフィードバックを返します。アプリのダウンロードも会員登録も不要、友だち追加だけで始められる手軽さが特長。「続かない」を前提に、続けられる体験を設計しました。',
+    checks: ['写真1枚でAI栄養解析', 'LINEだけで完結する体験', 'パーソナルなアドバイス配信'],
+    visual: '/img/ai-keyvisual.jpg',
+    link: { label: '導入の相談をする', href: '/#contact', external: false },
   },
 ];
 ---
@@ -136,23 +135,6 @@ const APPS = [
     }
 
     .lab-nav a:hover { color: #E1E0CC; }
-
-    /* Suno製BGMのトグル（音源が置かれると自動で表示される） */
-    .lab-sound {
-      background: none;
-      border: 1px solid rgba(225, 224, 204, 0.35);
-      border-radius: 100px;
-      color: rgba(225, 224, 204, 0.8);
-      font-family: inherit;
-      font-size: clamp(9px, 0.9vw, 11px);
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      padding: 5px 14px;
-      transition: color 0.3s ease, border-color 0.3s ease;
-    }
-
-    .lab-sound:hover { color: var(--cream); border-color: var(--cream); }
-    .lab-sound[aria-pressed='true'] { color: #000; background: var(--cream); border-color: var(--cream); }
 
     .lab-hero__frame {
       position: relative;
@@ -296,7 +278,7 @@ const APPS = [
       padding: clamp(48px, 7vw, 110px) clamp(16px, 3vw, 40px);
       background:
         radial-gradient(55vw 42vh at 88% 0%, rgba(106, 158, 192, 0.08), transparent 68%),
-        radial-gradient(46vw 38vh at 4% 96%, rgba(74, 124, 168, 0.07), transparent 68%);
+        radial-gradient(46vw 38vh at 4% 96%, rgba(196, 136, 60, 0.07), transparent 68%);
     }
 
     .lab-about__card {
@@ -349,8 +331,8 @@ const APPS = [
       position: relative;
       overflow: hidden;
       background:
-        radial-gradient(70vw 55vh at 50% 110%, rgba(74, 124, 168, 0.07), transparent 70%),
-        radial-gradient(40vw 40vh at 96% 8%, rgba(58, 110, 158, 0.05), transparent 70%),
+        radial-gradient(70vw 55vh at 50% 110%, rgba(196, 136, 60, 0.07), transparent 70%),
+        radial-gradient(40vw 40vh at 96% 8%, rgba(194, 88, 48, 0.05), transparent 70%),
         #000;
     }
 
@@ -571,7 +553,7 @@ const APPS = [
       padding: clamp(56px, 8vw, 120px) clamp(16px, 3vw, 40px) clamp(40px, 6vw, 90px);
       background:
         radial-gradient(50vw 45vh at 0% 12%, rgba(106, 158, 192, 0.06), transparent 68%),
-        radial-gradient(55vw 45vh at 100% 55%, rgba(74, 124, 168, 0.06), transparent 70%),
+        radial-gradient(55vw 45vh at 100% 55%, rgba(196, 136, 60, 0.06), transparent 70%),
         radial-gradient(60vw 40vh at 30% 100%, rgba(65, 90, 120, 0.05), transparent 72%);
     }
 
@@ -692,23 +674,13 @@ const APPS = [
       min-height: 100svh;
       overflow: hidden;
       background:
-        radial-gradient(60vw 50vh at 50% 46%, rgba(74, 124, 168, 0.10), transparent 70%),
+        radial-gradient(60vw 50vh at 50% 46%, rgba(196, 136, 60, 0.10), transparent 70%),
         radial-gradient(45vw 40vh at 6% 8%, rgba(106, 158, 192, 0.06), transparent 70%),
-        radial-gradient(50vw 40vh at 96% 90%, rgba(58, 110, 158, 0.05), transparent 70%),
+        radial-gradient(50vw 40vh at 96% 90%, rgba(194, 88, 48, 0.05), transparent 70%),
         #000;
     }
 
-    /* アウトロ背景のマトリックス雨 */
-    .lab-outro__rain {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      opacity: 0.5;
-    }
-
-    .qblock-stage {
+    .lab-outro__stage {
       position: absolute;
       inset: 0;
       z-index: 1;
@@ -717,196 +689,152 @@ const APPS = [
       justify-content: center;
     }
 
-    .qblock-layer {
+    .lab-outro__layer {
       position: absolute;
       inset: 0;
       z-index: 3;
       pointer-events: none;
     }
 
-    /* はてなブロック風 3Dキューブ（金色・コーナーリベット・？） */
     .emoji-btn {
-      --qsize: clamp(140px, 22vw, 240px);
-      position: relative;
-      width: var(--qsize);
-      height: var(--qsize);
+      width: clamp(150px, 28vw, 300px);
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border: none;
-      background: transparent;
-      perspective: 900px;
-      filter: drop-shadow(0 34px 44px rgba(0, 0, 0, 0.55));
-      transition: filter 0.3s ease;
+      border-radius: 0;
+      background: var(--cream);
+      color: #000;
+      font-family: 'Almarai', 'Inter', sans-serif;
+      font-size: clamp(40px, 6vw, 76px);
+      font-weight: 700;
+      line-height: 1;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .emoji-btn:hover { filter: drop-shadow(0 34px 44px rgba(0, 0, 0, 0.55)) brightness(1.08) drop-shadow(0 0 40px rgba(255, 201, 79, 0.25)); }
+    .emoji-btn:hover {
+      background: #fff;
+      box-shadow: 0 0 60px rgba(225, 224, 204, 0.25);
+    }
 
-    .qcube {
+    .lab-outro__top {
       position: absolute;
-      inset: 0;
-      transform-style: preserve-3d;
-      animation: qcubeSway 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes qcubeSway {
-      from { transform: rotateX(-22deg) rotateY(-40deg); }
-      to   { transform: rotateX(-26deg) rotateY(-18deg); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .qcube { animation: none; transform: rotateX(-24deg) rotateY(-30deg); }
-    }
-
-    .qcube__face {
-      position: absolute;
-      inset: 0;
+      top: clamp(20px, 4vw, 64px);
+      left: clamp(20px, 4vw, 64px);
+      right: clamp(20px, 4vw, 64px);
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Almarai', 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: calc(var(--qsize) * 0.5);
-      line-height: 1;
-      color: #fff;
-      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
-      /* 四隅のリベット4つ + 金のベース */
-      background-image:
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        linear-gradient(160deg, #FFC94F 0%, #F5AE23 100%);
-      background-size: 7% 7%, 7% 7%, 7% 7%, 7% 7%, 100% 100%;
-      background-position: 5.5% 5.5%, 94.5% 5.5%, 5.5% 94.5%, 94.5% 94.5%, 0 0;
-      background-repeat: no-repeat;
-      box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.06);
-    }
-
-    .qcube__face--front { transform: translateZ(calc(var(--qsize) / 2)); }
-
-    .qcube__face--right {
-      transform: rotateY(90deg) translateZ(calc(var(--qsize) / 2));
-      background-image:
-        radial-gradient(circle, #F3E3C2 44%, transparent 56%),
-        radial-gradient(circle, #F3E3C2 44%, transparent 56%),
-        radial-gradient(circle, #F3E3C2 44%, transparent 56%),
-        radial-gradient(circle, #F3E3C2 44%, transparent 56%),
-        linear-gradient(160deg, #E29A1F 0%, #C9820F 100%);
-      color: rgba(255, 255, 255, 0.92);
-    }
-
-    .qcube__face--top {
-      transform: rotateX(90deg) translateZ(calc(var(--qsize) / 2));
-      background-image:
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        radial-gradient(circle, #fff 44%, transparent 56%),
-        linear-gradient(160deg, #FFDA7E 0%, #FFC94F 100%);
-    }
-
-    /* 雨の上の可読性スクリム */
-    .lab-outro__scrim {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      background: radial-gradient(62vw 52vh at 50% 55%, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.28) 68%, transparent 100%);
-      pointer-events: none;
-    }
-
-    .lab-outro__inner {
-      position: relative;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
       z-index: 2;
-      min-height: 100svh;
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: clamp(16px, 2.4vw, 26px);
-      padding: var(--space-xl) var(--gutter);
     }
 
-    .lab-outro__eyebrow {
-      font-size: clamp(10px, 1vw, 12px);
-      font-weight: 500;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--cream-2);
-    }
-
-    .lab-outro__title {
-      color: var(--cream);
-      font-size: clamp(23px, 3.4vw, 44px);
+    .lab-outro__logo {
+      display: block;
       font-weight: 800;
-      line-height: 1.55;
-      letter-spacing: -0.01em;
+      font-size: clamp(18px, 1.8vw, 24px);
+      letter-spacing: 0.14em;
+      color: #fff;
+      text-transform: uppercase;
     }
 
-    .lab-outro__lead {
-      color: rgba(225, 224, 204, 0.72);
-      font-size: clamp(12.5px, 1.2vw, 15px);
-      line-height: 2.1;
-      max-width: 640px;
+    .lab-outro__tag {
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: clamp(11px, 1.1vw, 15px);
+      font-weight: 700;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
     }
 
     .lab-outro__cta {
-      margin-top: clamp(6px, 1vw, 14px);
+      flex-shrink: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(18px, 2.4vw, 34px) clamp(34px, 4.4vw, 64px);
+      padding: clamp(12px, 1.8vw, 28px) clamp(20px, 3vw, 44px);
       border: 1px solid #fff;
       border-radius: 100%;
       color: #fff;
       font-family: 'Italiana', serif;
-      font-size: clamp(14px, 1.6vw, 22px);
+      font-size: clamp(12px, 1.3vw, 18px);
       text-transform: uppercase;
       letter-spacing: 0.2em;
       background: rgba(0, 0, 0, 0.1);
-      transition: background 0.3s ease, backdrop-filter 0.3s ease, transform 0.3s ease;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease;
     }
 
     .lab-outro__cta:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(48px);
-      transform: scale(1.04);
     }
 
+    .lab-outro__left {
+      position: absolute;
+      left: clamp(20px, 4vw, 64px);
+      top: 46%;
+      width: min(320px, 28vw);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(14px, 1.8vw, 24px);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(12px, 1vw, 14px);
+      line-height: 1.9;
+      z-index: 2;
+    }
+
+    @media (max-width: 860px) {
+      .lab-outro__left { display: none; }
+    }
+
+    .lab-outro__headline {
+      position: absolute;
+      bottom: clamp(24px, 4.5vw, 64px);
+      right: clamp(20px, 4vw, 64px);
+      left: clamp(20px, 4vw, 64px);
+      text-align: right;
+      font-family: 'Italiana', serif;
+      font-weight: 400;
+      color: #fff;
+      font-size: clamp(38px, 7vw, 96px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      z-index: 2;
+    }
+
+    .lab-outro__headline span { display: block; }
   </style>
 
   <div class="lab">
     <!-- ===== HERO ===== -->
     <section class="lab-hero">
       <div class="lab-hero__frame">
-        <div class="qblock-stage">
-          <div class="qblock-layer" id="emojiLayer" aria-hidden="true"></div>
-          <button type="button" class="emoji-btn" id="emojiBtn" aria-label="押してみてください">
-            <span class="qcube" aria-hidden="true">
-              <span class="qcube__face qcube__face--front">？</span>
-              <span class="qcube__face qcube__face--right">？</span>
-              <span class="qcube__face qcube__face--top"></span>
-            </span>
-          </button>
-        </div>
+        <canvas class="lab-hero__canvas" id="dataPaint" aria-hidden="true"></canvas>
         <div class="lab-hero__noise noise-overlay"></div>
         <div class="lab-hero__grad"></div>
+        <p class="lab-hero__label">Real-time generative — trained on IZAYOI's context</p>
         <nav class="lab-nav" aria-label="ラボページナビゲーション">
           <a href="/">ホーム</a>
-          <a href="/#ai">AI導入支援</a>
+          <a href="/#ai">AI活用支援</a>
           <a href="/services">サービス</a>
-          <a href="/works">実績</a>
-          <a href="/contact">お問い合わせ</a>
-          <button type="button" class="lab-sound" id="labSound" hidden aria-pressed="false">SOUND OFF</button>
+          <a href="/about">会社概要</a>
+          <a href="/#contact">お問い合わせ</a>
         </nav>
         <div class="lab-hero__bottom">
           <h1 class="lab-hero__title" id="labTitle">
             <span class="word">AI</span> <span class="word">Lab<sup class="asterisk">*</sup></span>
           </h1>
           <div class="lab-hero__aside">
-            <a href="/contact" class="lab-cta" id="labCta">
+            <p class="lab-hero__desc" id="labDesc">
+              この背景は、映像ではなくリアルタイム生成の色彩です。
+              広島の紅葉の朱、瀬戸内の藍、十六夜の月光——
+              IZAYOIのすべての文脈を色のデータとして与えた、私たちのデータ・ペインティング。
+              同じ絵は、二度と現れません。
+            </p>
+            <a href="/#contact" class="lab-cta" id="labCta">
               相談してみる
               <span class="lab-cta__circle">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -1012,39 +940,48 @@ const APPS = [
               </div>
             </div>
             <div class="app-sec__visual reveal">
-              <img
-                src={app.visual}
-                alt={`${app.name}のビジュアル`}
-                loading="lazy"
-                style={app.logoPad ? 'padding: clamp(28px, 5vw, 64px); box-sizing: border-box;' : undefined}
-              />
+              <img src={app.visual} alt={`${app.name}のビジュアル`} loading="lazy" />
             </div>
           </div>
         </div>
       ))}
     </section>
 
-    <!-- ===== OUTRO（マトリックスの雨を背に、締めのCTA） ===== -->
+    <!-- ===== OUTRO（Emoji Burst: 押すと絵文字が弾ける締め） ===== -->
     <section class="lab-outro" id="contact-outro">
-      <canvas class="lab-outro__rain" id="asciiRain" aria-hidden="true"></canvas>
-      <div class="lab-outro__scrim" aria-hidden="true"></div>
-      <div class="lab-outro__inner">
-        <p class="lab-outro__eyebrow reveal">Contact</p>
-        <h2 class="lab-outro__title reveal">
-          「うちのブランドなら、何ができる？」<br />
-          その段階から、ご相談ください。
-        </h2>
-        <p class="lab-outro__lead reveal">
-          生成AIとアートディレクションを掛け合わせ、画像・映像からプロダクトまでをひとつのチームで制作しています。
-          30分の無料相談から、お気軽にどうぞ。
-        </p>
-        <a href="/contact" class="lab-outro__cta reveal">Get in Touch</a>
+      <div class="lab-outro__stage">
+        <div class="lab-outro__layer" id="emojiLayer" aria-hidden="true"></div>
+        <button type="button" class="emoji-btn" id="emojiBtn" aria-label="押してみてください">？</button>
       </div>
+      <div class="lab-outro__top">
+        <div class="reveal">
+          <span class="lab-outro__logo">IZAYOI</span>
+          <p class="lab-outro__tag">
+            デジタルとアートの力で、<br />
+            ブランドを前進させる。
+          </p>
+        </div>
+        <a href="/#contact" class="lab-outro__cta reveal">Get in Touch</a>
+      </div>
+      <div class="lab-outro__left reveal">
+        <p>
+          生成AIとアートディレクションを掛け合わせ、画像・映像からプロダクトまでをひとつのチームで制作しています。
+        </p>
+        <p>
+          「うちのブランドなら何ができる？」——その段階から、お気軽にご相談ください。
+        </p>
+      </div>
+      <h2 class="lab-outro__headline">
+        <span class="reveal">Where Art Meets</span>
+        <span class="reveal">Intelligence.</span>
+        <span class="reveal">We Craft, You Dream.</span>
+      </h2>
     </section>
   </div>
 
   <script>
-        import { gsap } from 'gsap';
+    import * as THREE from 'three';
+    import { gsap } from 'gsap';
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
     gsap.registerPlugin(ScrollTrigger);
@@ -1112,127 +1049,381 @@ const APPS = [
     }
 
     // ============================================
-    // ASCII RAIN — マトリックス調のコードの雨（Originkit ascii-rain 移植）
-    // 緑のグリフ＋白緑のヘッド。毎フレーム全描画（にじませない）
+    // DATA PAINTING 3D — IZAYOIの文脈を学習した色彩を、実3Dメッシュの波で
+    // （Refik Anadol "Unsupervised" へのオマージュ。
+    //   学習データ = 広島もみじの朱・瀬戸内の藍・十六夜の月光の金・墨）
     // ============================================
-    const rainCanvas = document.getElementById('asciiRain') as HTMLCanvasElement | null;
-    if (rainCanvas) {
-      const rctx = rainCanvas.getContext('2d')!;
-      const HEAD_COLOR = '#D8FFE0';
-      const TRAIL_COLOR = '#00FF41';
-      const GLYPH = 16;
-      const SPEED = 6;                 // 落下速度 = SPEED * GLYPH px/s
-      const TAIL = 24;                 // 尾の長さ（グリフ数）
-      // マトリックスの雨の正体が「寿司のレシピ」だったことへのオマージュ。
-      // この雨は、お好み焼きのレシピと広島のことば（半角カタカナ）でできている。
-      // 縦に読むと言葉になる——同じ雨は、二度と降らない。
-      const CORPUS =
-        'ｵｺﾉﾐﾔｷ:ｷｼﾞ100G･ｷｬﾍﾞﾂ600G･ﾓﾔｼ･ﾌﾞﾀﾊﾞﾗ4ﾏｲ･ｿﾊﾞ2ﾀﾏ･ﾀﾏｺﾞ2ｺ･ｿｰｽ･ｱｵﾉﾘ･ｶﾂｵﾌﾞｼ･ﾃｯﾊﾟﾝ230C･ﾍﾗ2ﾎﾝ･' +
-        'ﾋﾛｼﾏ･ﾐﾔｼﾞﾏ･ｲﾂｸｼﾏ･ｾﾄｳﾁ･ｵﾉﾐﾁ･ｸﾚ･ﾄﾓﾉｳﾗ･ｻｲｼﾞｮｳ･ｶｷ･ﾓﾐｼﾞﾏﾝｼﾞｭｳ･ｾﾄｳﾁﾚﾓﾝ･ﾂｹﾒﾝ･ｸﾏﾉﾌﾃﾞ･ｵﾘﾂﾞﾙ･ｺｲ･ﾓﾐｼﾞ･';
-      const CHARS = [...CORPUS];
-      const pickAt = (k: number) => CHARS[((k % CHARS.length) + CHARS.length) % CHARS.length];
-      const pick = () => CHARS[(Math.random() * CHARS.length) | 0];
-      const FALL_RATE = SPEED * GLYPH;
-      const GAP = GLYPH;               // density 50 相当 = 1グリフ間隔で敷き詰め
-      const MIN_BURNOUT = 0.75;        // ここより手前でストリームは死なない
-      const CROSSING_SHARE = 0.35;     // 最後まで走り切るストリームの割合
-      const MIN_RELEASE = 0.3;
-      const MAX_RELEASE = 0.8;
+    const paintCanvas = document.getElementById('dataPaint') as HTMLCanvasElement | null;
+    if (paintCanvas) {
+      const renderer = new THREE.WebGLRenderer({ canvas: paintCanvas, antialias: true });
+      renderer.setClearColor(0x0b0a09, 1);
 
-      type Stream = { y: number; rate: number; burnout: number; alpha: number; chars: string[] };
-      type Column = { streams: Stream[]; releaseAt: number };
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 120);
+      camera.position.set(0, 2.3, 6);
 
-      let rw = 0, rh = 0, rainCols = 0;
-      let rainColumns: Column[] = [];
+      const NOISE_GLSL = `
+        uniform float uSeed;
+        float hash(vec2 p) {
+          p = fract(p * vec2(123.34, 456.21) + uSeed);
+          p += dot(p, p + 45.32);
+          return fract(p.x * p.y);
+        }
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(
+            mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+            mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+            u.y
+          );
+        }
+        float fbm(vec2 p) {
+          float v = 0.0;
+          float a = 0.5;
+          for (int i = 0; i < 5; i++) {
+            v += a * noise(p);
+            p = p * 2.03 + vec2(1.7, 9.2);
+            a *= 0.55;
+          }
+          return v;
+        }
+      `;
 
-      const spawnStream = (y: number): Stream => {
-        // コーパスのランダムな位置から連続して切り出す。
-        // chars[0]がヘッド（最下部）なので、上から下へ読むと言葉が現れる
-        const offset = (Math.random() * CHARS.length) | 0;
-        return {
-          y,
-          rate: FALL_RATE * (0.75 + Math.random() * 0.5),
-          burnout: Math.random() < CROSSING_SHARE ? Infinity : MIN_BURNOUT + Math.random() * (1 - MIN_BURNOUT),
-          alpha: 1,
-          chars: Array.from({ length: TAIL }, (_, j) => pickAt(offset + (TAIL - 1 - j))),
-        };
+      // IZAYOIの文脈パレット: 墨 → 瀬戸内の藍 → 月藍 → 紅葉の朱 → 金 → 十六夜の月光
+      const PALETTE_GLSL = `
+        vec3 palette(float t) {
+          vec3 sumi   = vec3(0.043, 0.039, 0.035);
+          vec3 ai     = vec3(0.132, 0.204, 0.294);
+          vec3 tsuki  = vec3(0.416, 0.620, 0.753);
+          vec3 momiji = vec3(0.761, 0.345, 0.188);
+          vec3 kin    = vec3(0.769, 0.533, 0.235);
+          vec3 gekkou = vec3(0.910, 0.722, 0.427);
+          t = clamp(t, 0.0, 1.0);
+          if (t < 0.28) return mix(sumi, ai, t / 0.28);
+          if (t < 0.48) return mix(ai, tsuki, (t - 0.28) / 0.20);
+          if (t < 0.66) return mix(tsuki, momiji, (t - 0.48) / 0.18);
+          if (t < 0.84) return mix(momiji, kin, (t - 0.66) / 0.18);
+          return mix(kin, gekkou, (t - 0.84) / 0.16);
+        }
+      `;
+
+      // 波の高度場。平面メッシュと星屑ワープの両方が同じ場を参照する
+      const WAVE_GLSL = `
+        float heightAt(vec2 xy, float t, out vec2 q) {
+          vec2 w = xy * 0.16;
+          w.y -= t * 1.25;
+          q = vec2(
+            fbm(w + t * 0.4 + uMouse * 0.25),
+            fbm(w + vec2(1.7, 4.6) - t * 0.3)
+          );
+          return fbm(w + 2.6 * q);
+        }
+      `;
+
+      const vertexShader = `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        varying float vCi;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        ${NOISE_GLSL}
+        ${WAVE_GLSL}
+
+        void main() {
+          vec3 pos = position;
+          float t = uTime * 0.05;
+          float AMP = 3.6;
+
+          vec2 q;
+          float h = heightAt(pos.xy, t, q);
+          pos.z = (h - 0.5) * AMP;
+
+          // 解析的に滑らかな法線を求める（近傍の高さから接ベクトルを作る）
+          float e = 0.45;
+          vec2 q2;
+          float hx = heightAt(pos.xy + vec2(e, 0.0), t, q2);
+          float hy = heightAt(pos.xy + vec2(0.0, e), t, q2);
+          vec3 ta = vec3(e, 0.0, (hx - h) * AMP);
+          vec3 tb = vec3(0.0, e, (hy - h) * AMP);
+          vNormal = normalize(mat3(modelMatrix) * normalize(cross(ta, tb)));
+
+          vCi = h * 1.05 - 0.15 + 0.45 * (q.x - q.y);
+          vec4 wp = modelMatrix * vec4(pos, 1.0);
+          vWorldPos = wp.xyz;
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `;
+
+      const fragmentShader = `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        varying float vCi;
+        varying vec3 vWorldPos;
+        varying vec3 vNormal;
+        ${NOISE_GLSL}
+        ${PALETTE_GLSL}
+        void main() {
+          vec3 n = normalize(vNormal);
+          if (n.y < 0.0) n = -n;
+
+          vec3 lightDir = normalize(vec3(-0.4 + uMouse.x * 0.5, 0.8, 0.35 + uMouse.y * 0.3));
+          float diff = clamp(dot(n, lightDir), 0.0, 1.0);
+          vec3 viewDir = normalize(cameraPosition - vWorldPos);
+          vec3 hv = normalize(lightDir + viewDir);
+          float spec = pow(clamp(dot(n, hv), 0.0, 1.0), 30.0);
+
+          float detail = fbm(vWorldPos.xz * 0.9 + uTime * 0.03) * 0.14;
+          vec3 base = palette(clamp(vCi + detail, 0.0, 1.0));
+          vec3 gekkou = vec3(0.910, 0.722, 0.427);
+          vec3 col = base * (0.32 + 0.8 * diff) + gekkou * spec * 0.7;
+
+          // 距離フォグ: 奥は墨の靄に沈む
+          float dist = length(cameraPosition - vWorldPos);
+          float fog = 1.0 - exp(-max(dist - 5.0, 0.0) * 0.085);
+          vec3 sumi = vec3(0.055, 0.052, 0.05);
+          col = mix(col, sumi, clamp(fog, 0.0, 1.0));
+
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `;
+
+      const paintUniforms = {
+        uTime: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uSeed: { value: Math.random() * 100 },
       };
 
-      const nextRelease = () => rh * (MIN_RELEASE + Math.random() * (MAX_RELEASE - MIN_RELEASE));
+      const material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: paintUniforms,
+      });
 
-      function rainLayout() {
-        const dpr = Math.min(2, window.devicePixelRatio || 1);
-        rw = rainCanvas!.clientWidth || 360;
-        rh = rainCanvas!.clientHeight || 320;
-        rainCanvas!.width = Math.round(rw * dpr);
-        rainCanvas!.height = Math.round(rh * dpr);
-        rctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        rainCols = Math.max(1, Math.ceil(rw / GAP));
-        rainColumns = Array.from({ length: rainCols }, () => ({
-          streams: [spawnStream(Math.random() * rh)],
-          releaseAt: nextRelease(),
-        }));
-      }
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(46, 30, 260, 170), material);
+      plane.rotation.x = -Math.PI / 2;
+      plane.position.set(0, 0, -10);
+      scene.add(plane);
 
-      function rainDraw(dt: number) {
-        rctx.clearRect(0, 0, rw, rh);
-        rctx.font = `${GLYPH}px ui-monospace, Menlo, monospace`;
-        rctx.textAlign = 'center';
-        rctx.textBaseline = 'middle';
-        const lead = TAIL * GLYPH;
+      // ============================================
+      // GLITTER WARP — Originkit "Glitter Wrap" の星屑ワープを実3D空間へ移植。
+      // 2Dオーバーレイではなく波と同じシーン・カメラ・fbm高度場・パレットを共有し、
+      // 粒子が波面のうねりに乗ったまま奥から手前へ流れる。
+      // 波の山に隠れる粒子は深度テストで実際に隠れる（=本物の奥行き）
+      // ============================================
+      // 粒子の位置は時刻の純関数。ストリーク（軌跡線）は「少し過去の自分」を
+      // 同じ関数で引き直すだけで得られる
+      const WARP_GLSL = `
+        const float Z_FAR = -35.0;
+        const float Z_RANGE = 41.5;
 
-        for (let i = 0; i < rainCols; i++) {
-          const column = rainColumns[i];
-          const x = i * GAP + GAP / 2;
-
-          for (const stream of column.streams) {
-            stream.y += stream.rate * dt;
-            if (stream.burnout !== Infinity && stream.y / rh > stream.burnout) {
-              stream.alpha -= dt * 1.5;
-            }
-            // ときどき1文字だけ揺らす（言葉が読める程度に、控えめに）
-            if (Math.random() < 0.1) {
-              stream.chars[(Math.random() * stream.chars.length) | 0] = pick();
-            }
-            const columnAlpha = Math.max(0, Math.min(1, stream.alpha));
-            for (let j = 0; j < TAIL; j++) {
-              const y = stream.y - j * GLYPH;
-              if (y < -GLYPH || y > rh + GLYPH) continue;
-              const taper = j === 0 ? 1 : 1 - j / TAIL;
-              rctx.globalAlpha = columnAlpha * taper;
-              rctx.fillStyle = j === 0 ? HEAD_COLOR : TRAIL_COLOR;
-              rctx.fillText(stream.chars[j], x, y);
-            }
-          }
-
-          column.streams = column.streams.filter((s) => s.alpha > 0 && s.y - lead <= rh);
-          const newest = column.streams[column.streams.length - 1];
-          if (!newest || newest.y >= column.releaseAt) {
-            column.streams.push(spawnStream(-lead));
-            column.releaseAt = nextRelease();
-          }
+        vec3 warpPos(float seed, float tSec, out float cycleId, out float prog, out float ci) {
+          float vmul = 0.6 + 0.8 * hash(vec2(seed, 3.1));
+          float phase = seed * 7.7 + tSec * (2.2 * vmul);
+          cycleId = floor(phase / Z_RANGE);
+          float z = Z_FAR + mod(phase, Z_RANGE);
+          // 周回ごとにレーンと高度を引き直す（同じ軌道の反復を防ぐ）
+          float x = (hash(vec2(seed, cycleId + 11.0)) - 0.5) * 44.0;
+          float ra = hash(vec2(seed, cycleId + 23.0));
+          float alt = 0.15 + pow(ra, 2.2) * 5.5;
+          prog = (z - Z_FAR) / Z_RANGE;
+          // 乱流: 手前へ来るほど揺らぎが育つ（Glitter Wrapのturbulence）
+          x += sin(tSec * 1.2 + seed) * 0.6 * prog;
+          // 波と同じ高度場に乗せる（平面はx軸-90°回転+z=-10配置なので座標を写像）
+          vec2 q;
+          float h = heightAt(vec2(x, -(z + 10.0)), tSec * 0.05, q);
+          ci = h * 1.05 - 0.15 + 0.45 * (q.x - q.y);
+          float y = (h - 0.5) * 3.6 + alt + sin(tSec * 0.7 + seed * 1.3) * 0.12;
+          return vec3(x, y, z);
         }
-        rctx.globalAlpha = 1;
-      }
 
-      let rainLast = 0;
-      function rainLoop(time: number) {
-        const dt = rainLast ? Math.min((time - rainLast) / 1000, 0.05) : 1 / 60;
-        rainLast = time;
-        rainDraw(dt);
-        if (!reduceMotion) requestAnimationFrame(rainLoop);
-      }
+        vec3 warpColor(float seed, float ci) {
+          float cHash = hash(vec2(seed, 57.0));
+          vec3 base = palette(clamp(ci + 0.2 + cHash * 0.3, 0.0, 1.0));
+          vec3 gekkou = vec3(0.910, 0.722, 0.427);
+          return mix(base, gekkou, 0.3 + 0.3 * cHash);
+        }
 
-      rainLayout();
-      if (typeof ResizeObserver !== 'undefined') {
-        new ResizeObserver(rainLayout).observe(rainCanvas);
+        float warpFade(float dist, float z, float prog) {
+          float fog = 1.0 - exp(-max(dist - 5.0, 0.0) * 0.085);
+          float nearFade = 1.0 - smoothstep(4.5, 6.4, z);
+          return (0.25 + 0.75 * prog) * (1.0 - clamp(fog, 0.0, 1.0)) * nearFade;
+        }
+
+        // グリッター点滅: 稀に~80msだけ強く光る（Glitter Wrapのflash）
+        float warpFlash(float seed, float tSec) {
+          float cell = tSec * 1.5 + seed * 7.0;
+          float rnd = hash(vec2(seed, floor(cell)));
+          return (rnd > 0.93 && fract(cell) < 0.12) ? 3.2 : 1.0;
+        }
+      `;
+
+      const warpUniforms = {
+        uTime: { value: 0 },
+        uMouse: paintUniforms.uMouse,
+        uSeed: paintUniforms.uSeed,
+        uScale: { value: 1 },
+        uStreak: { value: 0.3 },
+      };
+
+      const warpVertexHead = `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        uniform float uScale;
+        uniform float uStreak;
+        attribute float aSeed;
+        varying vec3 vColor;
+        varying float vAlpha;
+        ${NOISE_GLSL}
+        ${WAVE_GLSL}
+        ${PALETTE_GLSL}
+        ${WARP_GLSL}
+      `;
+
+      const warpFragment = `
+        varying vec3 vColor;
+        varying float vAlpha;
+        void main() {
+          vec2 uv = gl_PointCoord - 0.5;
+          float d = length(uv);
+          if (d > 0.5) discard;
+          float core = smoothstep(0.42, 0.05, d);
+          float glow = smoothstep(0.5, 0.18, d) * 0.4;
+          gl_FragColor = vec4(vColor * (core + glow) * vAlpha, 1.0);
+        }
+      `;
+
+      const streakFragment = `
+        varying vec3 vColor;
+        varying float vAlpha;
+        void main() {
+          gl_FragColor = vec4(vColor * vAlpha, 1.0);
+        }
+      `;
+
+      const WARP_N = 1300;
+      const seedArr = new Float32Array(WARP_N);
+      for (let i = 0; i < WARP_N; i++) seedArr[i] = Math.random() * 1000;
+
+      // 粒子本体（加算合成のポイントスプライト）
+      const ptsGeo = new THREE.BufferGeometry();
+      ptsGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(WARP_N * 3), 3));
+      ptsGeo.setAttribute('aSeed', new THREE.BufferAttribute(seedArr, 1));
+      const ptsMat = new THREE.ShaderMaterial({
+        uniforms: warpUniforms,
+        vertexShader: `
+          ${warpVertexHead}
+          void main() {
+            float cycleId, prog, ci;
+            vec3 p = warpPos(aSeed, uTime, cycleId, prog, ci);
+            vec4 mv = viewMatrix * vec4(p, 1.0);
+            gl_Position = projectionMatrix * mv;
+
+            float dist = -mv.z;
+            float flash = warpFlash(aSeed, uTime);
+            float rs = hash(vec2(aSeed, 41.0));
+            float baseSize = 0.045 + rs * rs * 0.11;
+            gl_PointSize = clamp(baseSize * flash * uScale / max(dist, 0.1), 1.2, 20.0);
+
+            vColor = warpColor(aSeed, ci) * flash;
+            vAlpha = warpFade(dist, p.z, prog) * (flash > 1.0 ? 1.0 : 0.85);
+          }
+        `,
+        fragmentShader: warpFragment,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+      const warpPoints = new THREE.Points(ptsGeo, ptsMat);
+      warpPoints.frustumCulled = false;
+      scene.add(warpPoints);
+
+      // ストリーク: 各粒子の現在位置と uStreak 秒前の位置を結ぶ線分
+      const lineSeed = new Float32Array(WARP_N * 2);
+      const lineTip = new Float32Array(WARP_N * 2);
+      for (let i = 0; i < WARP_N; i++) {
+        lineSeed[i * 2] = seedArr[i];
+        lineSeed[i * 2 + 1] = seedArr[i];
+        lineTip[i * 2] = 0;
+        lineTip[i * 2 + 1] = 1;
       }
-      requestAnimationFrame(rainLoop);
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(WARP_N * 2 * 3), 3));
+      lineGeo.setAttribute('aSeed', new THREE.BufferAttribute(lineSeed, 1));
+      lineGeo.setAttribute('aTip', new THREE.BufferAttribute(lineTip, 1));
+      const lineMat = new THREE.ShaderMaterial({
+        uniforms: warpUniforms,
+        vertexShader: `
+          ${warpVertexHead}
+          attribute float aTip;
+          void main() {
+            float cycleId, prog, ci;
+            vec3 head = warpPos(aSeed, uTime, cycleId, prog, ci);
+            float cycleIdP, progP, ciP;
+            vec3 tail = warpPos(aSeed, uTime - uStreak, cycleIdP, progP, ciP);
+            // リスポーン直後は過去位置が前周回のもの → 画面を横切る線になるので潰す
+            if (abs(cycleIdP - cycleId) > 0.5) tail = head;
+            vec3 p = mix(tail, head, aTip);
+            vec4 mv = viewMatrix * vec4(p, 1.0);
+            gl_Position = projectionMatrix * mv;
+
+            vColor = warpColor(aSeed, ci);
+            // 尾側は0へフェード。頭側もGlitter Wrap同様、点の半分の明るさ
+            vAlpha = warpFade(-mv.z, p.z, prog) * aTip * 0.5;
+          }
+        `,
+        fragmentShader: streakFragment,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+      const warpStreaks = new THREE.LineSegments(lineGeo, lineMat);
+      warpStreaks.frustumCulled = false;
+      scene.add(warpStreaks);
+
+      function resizePaint() {
+        const dpr = Math.min(window.devicePixelRatio, 1.5);
+        const w = paintCanvas!.clientWidth;
+        const h = paintCanvas!.clientHeight;
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        // ポイントサイズの透視スケール（描画バッファ実ピクセル基準）
+        warpUniforms.uScale.value = (h * dpr) / (2 * Math.tan((55 * Math.PI) / 360));
+      }
+      resizePaint();
+      window.addEventListener('resize', resizePaint);
+
+      let mx = 0, my = 0, emx = 0, emy = 0;
+      window.addEventListener('pointermove', (e) => {
+        mx = (e.clientX / window.innerWidth - 0.5) * 2.0;
+        my = (e.clientY / window.innerHeight - 0.5) * 2.0;
+      });
+
+      const start = performance.now();
+      function paintFrame() {
+        const t = (performance.now() - start) / 1000;
+        emx += (mx - emx) * 0.03;
+        emy += (my - emy) * 0.03;
+        paintUniforms.uTime.value = t;
+        paintUniforms.uMouse.value.set(emx, emy);
+        warpUniforms.uTime.value = t;
+        // カメラは波の上をゆっくり漂う
+        camera.position.x = Math.sin(t * 0.07) * 0.5 + emx * 0.5;
+        camera.position.y = 2.3 + Math.sin(t * 0.11) * 0.12 - emy * 0.2;
+        camera.lookAt(0, 0.1, -13);
+        renderer.render(scene, camera);
+        if (!reduceMotion) requestAnimationFrame(paintFrame);
+      }
+      paintFrame();
     }
 
     if (!reduceMotion) {
       // HERO: タイトル語プルアップ + 説明/CTAフェード
       pullUp(document.querySelectorAll('#labTitle .word'));
+      gsap.fromTo('#labDesc', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: 'expo.out' });
       gsap.fromTo('#labCta', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.7, ease: 'expo.out' });
 
       // ABOUT: 見出し語プルアップ
@@ -1311,7 +1502,7 @@ const APPS = [
       }
 
       const decodeTargets = document.querySelectorAll<HTMLElement>(
-        '.gallery__title, .app-sec__tagline'
+        '.gallery__title, .app-sec__tagline, .lab-outro__headline span'
       );
       const decodeSeen = new WeakSet<Element>();
       const decodeIO = new IntersectionObserver(
@@ -1395,7 +1586,7 @@ const APPS = [
             const edge = Math.min(p.y / 0.12, (1.04 - p.y) / 0.12, 1);
             const a = (0.2 + 0.4 * Math.abs(Math.sin(p.fl))) * Math.max(edge, 0);
             ectx.beginPath();
-            ectx.fillStyle = `rgba(139, 187, 217, ${a.toFixed(3)})`;
+            ectx.fillStyle = `rgba(232, 184, 109, ${a.toFixed(3)})`;
             ectx.arc(x, y, p.s, 0, 6.2832);
             ectx.fill();
           }
@@ -1423,8 +1614,7 @@ const APPS = [
     // ============================================
     const emojiBtn = document.getElementById('emojiBtn') as HTMLButtonElement | null;
     const emojiLayer = document.getElementById('emojiLayer');
-    // ？ボックスはヒーローフレーム内に移動（粒子の座標系もフレーム基準）
-    const outroSec = document.querySelector('.lab-hero__frame') as HTMLElement | null;
+    const outroSec = document.querySelector('.lab-outro') as HTMLElement | null;
     if (emojiBtn && emojiLayer && outroSec) {
       const EMOJIS = ['🎉','✨','😄','🔥','💥','⭐','💖','🤩','👍','🥳','🎊','😎','😡','🏃‍♂️','⛳️','🎨','🍖'];
       const BURST = 23;
@@ -1508,43 +1698,6 @@ const APPS = [
       }
 
       emojiBtn.addEventListener('pointerdown', emojiBurst);
-
-      // ===== SOUND — Suno製BGMトグル =====
-      // /audio/lab-bgm.mp3 が置かれている時だけボタンが現れる。
-      // ブラウザの自動再生制限があるためユーザー操作で開始し、フェードで出入りする
-      const soundBtn = document.getElementById('labSound') as HTMLButtonElement | null;
-      if (soundBtn) {
-        const bgm = new Audio('/audio/lab-bgm.mp3');
-        bgm.loop = true;
-        bgm.volume = 0;
-        bgm.preload = 'auto';
-        bgm.addEventListener('canplaythrough', () => { soundBtn.hidden = false; }, { once: true });
-        bgm.addEventListener('error', () => { soundBtn.hidden = true; });
-
-        let soundOn = false;
-        let fadeRaf = 0;
-        const fadeTo = (target: number, done?: () => void) => {
-          cancelAnimationFrame(fadeRaf);
-          (function stepFade() {
-            const d = target - bgm.volume;
-            if (Math.abs(d) < 0.02) { bgm.volume = target; done?.(); return; }
-            bgm.volume += d * 0.08;
-            fadeRaf = requestAnimationFrame(stepFade);
-          })();
-        };
-
-        soundBtn.addEventListener('click', () => {
-          soundOn = !soundOn;
-          soundBtn.setAttribute('aria-pressed', String(soundOn));
-          soundBtn.textContent = soundOn ? 'SOUND ON' : 'SOUND OFF';
-          if (soundOn) {
-            bgm.play().catch(() => {});
-            fadeTo(0.35);
-          } else {
-            fadeTo(0, () => bgm.pause());
-          }
-        });
-      }
 
       // 自動バースト（セクションが見えている間だけ・2.2秒周期）
       if (!reduceMotion) {

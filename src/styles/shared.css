@@ -12,10 +12,11 @@
   --text-secondary: #5F5A52;
   --text-muted: #98928A;
   --text-on-dark: #F0ECE3;
-  --accent: #B07A2E;
-  --accent-secondary: #C99A50;
-  --accent-glow: rgba(176, 122, 46, 0.10);
-  --gradient: linear-gradient(135deg, #B07A2E, #C99A50);
+  /* 藍パレット（縹×浅葱）— 「藍=AI」瀬戸内ブルー */
+  --accent: #2E5C8A;
+  --accent-secondary: #5B9BB5;
+  --accent-glow: rgba(46, 92, 138, 0.10);
+  --gradient: linear-gradient(135deg, #2E5C8A, #5B9BB5);
   --border: #E5E2DC;
   --border-dark: #2A2620;
   --nav-bg: rgba(255, 255, 255, 0.9);
@@ -68,7 +69,7 @@ img { max-width: 100%; display: block; }
 .cursor.hover {
   width: 48px;
   height: 48px;
-  background: rgba(176, 122, 46, 0.08);
+  background: rgba(46, 92, 138, 0.08);
 }
 
 .cursor-dot {
@@ -182,32 +183,80 @@ img { max-width: 100%; display: block; }
 .nav__hamburger.active span:nth-child(2) { opacity: 0; }
 .nav__hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-/* Mobile menu overlay */
+/* Mobile menu overlay — 墨×金のフルスクリーンメニュー */
 .nav__mobile {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 99;
-  background: var(--bg-primary);
+  background:
+    radial-gradient(60vw 50vh at 85% 10%, rgba(74, 124, 168, 0.12), transparent 70%),
+    radial-gradient(50vw 40vh at 5% 95%, rgba(106, 158, 192, 0.08), transparent 70%),
+    #0B0A09;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 40px;
+  align-items: flex-start;
+  gap: clamp(16px, 3.4vh, 28px);
+  padding: 0 clamp(28px, 10vw, 80px);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+  counter-reset: mnav;
+  overflow: hidden;
+}
+
+.nav__mobile::after {
+  content: 'IZAYOI';
+  position: absolute;
+  right: -0.06em;
+  bottom: -0.18em;
+  font-size: clamp(90px, 24vw, 180px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(240, 236, 227, 0.1);
   pointer-events: none;
 }
 
 .nav__mobile.open { opacity: 1; pointer-events: all; }
 
 .nav__mobile a {
-  font-size: clamp(28px, 6vw, 40px);
-  font-weight: 700;
-  color: var(--text-primary);
-  transition: color 0.3s ease;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  counter-increment: mnav;
+  font-size: clamp(28px, 6.4vw, 42px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--text-on-dark);
+  opacity: 0;
+  transform: translateY(26px);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease, color 0.3s ease;
 }
 
-.nav__mobile a:hover { color: var(--accent); }
+.nav__mobile a::before {
+  content: '0' counter(mnav);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--accent-secondary);
+}
+
+.nav__mobile a:hover { color: var(--accent-secondary); }
+
+.nav__mobile.open a { opacity: 1; transform: translateY(0); }
+
+.nav__mobile a:nth-child(1) { transition-delay: 0.06s; }
+.nav__mobile a:nth-child(2) { transition-delay: 0.11s; }
+.nav__mobile a:nth-child(3) { transition-delay: 0.16s; }
+.nav__mobile a:nth-child(4) { transition-delay: 0.21s; }
+.nav__mobile a:nth-child(5) { transition-delay: 0.26s; }
+.nav__mobile a:nth-child(6) { transition-delay: 0.31s; }
+.nav__mobile a:nth-child(7) { transition-delay: 0.36s; }
+
+/* メニュー展開中はハンバーガー線をクリーム色に */
+.nav__hamburger.active span { background: var(--text-on-dark); }
 
 @media (max-width: 768px) {
   .nav__links { display: none; }
@@ -322,6 +371,7 @@ img { max-width: 100%; display: block; }
 /* ============================================
    BUTTONS（黒基調・TSUQREA型）
    ============================================ */
+/* ホバーで金のグラデーションが左から塗られていくワイプ */
 .btn-dark {
   display: inline-flex;
   align-items: center;
@@ -331,15 +381,19 @@ img { max-width: 100%; display: block; }
   font-size: clamp(13px, 1.2vw, 15px);
   font-weight: 700;
   letter-spacing: 0.06em;
-  background: var(--text-primary);
+  background-color: var(--text-primary);
+  background-image: var(--gradient);
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
   color: #FFFFFF;
   border: 1px solid var(--text-primary);
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: background-size 0.55s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
   font-family: inherit;
   cursor: none;
 }
 
-.btn-dark:hover { background: #2E2A24; transform: translateY(-1px); }
+.btn-dark:hover { background-size: 100% 100%; border-color: var(--accent); }
 
 .btn-ghost {
   display: inline-flex;
@@ -350,15 +404,19 @@ img { max-width: 100%; display: block; }
   font-size: clamp(12px, 1.1vw, 14px);
   font-weight: 600;
   letter-spacing: 0.06em;
-  background: transparent;
+  background-color: transparent;
+  background-image: linear-gradient(135deg, rgba(46, 92, 138, 0.14), rgba(91, 155, 181, 0.14));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
   color: var(--text-primary);
   border: 1px solid var(--border);
-  transition: border-color 0.3s ease, background 0.3s ease;
+  transition: background-size 0.55s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
   font-family: inherit;
   cursor: none;
 }
 
-.btn-ghost:hover { border-color: var(--accent); background: var(--accent-glow); }
+.btn-ghost:hover { border-color: var(--accent); background-size: 100% 100%; }
 
 /* ============================================
    FOOTER — サイトマップ型
@@ -471,20 +529,19 @@ img { max-width: 100%; display: block; }
   padding: clamp(14px, 1.5vw, 20px) clamp(36px, 4vw, 56px);
   border-radius: 10px; font-size: clamp(13px, 1.2vw, 15px); font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase; position: relative;
-  background: var(--text-primary); color: #FFFFFF; border: 1px solid var(--text-primary);
-  cursor: none; transition: background 0.3s ease, transform 0.3s ease; font-family: inherit;
+  background-color: var(--text-primary);
+  background-image: var(--gradient);
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  color: #FFFFFF; border: 1px solid var(--text-primary);
+  cursor: none;
+  transition: background-size 0.55s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+  font-family: inherit;
   z-index: 1;
 }
 
-.contact__btn:hover { background: #2E2A24; transform: translateY(-1px); }
-
-.contact__info {
-  margin-top: var(--space-m); display: flex; justify-content: center;
-  gap: clamp(24px, 3vw, 48px); font-size: clamp(12px, 1vw, 13px);
-  color: var(--text-muted); position: relative; flex-wrap: wrap;
-}
-.contact__info a { color: var(--text-secondary); transition: color 0.3s ease; }
-.contact__info a:hover { color: var(--accent); }
+.contact__btn:hover { background-size: 100% 100%; border-color: var(--accent); }
 
 /* ============================================
    SCROLL ANIMATIONS
@@ -514,63 +571,36 @@ img { max-width: 100%; display: block; }
 }
 
 /* ============================================
-   AMBIENT — 呼吸する環境光（白ページの背景）
+   BG DESIGN — エディトリアル・グリッド背景（白ページ）
+   紙の設計図のような、静的で設計された下地。
+   縦罫線（6カラムのガイド）＋極細ドットグリッド。
    ============================================ */
-/* 文脈パレットの水彩がゆっくり流れるリアルタイム生成レイヤー（Base.astroのJSが描画） */
-.bg-wash {
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  display: block;
-}
-
-.bg-ambient {
+.bg-design {
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  overflow: hidden;
-  /* 紙のような極細ドットグリッド */
-  background-image: radial-gradient(rgba(22, 19, 15, 0.03) 1px, transparent 1px);
-  background-size: 26px 26px;
+  background-color: var(--bg-primary);
+  background-image:
+    /* 極細ドットグリッド（紙の質感） */
+    radial-gradient(rgba(22, 19, 15, 0.035) 1px, transparent 1px),
+    /* 6カラムの縦罫線ガイド */
+    linear-gradient(to right, rgba(22, 19, 15, 0.045) 1px, transparent 1px);
+  background-size:
+    26px 26px,
+    calc(100% / 6) 100%;
+  background-position:
+    0 0,
+    -1px 0; /* 画面左端の線を隠す */
 }
 
-.bg-ambient::before,
-.bg-ambient::after {
+/* 上端に薄い墨のグラデーションを1枚（ページに「天」をつくる） */
+.bg-design::before {
   content: '';
   position: absolute;
-  width: 64vmax;
-  height: 64vmax;
-  border-radius: 50%;
-  filter: blur(70px);
-  animation: ambientDrift 30s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-.bg-ambient::before {
-  background: radial-gradient(circle, rgba(196, 136, 60, 0.09), transparent 62%);
-  top: -22vmax;
-  right: -16vmax;
-}
-
-.bg-ambient::after {
-  background: radial-gradient(circle, rgba(106, 158, 192, 0.07), transparent 62%);
-  bottom: -26vmax;
-  left: -20vmax;
-  animation-delay: -15s;
-}
-
-@keyframes ambientDrift {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(-7vmax, 5vmax, 0) scale(1.18); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bg-ambient::before,
-  .bg-ambient::after { animation: none; }
+  inset: 0 0 auto;
+  height: 240px;
+  background: linear-gradient(to bottom, rgba(22, 19, 15, 0.028), transparent);
 }
 
 /* ============================================

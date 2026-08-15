@@ -1,0 +1,547 @@
+---
+import Base from '../../layouts/Base.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
+
+// getStaticPaths はモジュールスコープで実行されるため、参照するデータは
+// この関数の内側で定義し、テンプレートへは props で渡す（Astroの仕様）。
+export function getStaticPaths() {
+  // 関連サービスの共通定義（各プロダクトから key で参照する）
+  const SERVICE = {
+  sns:   { title: 'SNS運用代行',      desc: 'アカウント戦略からコンテンツ制作・投稿・分析までワンストップで伴走。', href: '/services#sns' },
+  web:   { title: 'HP・Web制作',       desc: '集客まで見据えたコーポレート・LP・採用サイトを設計から。',       href: '/services#web' },
+  saas:  { title: 'SaaS・アプリ開発',  desc: '業務課題からツールを設計・開発。構想からMVP・運用まで伴走。',    href: '/services#saas' },
+  ai:    { title: 'AI導入支援',        desc: '生成AIを現場で使える形に。導入設計から社内定着の研修まで。',     href: '/ai' },
+};
+
+const PRODUCTS = {
+  rheo: {
+    name: 'Rheo',
+    kana: 'レオ',
+    en: 'File Sharing SaaS',
+    category: 'ファイル共有 SaaS',
+    watermark: 'RHEO',
+    status: '公開中',
+    tagline: 'Send, review, decide.',
+    lead: '制作現場のための、ファイル便。',
+    hero: '/img/rheo-logo-light.png',
+    logoPad: true,
+    overview: [
+      '動画・写真・PDFをアップロードして共有URLを発行する、制作現場のためのファイル共有SaaSです。大容量ファイルの受け渡しと、クライアントによるレビュー・フィードバックを、ひとつのリンクで完結させます。',
+      '「送って、確認してもらう」という制作会社の日常を、いちばん短い動線に。IZAYOI自身が日々の制作で使いながら磨き続けている、現場発のプロダクトです。',
+    ],
+    background: [
+      '映像や写真の受け渡しは、容量制限・期限切れ・どのファイルが最新か分からなくなる、といった小さなストレスの連続でした。加えてクライアントからのフィードバックはメールやチャットに散らばり、どのカットへの指摘かを追うだけで時間が溶けていきます。',
+      'Rheoは「渡す」と「レビューしてもらう」をひとつのリンクにまとめ、この往復をなくしました。制作者が本当に集中すべき、つくる時間を守るための道具です。',
+    ],
+    features: [
+      { t: '大容量ファイルの共有URL発行', d: '動画・写真・PDFをアップするだけで、共有リンクをすぐに発行。' },
+      { t: 'クライアントレビュー・コメント', d: '受け取った相手が、そのままレビュー・フィードバックを返せる。' },
+      { t: '転送履歴・アカウント管理', d: '過去の共有を一覧で管理。誰にいつ何を送ったかを追える。' },
+      { t: '商用運用中の安定性', d: '有料プランで実際に商用運用している、実績のある基盤。' },
+    ],
+    meta: [
+      { k: '提供', v: 'IZAYOI合同会社' },
+      { k: '種別', v: '自社SaaS' },
+      { k: 'ステータス', v: '公開中（商用運用）' },
+      { k: '領域', v: 'ファイル共有・レビュー' },
+      { k: 'プラットフォーム', v: 'Web' },
+    ],
+    related: ['saas', 'web'],
+    link: { label: 'pantarhei.studio を開く', href: 'https://pantarhei.studio', external: true },
+  },
+
+  'izayoi-hub': {
+    name: 'IZAYOI Hub',
+    kana: 'イザヨイ ハブ',
+    en: 'SNS Operations',
+    category: 'SNS運用管理',
+    watermark: 'HUB',
+    status: '運用中',
+    tagline: 'Mission control for SNS.',
+    lead: 'SNS運用チームの、司令塔。',
+    hero: '/img/service-sns.jpg',
+    overview: [
+      '投稿の企画から承認、実績の蓄積までを1画面で回す、SNS運用の進行管理アプリです。私たち自身の運用現場で毎日使いながら育てている「現場発」のツールで、複数ブランドのアカウント運用を支えています。',
+      'クライアントとのやり取りに散らばりがちなチャット・スプレッドシート・カレンダーを、ここにひとつにまとめました。',
+    ],
+    background: [
+      '運用するアカウントが増えるほど、「どの投稿が承認待ちか」「先月の数字はどうだったか」が別々のツールに散らばり、探すだけで時間がかかるようになります。運用の質は、この段取りの速さに直結します。',
+      'IZAYOI Hubは、進行・承認・レポートをひとつの画面に集約することで、チームがコンテンツそのものに集中できる状態をつくります。運用代行の現場で毎日使い、実務の要求で磨き続けています。',
+    ],
+    features: [
+      { t: '投稿スケジュール・進行管理', d: '企画から公開までの進捗を、複数アカウントぶんまとめて可視化。' },
+      { t: 'クライアント承認フロー', d: '投稿前の確認・修正依頼のやり取りを、画面の中で完結。' },
+      { t: '実績レポートの自動集計', d: '月次の数字をまとめる手間を減らし、示唆の抽出に時間を回す。' },
+      { t: '複数アカウントの一元管理', d: '担当ブランドを横断して、運用状況をひとつのダッシュボードで。' },
+    ],
+    meta: [
+      { k: '提供', v: 'IZAYOI合同会社' },
+      { k: '種別', v: '自社アプリ（社内運用）' },
+      { k: 'ステータス', v: '運用中' },
+      { k: '領域', v: 'SNS運用の進行・承認・レポート' },
+      { k: 'プラットフォーム', v: 'Web' },
+    ],
+    related: ['sns', 'saas'],
+    link: { label: '導入・活用の相談をする', href: '/contact', external: false },
+  },
+
+  relife: {
+    name: 'RELIFE',
+    kana: 'リライフ',
+    en: 'AI × Trainer Meal Coaching',
+    category: 'AI食事管理',
+    watermark: 'RELIFE',
+    status: '運用中',
+    tagline: 'AI × プロトレーナーの食事管理。',
+    lead: 'AIが解析し、プロが必ず確認する食事管理。',
+    hero: '/img/relife-lp.png',
+    overview: [
+      'LINEで完結する食事管理サービスです。食事の写真を送るだけでAIが栄養バランスを解析し、その結果を人間のプロトレーナーが必ず確認してフィードバックを返します。AIの手軽さと、プロの目の確かさを両立させました。',
+      'アプリのダウンロードも会員登録も不要、友だち追加だけで始められる手軽さが特長。「続かない」を前提に、続けられる体験を設計しています。',
+    ],
+    background: [
+      '食事管理アプリは数多くありますが、その多くは「毎日開いて、自分で記録する」ことを前提にしています。この一手間が、続かない最大の理由でした。さらにAIだけの自動応答では、本当に信頼して続けられるかにも限界があります。',
+      'RELIFEは、すでに毎日開いているLINEの中に体験を置き、写真を1枚送るだけに削ぎ落とし、AIの解析にプロトレーナーの確認を重ねました。ジムの現場と一緒に磨いている、実運用中のサービスです。',
+    ],
+    features: [
+      { t: '写真1枚でAI栄養解析', d: '食事の写真を送るだけで、AIがカロリーと栄養バランスを推定。' },
+      { t: 'プロトレーナーが必ず確認', d: 'AIの解析結果を人間のプロが確認し、パーソナルに返信します。' },
+      { t: 'LINEだけで完結する体験', d: 'アプリのDLも会員登録も不要。友だち追加からすぐ始められる。' },
+    ],
+    meta: [
+      { k: '提供', v: 'IZAYOI合同会社' },
+      { k: '種別', v: '自社サービス' },
+      { k: 'ステータス', v: '運用中' },
+      { k: '領域', v: 'AI食事管理・ヘルスケア' },
+      { k: 'プラットフォーム', v: 'LINE' },
+    ],
+    related: ['saas', 'ai'],
+    link: { label: '導入・活用の相談をする', href: '/contact', external: false },
+  },
+  };
+
+  const entries = Object.entries(PRODUCTS);
+  return entries.map(([slug, product]) => ({
+    params: { slug },
+    props: {
+      product,
+      related: product.related.map((key) => SERVICE[key]),
+      others: entries
+        .filter(([s]) => s !== slug)
+        .map(([s, d]) => ({ slug: s, name: d.name, kana: d.kana, lead: d.lead })),
+    },
+  }));
+}
+
+const { slug } = Astro.params;
+const { product, related, others } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: product.name,
+  applicationCategory: product.category,
+  operatingSystem: product.meta.find((m) => m.k === 'プラットフォーム')?.v ?? 'Web',
+  description: product.overview[0],
+  url: `https://izayoi-hiroshima.com/products/${slug}`,
+  publisher: { '@type': 'Organization', name: 'IZAYOI合同会社' },
+};
+---
+
+<Base
+  title={`${product.name} — IZAYOIのプロダクト`}
+  description={product.overview[0]}
+  jsonLd={jsonLd}
+>
+  <style>
+    /* ============================================
+       PRODUCT DETAIL — 白ベースのエディトリアル詳細ページ
+       ============================================ */
+    .pd-hero {
+      position: relative;
+      padding: calc(var(--space-2xl) + 40px) var(--gutter) var(--space-l);
+      overflow: hidden;
+    }
+
+    .pd-hero__wrap { max-width: 1200px; margin: 0 auto; position: relative; }
+    .pd-hero .watermark { top: clamp(24px, 5vw, 64px); }
+
+    .pd-crumb {
+      font-size: clamp(11px, 1.1vw, 13px);
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-m);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pd-crumb a { color: var(--text-secondary); transition: color 0.3s ease; }
+    .pd-crumb a:hover { color: var(--accent); }
+    .pd-crumb span { opacity: 0.5; }
+
+    .pd-hero__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      gap: clamp(28px, 4.5vw, 72px);
+      align-items: center;
+    }
+
+    @media (max-width: 860px) {
+      .pd-hero__grid { grid-template-columns: 1fr; }
+    }
+
+    .pd-hero__eyebrow {
+      font-size: clamp(10px, 1.1vw, 12px);
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: clamp(10px, 1.4vw, 16px);
+    }
+
+    .pd-hero__title {
+      font-size: clamp(44px, 8vw, 92px);
+      font-weight: 900;
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+      margin-bottom: clamp(12px, 1.6vw, 18px);
+    }
+
+    .pd-hero__tagline {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      font-size: clamp(19px, 2.5vw, 32px);
+      line-height: 1.3;
+      margin-bottom: clamp(10px, 1.3vw, 16px);
+    }
+
+    .pd-hero__lead {
+      font-size: clamp(16px, 1.9vw, 22px);
+      font-weight: 700;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    .pd-hero__cta {
+      margin-top: var(--space-m);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .pd-hero__visual {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      aspect-ratio: 4 / 3;
+    }
+
+    .pd-hero__visual img { width: 100%; height: 100%; object-fit: cover; }
+
+    .pd-hero__status {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px;
+      backdrop-filter: blur(6px);
+    }
+
+    /* ============================================
+       CONTENT SECTIONS — ラベル + 本文の2カラム
+       ============================================ */
+    .pd-sec { border-top: 1px solid var(--border); }
+    .pd-sec--alt { background: var(--bg-secondary); }
+
+    .pd-sec__grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--gutter);
+      display: grid;
+      grid-template-columns: minmax(180px, 260px) 1fr;
+      gap: clamp(24px, 4vw, 72px);
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .pd-sec__grid { grid-template-columns: 1fr; gap: var(--space-s); }
+    }
+
+    .pd-sec__aside { position: sticky; top: 96px; }
+    @media (max-width: 860px) { .pd-sec__aside { position: static; } }
+
+    .pd-sec__num {
+      font-size: clamp(10px, 1vw, 12px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: clamp(8px, 1vw, 12px);
+    }
+
+    .pd-sec__h {
+      font-size: clamp(22px, 2.8vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .pd-p {
+      font-size: clamp(13.5px, 1.2vw, 15.5px);
+      color: var(--text-secondary);
+      line-height: 2.1;
+    }
+    .pd-p + .pd-p { margin-top: 1.1em; }
+
+    /* Features */
+    .pd-feats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: clamp(12px, 1.6vw, 16px);
+    }
+
+    .pd-feat {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: clamp(18px, 2.2vw, 24px);
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .pd-feat:hover { border-color: var(--accent-secondary); transform: translateY(-2px); }
+
+    .pd-feat svg {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      stroke: var(--accent);
+    }
+
+    .pd-feat__t { font-size: clamp(14px, 1.3vw, 16px); font-weight: 700; margin-bottom: 5px; }
+    .pd-feat__d { font-size: clamp(12.5px, 1.1vw, 13.5px); color: var(--text-secondary); line-height: 1.85; }
+
+    /* Details（定義リスト） */
+    .pd-meta { border-top: 1px solid var(--border); }
+
+    .pd-meta__row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      padding: 15px 4px;
+      border-bottom: 1px solid var(--border);
+      font-size: clamp(13px, 1.2vw, 14.5px);
+    }
+
+    .pd-meta__row dt { color: var(--text-muted); letter-spacing: 0.04em; }
+    .pd-meta__row dd { color: var(--text-primary); font-weight: 600; }
+
+    @media (max-width: 560px) {
+      .pd-meta__row { grid-template-columns: 1fr; gap: 3px; }
+      .pd-meta__row dt { font-size: 11.5px; }
+    }
+
+    .pd-meta__link { margin-top: var(--space-m); }
+
+    /* Related services / Other products */
+    .pd-related {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--gutter);
+    }
+
+    .pd-more { background: var(--bg-secondary); border-top: 1px solid var(--border); }
+
+    .pd-related__head { margin-bottom: var(--space-m); }
+    .pd-related__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: clamp(12px, 1.6vw, 16px);
+    }
+
+    .pd-others {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+      gap: clamp(12px, 1.6vw, 16px);
+    }
+
+    .pd-other {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(22px, 2.6vw, 30px);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .pd-other:hover { border-color: var(--accent-secondary); transform: translateY(-3px); }
+
+    .pd-other__name { font-size: clamp(18px, 1.8vw, 22px); font-weight: 800; letter-spacing: 0.01em; }
+    .pd-other__kana { font-size: 11px; color: var(--text-muted); letter-spacing: 0.12em; }
+    .pd-other__lead { font-size: clamp(12.5px, 1.1vw, 14px); color: var(--text-secondary); line-height: 1.8; flex: 1; margin-top: 4px; }
+    .pd-other__more { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--accent); text-transform: uppercase; margin-top: 6px; }
+    .pd-other--lab { background: var(--bg-card); }
+  </style>
+
+  <!-- ===== HERO ===== -->
+  <section class="pd-hero">
+    <span class="watermark" aria-hidden="true">{product.watermark}</span>
+    <div class="pd-hero__wrap">
+      <nav class="pd-crumb hero-anim" aria-label="パンくず">
+        <a href="/products">プロダクト</a><span>/</span>{product.name}
+      </nav>
+      <div class="pd-hero__grid">
+        <div class="pd-hero__text">
+          <p class="pd-hero__eyebrow hero-anim">{product.en}</p>
+          <h1 class="pd-hero__title hero-anim">{product.name}</h1>
+          <p class="pd-hero__tagline hero-anim">{product.tagline}</p>
+          <p class="pd-hero__lead hero-anim">{product.lead}</p>
+          <div class="pd-hero__cta hero-anim">
+            <a href="/contact" class="btn-dark">導入・活用の相談をする →</a>
+            {product.link.external && (
+              <a href={product.link.href} target="_blank" rel="noopener" class="btn-ghost">{product.link.label} ↗</a>
+            )}
+          </div>
+        </div>
+        <div class="pd-hero__visual hero-anim">
+          <img
+            src={product.hero}
+            alt={`${product.name}のイメージ`}
+            style={product.logoPad ? 'object-fit: contain; padding: clamp(24px, 4vw, 56px); box-sizing: border-box; background: var(--bg-card);' : undefined}
+          />
+          <span class="pd-hero__status">{product.status}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OVERVIEW ===== -->
+  <section class="pd-sec">
+    <div class="pd-sec__grid">
+      <div class="pd-sec__aside reveal">
+        <p class="pd-sec__num">Overview</p>
+        <h2 class="pd-sec__h">概要</h2>
+      </div>
+      <div class="pd-sec__body reveal">
+        {product.overview.map((p) => <p class="pd-p">{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BACKGROUND ===== -->
+  <section class="pd-sec pd-sec--alt">
+    <div class="pd-sec__grid">
+      <div class="pd-sec__aside reveal">
+        <p class="pd-sec__num">Background</p>
+        <h2 class="pd-sec__h">制作の背景</h2>
+      </div>
+      <div class="pd-sec__body reveal">
+        {product.background.map((p) => <p class="pd-p">{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="pd-sec">
+    <div class="pd-sec__grid">
+      <div class="pd-sec__aside reveal">
+        <p class="pd-sec__num">Features</p>
+        <h2 class="pd-sec__h">主な機能</h2>
+      </div>
+      <div class="pd-sec__body reveal">
+        <div class="pd-feats">
+          {product.features.map((f) => (
+            <div class="pd-feat">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+              <div>
+                <h3 class="pd-feat__t">{f.t}</h3>
+                <p class="pd-feat__d">{f.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DETAILS ===== -->
+  <section class="pd-sec pd-sec--alt">
+    <div class="pd-sec__grid">
+      <div class="pd-sec__aside reveal">
+        <p class="pd-sec__num">Details</p>
+        <h2 class="pd-sec__h">詳細情報</h2>
+      </div>
+      <div class="pd-sec__body reveal">
+        <dl class="pd-meta">
+          {product.meta.map((m) => (
+            <div class="pd-meta__row">
+              <dt>{m.k}</dt>
+              <dd>{m.v}</dd>
+            </div>
+          ))}
+        </dl>
+        {product.link.external && (
+          <a href={product.link.href} target="_blank" rel="noopener" class="btn-ghost pd-meta__link">{product.link.label} ↗</a>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RELATED SERVICES ===== -->
+  <section class="pd-sec">
+    <div class="pd-related">
+      <div class="pd-related__head reveal">
+        <p class="section__number">Related</p>
+        <h2 class="section__title">関連するサービス</h2>
+      </div>
+      <div class="pd-related__grid reveal-stagger">
+        {related.map((r) => (
+          <a href={r.href} class="tile reveal">
+            <h3 class="tile__title"><span class="tile__arrow">→</span>{r.title}</h3>
+            <p class="tile__desc">{r.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OTHER PRODUCTS ===== -->
+  <section class="pd-more">
+    <div class="pd-related">
+      <div class="pd-related__head reveal">
+        <p class="section__number">More</p>
+        <h2 class="section__title">その他のプロダクト</h2>
+      </div>
+      <div class="pd-others reveal-stagger">
+        {others.map((o) => (
+          <a href={`/products/${o.slug}`} class="pd-other reveal">
+            <div class="pd-other__name">{o.name}</div>
+            <div class="pd-other__kana">{o.kana}</div>
+            <p class="pd-other__lead">{o.lead}</p>
+            <span class="pd-other__more">詳細を見る →</span>
+          </a>
+        ))}
+        <a href="/products" class="pd-other pd-other--lab reveal">
+          <div class="pd-other__name">AI Lab</div>
+          <div class="pd-other__kana">エーアイ ラボ</div>
+          <p class="pd-other__lead">生成AIによる映像・画像制作の実例と、自社プロダクトの見せ場。</p>
+          <span class="pd-other__more">ラボを見る →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <ContactCTA sub={`${product.name}の導入・活用について、お気軽にご相談ください。`} />
+</Base>

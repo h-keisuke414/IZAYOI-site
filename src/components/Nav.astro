@@ -6,22 +6,24 @@ const isActive = (path: string) => pathname === path || pathname === path + '/';
 <!-- Mobile Menu -->
 <div class="nav__mobile" id="mobileMenu">
   <a href="/">ホーム</a>
-  <a href="/ai">AI活用支援</a>
+  <a href="/ai">AI導入支援</a>
   <a href="/services">サービス</a>
   <a href="/products">プロダクト</a>
+  <a href="/blog">コラム</a>
   <a href="/about">会社概要</a>
-  <a href="/#contact">お問い合わせ</a>
+  <a href="/contact">お問い合わせ</a>
 </div>
 
 <!-- Navigation -->
 <nav class="nav" id="nav">
   <a href="/" class="nav__logo"><span>IZAYOI</span></a>
   <ul class="nav__links">
-    <li><a href="/ai" class:list={[{ active: isActive('/ai') }]}>AI活用支援</a></li>
+    <li><a href="/ai" class:list={[{ active: isActive('/ai') }]}>AI導入支援</a></li>
     <li><a href="/services" class:list={[{ active: isActive('/services') }]}>サービス</a></li>
     <li><a href="/products" class:list={[{ active: isActive('/products') }]}>プロダクト</a></li>
+    <li><a href="/blog" class:list={[{ active: isActive('/blog') }]}>コラム</a></li>
     <li><a href="/about" class:list={[{ active: isActive('/about') }]}>会社概要</a></li>
-    <li><a href="/#contact">お問い合わせ</a></li>
+    <li><a href="/contact">お問い合わせ</a></li>
   </ul>
   <button class="nav__hamburger" id="hamburger" aria-label="メニューを開く">
     <span></span><span></span><span></span>
